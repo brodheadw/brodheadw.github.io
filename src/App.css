@@ -22,8 +22,6 @@
 .top-bar {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  /*width: 90%;*/
   padding: 1em; /* padding added for spacing */
   width: 97%;
   box-sizing: border-box;
