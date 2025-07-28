@@ -12,7 +12,7 @@ export const projects: Project[] = [
   {
     id: '1',
     title: 'ggml-viz',
-    description: 'A brief description of your first project. Replace this with your actual project details.',
+    description: 'ggml-viz is a high-performance visual debugger written in C++ for the GGML tensor library.',
     image: '/ggmlviz.png', // Add your project image to public folder
     githubUrl: 'https://github.com/brodheadw/ggml-viz',
     liveUrl: 'https://your-live-demo.com',
