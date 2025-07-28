@@ -6,7 +6,7 @@ export default function HomePage() {
   return (
     <div className="space-y-12">
       <section>
-        <h2 className="text-3xl font-semibold mb-4">Ye Olde Portfolio</h2>
+        <h2 className="text-3xl font-semibold mb-4">Will&#39;s Portfolio</h2>
         <p>This is a collection of some of my projects.</p>
       </section>
 
