@@ -15,6 +15,7 @@ export const projects: Project[] = [
     description: '3D visualization tool that creates a traversable point cloud of your Git repository with fly mode controls and customizable spaceship navigation.',
     image: '/gitlaxy.png',
     githubUrl: 'https://github.com/brodheadw/gitlaxy',
+    liveUrl: 'https://brodheadw.github.io/gitlaxy/',
     tags: ['TypeScript', 'Three.js', 'React', '3D Visualization']
   },
   {

@@ -10,14 +10,30 @@ interface ProjectCardProps {
 export default function ProjectCard({ project }: ProjectCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
-      <div className="relative h-48 w-full">
-        <Image
-          src={project.image}
-          alt={project.title}
-          fill
-          className="object-cover"
-        />
-      </div>
+      {project.liveUrl ? (
+        <Link
+          href={project.liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="relative h-48 w-full block cursor-pointer"
+        >
+          <Image
+            src={project.image}
+            alt={project.title}
+            fill
+            className="object-cover hover:opacity-90 transition-opacity"
+          />
+        </Link>
+      ) : (
+        <div className="relative h-48 w-full">
+          <Image
+            src={project.image}
+            alt={project.title}
+            fill
+            className="object-cover"
+          />
+        </div>
+      )}
       
       <div className="p-6">
         <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
