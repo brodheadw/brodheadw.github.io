@@ -13,8 +13,6 @@ export default function ProjectCard({ project }: ProjectCardProps) {
       {project.liveUrl ? (
         <Link
           href={project.liveUrl}
-          target="_blank"
-          rel="noopener noreferrer"
           className="relative h-48 w-full block cursor-pointer"
         >
           <Image
