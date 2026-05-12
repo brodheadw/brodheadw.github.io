@@ -2,7 +2,7 @@ export interface Project {
   id: string
   title: string
   description: string
-  image: string
+  image?: string
   githubUrl: string
   liveUrl?: string
   tags: string[]
@@ -10,36 +10,38 @@ export interface Project {
 
 export const projects: Project[] = [
   {
-    id: '1',
+    id: 'ggml-viz',
+    title: 'ggml-viz',
+    description:
+      'Real-time visualization tool for GGML-based LLM inference engines (llama.cpp, whisper.cpp) with nanosecond-precision tracing and zero-recompilation monitoring.',
+    image: '/ggmlviz.png',
+    githubUrl: 'https://github.com/brodheadw/ggml-viz',
+    tags: ['C++', 'GGML', 'Visualization', 'ML Infra'],
+  },
+  {
+    id: 'gitlaxy',
     title: 'Gitlaxy',
-    description: '3D visualization tool that creates a traversable point cloud of your Git repository with fly mode controls and customizable spaceship navigation.',
+    description:
+      '3D traversable point-cloud of any Git repository, with fly-mode controls and customizable spaceship navigation. Inspired by Gitlantis.',
     image: '/gitlaxy.png',
     githubUrl: 'https://github.com/brodheadw/gitlaxy',
     liveUrl: 'https://brodheadw.github.io/gitlaxy/',
-    tags: ['TypeScript', 'Three.js', 'React', '3D Visualization']
+    tags: ['TypeScript', 'Three.js', 'React', '3D'],
   },
   {
-    id: '2',
-    title: 'ggml-viz',
-    description: 'Real-time performance visualization tool for GGML-based LLM inference engines with nanosecond precision tracing and zero-recompilation monitoring.',
-    image: '/ggmlviz.png',
-    githubUrl: 'https://github.com/brodheadw/ggml-viz',
-    tags: ['C++', 'Visualization', 'Machine Learning', 'Fork']
-  },
-  {
-    id: '3',
-    title: 'Pomegranate Growth Classification',
-    description: 'Machine learning model for classifying pomegranate growth stages from images, achieving 99.57% accuracy using CNN.',
-    image: '/project2.png',
+    id: 'pomegranate',
+    title: 'Pomegranate',
+    description:
+      'Image classification of pomegranate growth stages. CNN, SSD, Faster R-CNN, and YOLOv5 trained on the Mendeley Pomegranate dataset. 99.57% accuracy with a traditional CNN.',
     githubUrl: 'https://github.com/brodheadw/pomegranate',
-    tags: ['Python', 'Machine Learning', 'Computer Vision', 'CNN']
+    tags: ['Python', 'PyTorch', 'Computer Vision', 'CNN'],
   },
   {
-    id: '4',
+    id: 'vim2',
     title: 'Vim2',
-    description: 'Vim-inspired text editor implemented in C++ with undo/redo functionality and text wrapping capabilities.',
-    image: '/project3.png',
+    description:
+      'A Vim-inspired terminal text editor implemented in C++ from scratch, with undo/redo and text-wrapping.',
     githubUrl: 'https://github.com/brodheadw/Vim2',
-    tags: ['C++', 'Text Editor', 'Systems Programming']
-  }
+    tags: ['C++', 'Systems', 'Text Editor'],
+  },
 ]

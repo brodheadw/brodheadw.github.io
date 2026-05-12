@@ -1,48 +1,44 @@
-// src/components/Header.tsx
 import Link from 'next/link'
-import { FaGithub, FaLinkedin } from 'react-icons/fa'
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm">
-      <div className="container mx-auto flex items-center justify-between px-4 py-3">
-        {/* Your name */}
-        <h1 className="text-xl font-bold">
-          <Link href="/">Will Brodhead</Link>
-        </h1>
-
-        {/* Nav links + icons */}
-        <nav className="flex items-center space-x-4">
-          <Link
-            href="/"
-            className="hover:text-blue-600 transition-colors"
-          >
-            Home
-          </Link>
-          <Link
-            href="/about"
-            className="hover:text-blue-600 transition-colors"
-          >
-            About
-          </Link>
-          <a
-            href="https://github.com/brodheadw"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-gray-800 transition-colors"
-          >
-            <FaGithub size={20} />
-          </a>
-          <a
-            href="https://linkedin.com/in/brodheadw"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-blue-700 transition-colors"
-          >
-            <FaLinkedin size={20} />
-          </a>
-        </nav>
-      </div>
+    <header className="flex items-center justify-between border-b border-border py-5">
+      <Link
+        href="/"
+        className="font-mono text-xs tracking-[0.25em] uppercase text-fg-muted hover:text-accent transition-colors"
+      >
+        WB <span className="text-fg-muted/40">/</span> brodheadw.github.io
+      </Link>
+      <nav className="flex items-center gap-6 md:gap-8 font-mono text-[11px] tracking-[0.2em] uppercase text-fg-muted">
+        <Link href="/" className="hover:text-fg transition-colors">
+          Index
+        </Link>
+        <Link href="/about" className="hover:text-fg transition-colors">
+          About
+        </Link>
+        <a
+          href="https://github.com/brodheadw"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-fg transition-colors"
+        >
+          GH
+        </a>
+        <a
+          href="https://linkedin.com/in/brodheadw"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-fg transition-colors"
+        >
+          LI
+        </a>
+        <a
+          href="mailto:brodheadw@gmail.com"
+          className="hover:text-fg transition-colors"
+        >
+          Mail
+        </a>
+      </nav>
     </header>
   )
 }
