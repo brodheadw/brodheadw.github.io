@@ -22,42 +22,101 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body { overflow-x: hidden; }
+
 ::selection {
   background: var(--color-accent);
   color: var(--color-fg);
 }
 
-/* Looming-shadow effect: a heavy darkening band at the top of the viewport,
-   as if something massive overhead is blocking light. Fixed so it stays put
-   while the page scrolls past. */
+/* Heavy shadow band fixed to the top of the viewport. Near-opaque at the
+   top so animated content can start hidden inside it and then slide out
+   into the lit area below. */
 .page-shadow {
   position: fixed;
   inset: 0 0 auto 0;
-  height: 70vh;
+  height: 55vh;
   pointer-events: none;
-  z-index: 0;
+  z-index: 30;
   background:
     linear-gradient(
       to bottom,
       #000000 0%,
-      #02030600 70%,
+      #000000 18%,
+      rgba(0, 0, 0, 0.94) 32%,
+      rgba(0, 0, 0, 0.62) 55%,
+      rgba(0, 0, 0, 0.22) 78%,
       transparent 100%
     );
 }
 
-@keyframes drift-in {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
+/* A half-shadowed moon sitting behind the hero. The radial gradient does
+   the lighting: highlight at upper-right, falling off into deep shadow. */
+.moon {
+  position: absolute;
+  top: -14%;
+  left: 50%;
+  width: min(95vw, 820px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  background: radial-gradient(
+    circle at 78% 28%,
+    #3a3d44 0%,
+    #2a2d34 14%,
+    #1d2027 28%,
+    #11141a 45%,
+    #0a0b0f 62%,
+    #06070a 80%
+  );
+  /* Soft rim of darkness around the edge to bed the sphere into the page */
+  box-shadow:
+    inset 0 0 80px 20px rgba(0, 0, 0, 0.6),
+    0 0 120px 30px rgba(0, 0, 0, 0.7);
+  transform: translate(-50%, 0);
+  animation: emerge-moon 5s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation-delay: 0.05s;
 }
 
-.drift {
-  animation: drift-in 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+/* Hero text emerges from behind the shadow band: starts above its
+   resting position, blurred, fully transparent, then descends into view.
+   The page-shadow on top hides the initial position. */
+@keyframes emerge {
+  from {
+    opacity: 0;
+    transform: translateY(-60px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
 }
 
-.drift-1 { animation-delay: 0.05s; }
-.drift-2 { animation-delay: 0.25s; }
-.drift-3 { animation-delay: 0.5s; }
-.drift-4 { animation-delay: 0.75s; }
+@keyframes emerge-moon {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50px) scale(0.96);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.emerge {
+  animation: emerge 2.8s cubic-bezier(0.19, 1, 0.22, 1) both;
+}
+
+.emerge-1 { animation-delay: 0.35s; }
+.emerge-2 { animation-delay: 1.25s; }
+.emerge-3 { animation-delay: 2.1s; }
+.emerge-4 { animation-delay: 2.85s; }
+.emerge-5 { animation-delay: 3.55s; }
 
 /* CSS-only row expansion on hover via grid-rows trick */
 .row-collapse {

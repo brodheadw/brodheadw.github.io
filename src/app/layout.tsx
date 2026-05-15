@@ -1,10 +1,10 @@
 import './globals.css'
-import { Archivo_Black, Inter, JetBrains_Mono } from 'next/font/google'
+import { Big_Shoulders_Display, Inter, JetBrains_Mono } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
-const archivoBlack = Archivo_Black({
-  weight: '400',
+const bigShoulders = Big_Shoulders_Display({
+  weight: ['400', '700', '900'],
   subsets: ['latin'],
   variable: '--font-display',
   display: 'swap',
@@ -44,7 +44,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${archivoBlack.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${bigShoulders.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen bg-bg text-fg antialiased">
         <div className="page-shadow" aria-hidden />

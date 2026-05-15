@@ -19,10 +19,10 @@ export default function ProjectRow({ project, index }: Props) {
         className="block py-7 md:py-10"
       >
         <div className="flex items-baseline gap-5 md:gap-10">
-          <span className="font-display text-fg-muted text-xl md:text-3xl tabular-nums w-10 md:w-14 shrink-0 transition-colors duration-500 group-hover:text-accent">
+          <span className="font-display font-bold text-fg-muted text-2xl md:text-4xl tabular-nums w-10 md:w-16 shrink-0 transition-colors duration-500 group-hover:text-accent">
             {String(index).padStart(2, '0')}
           </span>
-          <h3 className="font-display uppercase tracking-tight text-3xl md:text-5xl flex-1 leading-[0.95] transition-colors duration-500 group-hover:text-fg">
+          <h3 className="font-display font-black uppercase tracking-tight text-4xl md:text-6xl flex-1 leading-[0.92] transition-colors duration-500 group-hover:text-fg">
             {project.title}
           </h3>
           <span className="hidden md:inline font-mono text-[10px] tracking-[0.2em] uppercase text-fg-muted whitespace-nowrap">

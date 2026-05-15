@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between border-b border-border py-6">
+    <header className="relative z-40 flex items-center justify-between border-b border-border py-6 bg-bg">
       <Link
         href="/"
         className="font-display uppercase tracking-tight text-lg md:text-xl hover:text-accent transition-colors"
