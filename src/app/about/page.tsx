@@ -1,18 +1,17 @@
 export default function AboutPage() {
   return (
-    <section className="max-w-3xl space-y-14 md:space-y-16">
-      <header className="fade-up">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-fg-muted mb-6">
-          About
-        </p>
-        <h1 className="font-display text-5xl md:text-8xl leading-[0.92] tracking-tight">
-          A short <span className="italic text-accent">note</span>.
+    <section className="max-w-3xl space-y-16 md:space-y-20">
+      <header className="drift drift-1">
+        <h1 className="font-display uppercase tracking-tight leading-[0.9] text-5xl md:text-8xl">
+          <span className="block">A short</span>
+          <span className="block">note.</span>
         </h1>
+        <div className="mt-8 h-px w-20 bg-accent" />
       </header>
 
-      <div className="space-y-6 text-lg md:text-xl text-fg/85 leading-relaxed fade-up fade-up-delay-1">
+      <div className="space-y-6 text-lg md:text-xl text-fg/90 leading-relaxed drift drift-2">
         <p>
-          I&rsquo;m Will Brodhead &mdash; Fullstack SWE &amp; Quant at{' '}
+          I&rsquo;m Will Brodhead. I work as a fullstack and quant engineer at{' '}
           <a
             className="underline decoration-1 underline-offset-4 hover:text-accent transition-colors"
             href="https://gsmc.ai"
@@ -24,23 +23,17 @@ export default function AboutPage() {
           . UConn &lsquo;24.
         </p>
         <p>
-          I build complex systems and high-throughput data pipelines in{' '}
-          <span className="font-mono text-base text-accent">Rust</span>,{' '}
-          <span className="font-mono text-base text-accent">C++</span>, and{' '}
-          <span className="font-mono text-base text-accent">Python</span>.
-          Predictive analytics, fintech, and machine learning are my specialties.
+          I write Rust, C++, and Python — mostly high-throughput data
+          pipelines and low-latency systems, with the occasional detour into
+          machine learning when the problem warrants it.
         </p>
-        <p className="text-fg-muted">Based in Stamford, CT.</p>
+        <p className="text-fg-muted">Based in Stamford, Connecticut.</p>
       </div>
 
-      <div className="border-t border-border pt-10 fade-up fade-up-delay-2">
-        <p className="font-mono text-[11px] tracking-[0.25em] uppercase text-fg-muted mb-6">
-          Reach
-        </p>
-        <dl className="grid grid-cols-[8rem_1fr] gap-y-4 font-mono text-sm">
-          <dt className="text-fg-muted text-xs tracking-[0.15em] uppercase pt-1">
-            Email
-          </dt>
+      <div className="pt-10 drift drift-3">
+        <div className="seam mb-10" />
+        <dl className="grid grid-cols-[6rem_1fr] md:grid-cols-[8rem_1fr] gap-y-5 text-sm md:text-base">
+          <dt className="text-fg-muted pt-0.5">Email</dt>
           <dd>
             <a
               href="mailto:brodheadw@gmail.com"
@@ -49,9 +42,7 @@ export default function AboutPage() {
               brodheadw@gmail.com
             </a>
           </dd>
-          <dt className="text-fg-muted text-xs tracking-[0.15em] uppercase pt-1">
-            GitHub
-          </dt>
+          <dt className="text-fg-muted pt-0.5">GitHub</dt>
           <dd>
             <a
               href="https://github.com/brodheadw"
@@ -62,9 +53,7 @@ export default function AboutPage() {
               brodheadw
             </a>
           </dd>
-          <dt className="text-fg-muted text-xs tracking-[0.15em] uppercase pt-1">
-            LinkedIn
-          </dt>
+          <dt className="text-fg-muted pt-0.5">LinkedIn</dt>
           <dd>
             <a
               href="https://linkedin.com/in/brodheadw"

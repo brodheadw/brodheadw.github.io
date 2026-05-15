@@ -2,16 +2,16 @@ import Link from 'next/link'
 
 export default function Header() {
   return (
-    <header className="flex items-center justify-between border-b border-border py-5">
+    <header className="flex items-center justify-between border-b border-border py-6">
       <Link
         href="/"
-        className="font-mono text-xs tracking-[0.25em] uppercase text-fg-muted hover:text-accent transition-colors"
+        className="font-display uppercase tracking-tight text-lg md:text-xl hover:text-accent transition-colors"
       >
-        WB <span className="text-fg-muted/40">/</span> brodheadw.github.io
+        Brodhead
       </Link>
-      <nav className="flex items-center gap-6 md:gap-8 font-mono text-[11px] tracking-[0.2em] uppercase text-fg-muted">
+      <nav className="flex items-center gap-6 md:gap-8 text-sm text-fg-muted">
         <Link href="/" className="hover:text-fg transition-colors">
-          Index
+          Work
         </Link>
         <Link href="/about" className="hover:text-fg transition-colors">
           About
@@ -22,7 +22,7 @@ export default function Header() {
           rel="noopener noreferrer"
           className="hover:text-fg transition-colors"
         >
-          GH
+          GitHub
         </a>
         <a
           href="https://linkedin.com/in/brodheadw"
@@ -30,13 +30,13 @@ export default function Header() {
           rel="noopener noreferrer"
           className="hover:text-fg transition-colors"
         >
-          LI
+          LinkedIn
         </a>
         <a
           href="mailto:brodheadw@gmail.com"
           className="hover:text-fg transition-colors"
         >
-          Mail
+          Email
         </a>
       </nav>
     </header>

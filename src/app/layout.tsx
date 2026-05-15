@@ -1,25 +1,24 @@
 import './globals.css'
-import { Instrument_Serif, Inter, JetBrains_Mono } from 'next/font/google'
+import { Archivo_Black, Inter, JetBrains_Mono } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
-const instrumentSerif = Instrument_Serif({
+const archivoBlack = Archivo_Black({
   weight: '400',
-  style: ['normal', 'italic'],
   subsets: ['latin'],
-  variable: '--font-instrument-serif',
+  variable: '--font-display',
   display: 'swap',
 })
 
 const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-sans',
   display: 'swap',
 })
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
-  variable: '--font-jetbrains-mono',
+  variable: '--font-mono',
   display: 'swap',
 })
 
@@ -27,11 +26,10 @@ export const metadata = {
   metadataBase: new URL('https://brodheadw.github.io'),
   title: { default: 'Will Brodhead', template: '%s · Will Brodhead' },
   description:
-    'Fullstack SWE & Quant. Complex systems and high-throughput data pipelines in Rust, C++, and Python.',
+    'Systems and quant engineer. Rust, C++, Python.',
   openGraph: {
     title: 'Will Brodhead',
-    description:
-      'Fullstack SWE & Quant. Complex systems and high-throughput data pipelines in Rust, C++, and Python.',
+    description: 'Systems and quant engineer. Rust, C++, Python.',
     url: 'https://brodheadw.github.io',
     siteName: 'Will Brodhead',
     type: 'website',
@@ -46,10 +44,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${instrumentSerif.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${archivoBlack.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen bg-bg text-fg antialiased">
-        <div className="mx-auto max-w-5xl px-6 md:px-10">
+        <div className="page-shadow" aria-hidden />
+        <div className="relative mx-auto max-w-5xl px-6 md:px-10">
           <Header />
           <main className="py-12 md:py-20">{children}</main>
           <Footer />
