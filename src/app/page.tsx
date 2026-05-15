@@ -3,37 +3,28 @@ import ProjectRow from '@/components/ProjectRow'
 
 export default function HomePage() {
   return (
-    <div className="space-y-28 md:space-y-36">
-      <section className="pt-4 md:pt-12">
-        <div className="flex items-center justify-between font-mono text-[11px] tracking-[0.25em] uppercase text-fg-muted mb-12 fade-up">
-          <span>Stamford, CT</span>
-          <span>MMXXVI</span>
-        </div>
-
-        <h1 className="font-display tracking-tight leading-[0.9] text-6xl sm:text-7xl md:text-[8.5rem] fade-up fade-up-delay-1">
-          <span className="block">Will Brodhead.</span>
-          <span className="block italic text-fg-muted">Fullstack SWE</span>
-          <span className="block">
-            <span className="italic">&amp;</span>{' '}
-            <span className="text-accent">Quant</span>.
-          </span>
+    <div className="space-y-32 md:space-y-40">
+      <section className="pt-6 md:pt-16">
+        <h1 className="font-display uppercase tracking-tight leading-[0.85] text-6xl sm:text-7xl md:text-[9.5rem] drift drift-1">
+          <span className="block">William</span>
+          <span className="block">Brodhead</span>
         </h1>
 
-        <p className="mt-14 md:mt-16 max-w-2xl text-lg md:text-2xl text-fg/85 leading-snug fade-up fade-up-delay-2">
-          I build complex systems and high-throughput data pipelines in{' '}
-          <span className="font-mono text-base md:text-lg text-accent">Rust</span>
-          ,{' '}
-          <span className="font-mono text-base md:text-lg text-accent">C++</span>
-          , and{' '}
-          <span className="font-mono text-base md:text-lg text-accent">
-            Python
-          </span>
-          . Predictive analytics, fintech, and machine learning are my
-          specialties.
+        <div className="mt-10 md:mt-12 flex items-center gap-4 drift drift-2">
+          <div className="h-px w-12 md:w-20 bg-accent" />
+          <p className="font-display uppercase tracking-[0.15em] text-sm md:text-base">
+            Systems &amp; Quant
+          </p>
+        </div>
+
+        <p className="mt-12 md:mt-14 max-w-2xl text-lg md:text-2xl text-fg/90 leading-snug drift drift-3">
+          I write Rust, C++, and Python — high-throughput data
+          pipelines, low-latency systems, and the occasional machine-learning
+          rabbit hole.
         </p>
 
-        <p className="mt-6 max-w-xl text-fg-muted fade-up fade-up-delay-3">
-          Currently building at{' '}
+        <p className="mt-6 max-w-xl text-fg-muted drift drift-4">
+          Currently at{' '}
           <a
             href="https://gsmc.ai"
             target="_blank"
@@ -42,20 +33,20 @@ export default function HomePage() {
           >
             Global Strategic Minerals Corporation
           </a>
-          .
+          . Stamford, Connecticut.
         </p>
       </section>
 
       <section>
-        <header className="flex items-baseline justify-between border-b border-border pb-3 mb-1">
-          <h2 className="font-mono text-[11px] tracking-[0.25em] uppercase text-fg-muted">
-            Selected Work
+        <div className="flex items-baseline gap-6 mb-2">
+          <h2 className="font-display uppercase tracking-tight text-3xl md:text-5xl">
+            Work
           </h2>
-          <span className="font-mono text-[11px] tracking-[0.25em] uppercase text-fg-muted">
-            {String(projects.length).padStart(2, '0')} /{' '}
+          <div className="seam flex-1 translate-y-[-0.4em]" />
+          <span className="font-mono text-xs text-fg-muted tabular-nums">
             {String(projects.length).padStart(2, '0')}
           </span>
-        </header>
+        </div>
         <ul>
           {projects.map((project, i) => (
             <ProjectRow key={project.id} project={project} index={i + 1} />

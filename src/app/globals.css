@@ -1,17 +1,17 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-bg: #0a0907;
-  --color-bg-elev: #15110d;
-  --color-fg: #ede4d3;
-  --color-fg-muted: #7a7163;
-  --color-border: #221c14;
-  --color-accent: #c8945a;
-  --color-accent-soft: #9a6b3a;
+  --color-bg: #06070a;
+  --color-bg-elev: #0e1015;
+  --color-fg: #d8dade;
+  --color-fg-muted: #5e636b;
+  --color-border: #181c23;
+  --color-accent: #8a1717;
+  --color-accent-soft: #5c1010;
 
-  --font-display: var(--font-instrument-serif);
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-jetbrains-mono);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 }
 
 html, body {
@@ -24,27 +24,46 @@ html, body {
 
 ::selection {
   background: var(--color-accent);
-  color: var(--color-bg);
+  color: var(--color-fg);
 }
 
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Looming-shadow effect: a heavy darkening band at the top of the viewport,
+   as if something massive overhead is blocking light. Fixed so it stays put
+   while the page scrolls past. */
+.page-shadow {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 70vh;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      #000000 0%,
+      #02030600 70%,
+      transparent 100%
+    );
 }
 
-.fade-up {
-  animation: fade-up 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+@keyframes drift-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.fade-up-delay-1 { animation-delay: 0.1s; }
-.fade-up-delay-2 { animation-delay: 0.25s; }
-.fade-up-delay-3 { animation-delay: 0.4s; }
+.drift {
+  animation: drift-in 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.drift-1 { animation-delay: 0.05s; }
+.drift-2 { animation-delay: 0.25s; }
+.drift-3 { animation-delay: 0.5s; }
+.drift-4 { animation-delay: 0.75s; }
 
 /* CSS-only row expansion on hover via grid-rows trick */
 .row-collapse {
   display: grid;
   grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: grid-template-rows 0.7s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .group:hover .row-collapse,
 .group:focus-within .row-collapse {
@@ -52,4 +71,16 @@ html, body {
 }
 .row-collapse > * {
   overflow: hidden;
+}
+
+/* Thin horizontal rule used as section divider — evokes a panel seam */
+.seam {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--color-border) 12%,
+    var(--color-border) 88%,
+    transparent 100%
+  );
 }
