@@ -29,64 +29,86 @@ body { overflow-x: hidden; }
   color: var(--color-fg);
 }
 
-/* Heavy shadow band fixed to the top of the viewport. Near-opaque at the
-   top so animated content can start hidden inside it and then slide out
-   into the lit area below. */
+/* ─────────────────────────────────────────────────────────────────
+   Shadow band fixed at the top of the viewport. Opaque at the very
+   top so animated content (hero text, moon) can start hidden inside
+   it. Recedes once the reveal sequence is done. */
 .page-shadow {
   position: fixed;
   inset: 0 0 auto 0;
-  height: 55vh;
+  height: 65vh;
   pointer-events: none;
   z-index: 30;
   background:
     linear-gradient(
       to bottom,
       #000000 0%,
-      #000000 18%,
-      rgba(0, 0, 0, 0.94) 32%,
-      rgba(0, 0, 0, 0.62) 55%,
-      rgba(0, 0, 0, 0.22) 78%,
+      #000000 22%,
+      rgba(0, 0, 0, 0.95) 38%,
+      rgba(0, 0, 0, 0.65) 58%,
+      rgba(0, 0, 0, 0.25) 80%,
       transparent 100%
     );
+  animation: shadow-recede 6s ease-out 2s both;
 }
 
-/* A half-shadowed moon sitting behind the hero. The radial gradient does
-   the lighting: highlight at upper-right, falling off into deep shadow. */
+@keyframes shadow-recede {
+  0%, 25% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   The moon: a sphere lit from the upper-right, in-flow above the
+   hero text. z-20 so it sits IN FRONT of text — text begins its
+   animation behind it and slides down out from under its lower
+   curve. */
 .moon {
-  position: absolute;
-  top: -14%;
-  left: 50%;
-  width: min(95vw, 820px);
+  position: relative;
+  z-index: 20;
+  width: min(85vw, 520px);
   aspect-ratio: 1;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 0;
   background: radial-gradient(
-    circle at 78% 28%,
-    #3a3d44 0%,
-    #2a2d34 14%,
-    #1d2027 28%,
-    #11141a 45%,
-    #0a0b0f 62%,
-    #06070a 80%
+    circle at 70% 32%,
+    #dadee5 0%,
+    #b8bcc4 6%,
+    #8a8e96 16%,
+    #5a5e66 30%,
+    #36393f 46%,
+    #1c1f25 62%,
+    #0c0e14 78%,
+    #06070a 92%
   );
-  /* Soft rim of darkness around the edge to bed the sphere into the page */
   box-shadow:
-    inset 0 0 80px 20px rgba(0, 0, 0, 0.6),
-    0 0 120px 30px rgba(0, 0, 0, 0.7);
-  transform: translate(-50%, 0);
+    inset 0 0 80px 18px rgba(0, 0, 0, 0.55),
+    0 0 140px 30px rgba(0, 0, 0, 0.55);
   animation: emerge-moon 5s cubic-bezier(0.19, 1, 0.22, 1) both;
-  animation-delay: 0.05s;
+  animation-delay: 0.4s;
 }
 
-/* Hero text emerges from behind the shadow band: starts above its
-   resting position, blurred, fully transparent, then descends into view.
-   The page-shadow on top hides the initial position. */
+@keyframes emerge-moon {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.94);
+    filter: blur(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Standard emerge: gentle slide-down + de-blur. Used everywhere
+   except the hero h1, which uses .emerge-hero with a deeper start
+   so it begins fully behind the moon. */
 @keyframes emerge {
   from {
     opacity: 0;
-    transform: translateY(-60px);
-    filter: blur(6px);
+    transform: translateY(-50px);
+    filter: blur(5px);
   }
   to {
     opacity: 1;
@@ -95,28 +117,34 @@ body { overflow-x: hidden; }
   }
 }
 
-@keyframes emerge-moon {
-  from {
-    opacity: 0;
-    transform: translate(-50%, -50px) scale(0.96);
-    filter: blur(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translate(-50%, 0) scale(1);
-    filter: blur(0);
-  }
-}
-
 .emerge {
   animation: emerge 2.8s cubic-bezier(0.19, 1, 0.22, 1) both;
 }
 
-.emerge-1 { animation-delay: 0.35s; }
-.emerge-2 { animation-delay: 1.25s; }
-.emerge-3 { animation-delay: 2.1s; }
-.emerge-4 { animation-delay: 2.85s; }
-.emerge-5 { animation-delay: 3.55s; }
+@keyframes emerge-hero {
+  from {
+    opacity: 0;
+    transform: translateY(-260px);
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.emerge-hero {
+  animation: emerge-hero 4s cubic-bezier(0.19, 1, 0.22, 1) both;
+  animation-delay: 1.4s;
+}
+
+.emerge-1 { animation-delay: 1.0s; }
+.emerge-2 { animation-delay: 3.0s; }
+.emerge-3 { animation-delay: 3.8s; }
+.emerge-4 { animation-delay: 4.4s; }
+.emerge-5 { animation-delay: 5.0s; }
+.emerge-6 { animation-delay: 5.6s; }
 
 /* CSS-only row expansion on hover via grid-rows trick */
 .row-collapse {
@@ -130,6 +158,19 @@ body { overflow-x: hidden; }
 }
 .row-collapse > * {
   overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .emerge,
+  .emerge-hero,
+  .moon,
+  .page-shadow {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .page-shadow { opacity: 0; }
 }
 
 /* Thin horizontal rule used as section divider — evokes a panel seam */

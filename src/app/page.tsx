@@ -3,24 +3,25 @@ import ProjectRow from '@/components/ProjectRow'
 
 export default function HomePage() {
   return (
-    <div className="space-y-40 md:space-y-56">
-      <section className="relative pt-6 md:pt-20 pb-12">
+    <div className="space-y-32 md:space-y-44">
+      <section className="relative min-h-screen flex flex-col items-center pt-8 md:pt-12 pb-12">
         <div className="moon" aria-hidden />
 
-        <div className="relative z-10">
-          <h1 className="font-display font-black uppercase tracking-[-0.02em] leading-[0.82] text-7xl sm:text-8xl md:text-[14rem] lg:text-[16rem] emerge emerge-1">
+        <div className="relative z-10 mt-10 md:mt-14 flex flex-col items-center text-center w-full max-w-4xl">
+          <h1 className="emerge-hero font-display font-bold uppercase tracking-tight leading-[0.85] text-6xl sm:text-7xl md:text-[10rem] lg:text-[13rem]">
             <span className="block">William</span>
             <span className="block">Brodhead</span>
           </h1>
 
-          <div className="mt-12 md:mt-16 flex items-center gap-4 emerge emerge-2">
+          <div className="mt-10 md:mt-12 flex items-center gap-4 emerge emerge-2">
             <div className="h-px w-12 md:w-24 bg-accent" />
-            <p className="font-display font-bold uppercase tracking-[0.18em] text-base md:text-lg">
+            <p className="font-display font-normal uppercase tracking-[0.22em] text-sm md:text-base">
               Systems &amp; Quant
             </p>
+            <div className="h-px w-12 md:w-24 bg-accent" />
           </div>
 
-          <p className="mt-14 md:mt-16 max-w-2xl text-xl md:text-2xl text-fg/90 leading-snug emerge emerge-3">
+          <p className="mt-12 md:mt-14 max-w-2xl text-lg md:text-xl text-fg/85 leading-relaxed emerge emerge-3">
             I write Rust, C++, and Python — high-throughput data
             pipelines, low-latency systems, and the occasional machine-learning
             rabbit hole.
@@ -42,8 +43,8 @@ export default function HomePage() {
       </section>
 
       <section className="relative z-10">
-        <div className="flex items-baseline gap-6 mb-2">
-          <h2 className="font-display font-black uppercase tracking-tight text-4xl md:text-7xl">
+        <div className="flex items-baseline gap-6 mb-2 emerge emerge-5">
+          <h2 className="font-display font-semibold uppercase tracking-tight text-4xl md:text-7xl">
             Work
           </h2>
           <div className="seam flex-1 translate-y-[-0.5em]" />

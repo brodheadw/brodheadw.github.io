@@ -1,10 +1,10 @@
 import './globals.css'
-import { Big_Shoulders_Display, Inter, JetBrains_Mono } from 'next/font/google'
+import { Cinzel, Inter, JetBrains_Mono } from 'next/font/google'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 
-const bigShoulders = Big_Shoulders_Display({
-  weight: ['400', '700', '900'],
+const cinzel = Cinzel({
+  weight: ['400', '600', '700', '900'],
   subsets: ['latin'],
   variable: '--font-display',
   display: 'swap',
@@ -44,7 +44,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${bigShoulders.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${cinzel.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen bg-bg text-fg antialiased">
         <div className="page-shadow" aria-hidden />

@@ -2,7 +2,7 @@ export default function AboutPage() {
   return (
     <section className="relative max-w-3xl space-y-16 md:space-y-20">
       <header className="emerge emerge-1">
-        <h1 className="font-display font-black uppercase tracking-tight leading-[0.85] text-6xl md:text-[10rem]">
+        <h1 className="font-display font-bold uppercase tracking-tight leading-[0.85] text-5xl md:text-[8rem]">
           <span className="block">A short</span>
           <span className="block">note.</span>
         </h1>

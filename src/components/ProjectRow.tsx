@@ -11,7 +11,10 @@ export default function ProjectRow({ project, index }: Props) {
   const href = project.liveUrl || project.githubUrl
 
   return (
-    <li className="group border-t border-border last:border-b">
+    <li
+      className="emerge group border-t border-border last:border-b"
+      style={{ animationDelay: `${5.4 + (index - 1) * 0.3}s` }}
+    >
       <Link
         href={href}
         target="_blank"
@@ -19,10 +22,10 @@ export default function ProjectRow({ project, index }: Props) {
         className="block py-7 md:py-10"
       >
         <div className="flex items-baseline gap-5 md:gap-10">
-          <span className="font-display font-bold text-fg-muted text-2xl md:text-4xl tabular-nums w-10 md:w-16 shrink-0 transition-colors duration-500 group-hover:text-accent">
+          <span className="font-display font-normal text-fg-muted text-2xl md:text-4xl tabular-nums w-10 md:w-16 shrink-0 transition-colors duration-500 group-hover:text-accent">
             {String(index).padStart(2, '0')}
           </span>
-          <h3 className="font-display font-black uppercase tracking-tight text-4xl md:text-6xl flex-1 leading-[0.92] transition-colors duration-500 group-hover:text-fg">
+          <h3 className="font-display font-semibold uppercase tracking-tight text-4xl md:text-6xl flex-1 leading-[0.92] transition-colors duration-500 group-hover:text-fg">
             {project.title}
           </h3>
           <span className="hidden md:inline font-mono text-[10px] tracking-[0.2em] uppercase text-fg-muted whitespace-nowrap">
