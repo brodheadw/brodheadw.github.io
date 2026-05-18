@@ -11,10 +11,7 @@ export default function ProjectRow({ project, index }: Props) {
   const href = project.liveUrl || project.githubUrl
 
   return (
-    <li
-      className="emerge group border-t border-border last:border-b"
-      style={{ animationDelay: `${4.6 + (index - 1) * 0.3}s` }}
-    >
+    <li className="emerge group border-t border-border last:border-b">
       <Link
         href={href}
         target="_blank"

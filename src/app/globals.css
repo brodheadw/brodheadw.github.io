@@ -30,28 +30,17 @@ body { overflow-x: hidden; }
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   Pure opacity reveal — text fades up out of the dark page bg.
-   No blur, no motion. */
+   Pure opacity reveal — everything fades up together, slowly, out
+   of the dark page bg. No blur, no motion, no stagger. */
 @keyframes emerge {
   from { opacity: 0; }
   to   { opacity: 1; }
 }
 
-.emerge {
-  animation: emerge 3s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
+.emerge,
 .emerge-hero {
-  animation: emerge 6s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: 0.4s;
+  animation: emerge 10s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-
-.emerge-1 { animation-delay: 0.6s; }
-.emerge-2 { animation-delay: 2.2s; }
-.emerge-3 { animation-delay: 3.0s; }
-.emerge-4 { animation-delay: 3.6s; }
-.emerge-5 { animation-delay: 4.2s; }
-.emerge-6 { animation-delay: 4.8s; }
 
 @media (prefers-reduced-motion: reduce) {
   .emerge,
