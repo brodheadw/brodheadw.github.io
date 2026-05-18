@@ -13,7 +13,7 @@ export default function ProjectRow({ project, index }: Props) {
   return (
     <li
       className="emerge group border-t border-border last:border-b"
-      style={{ animationDelay: `${5.4 + (index - 1) * 0.3}s` }}
+      style={{ animationDelay: `${4.6 + (index - 1) * 0.3}s` }}
     >
       <Link
         href={href}

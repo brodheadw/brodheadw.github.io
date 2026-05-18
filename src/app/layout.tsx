@@ -47,7 +47,6 @@ export default function RootLayout({
       className={`${cinzel.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body className="min-h-screen bg-bg text-fg antialiased">
-        <div className="page-shadow" aria-hidden />
         <div className="relative mx-auto max-w-5xl px-6 md:px-10">
           <Header />
           <main className="py-12 md:py-20">{children}</main>
