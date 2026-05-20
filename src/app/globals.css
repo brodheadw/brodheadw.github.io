@@ -38,12 +38,15 @@ body { overflow-x: hidden; }
 }
 
 .emerge {
-  animation: emerge 5s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: 7s;
+  animation: emerge 4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 6s;
 }
 
+/* Exponential ease-in: holds near zero opacity for most of the duration,
+   then accelerates into view in the final stretch. Stays in darkness,
+   then rushes into the light. */
 .emerge-hero {
-  animation: emerge 15s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: emerge 10s cubic-bezier(0.95, 0.05, 0.795, 0.035) both;
 }
 
 @media (prefers-reduced-motion: reduce) {

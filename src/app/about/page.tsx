@@ -1,7 +1,7 @@
 export default function AboutPage() {
   return (
     <section className="relative max-w-3xl space-y-16 md:space-y-20">
-      <header className="emerge emerge-1">
+      <header className="emerge">
         <h1 className="font-display font-bold uppercase tracking-tight leading-[0.85] text-5xl md:text-[8rem]">
           <span className="block">A short</span>
           <span className="block">note.</span>
@@ -9,7 +9,7 @@ export default function AboutPage() {
         <div className="mt-10 h-px w-20 bg-accent" />
       </header>
 
-      <div className="space-y-6 text-lg md:text-xl text-fg/90 leading-relaxed emerge emerge-2">
+      <div className="space-y-6 text-lg md:text-xl text-fg/90 leading-relaxed emerge">
         <p>
           I&rsquo;m Will Brodhead. I work as a fullstack and quant engineer at{' '}
           <a
@@ -30,7 +30,7 @@ export default function AboutPage() {
         <p className="text-fg-muted">Based in Stamford, Connecticut.</p>
       </div>
 
-      <div className="pt-10 emerge emerge-3">
+      <div className="pt-10 emerge">
         <div className="seam mb-10" />
         <dl className="grid grid-cols-[6rem_1fr] md:grid-cols-[8rem_1fr] gap-y-5 text-sm md:text-base">
           <dt className="text-fg-muted pt-0.5">Email</dt>
