@@ -5,10 +5,21 @@ export interface Project {
   image?: string
   githubUrl: string
   liveUrl?: string
+  /** Internal route on this site (e.g. a case-study page). Takes priority. */
+  caseStudyUrl?: string
   tags: string[]
 }
 
 export const projects: Project[] = [
+  {
+    id: 'crisp-portfolio',
+    title: 'CRISP',
+    description:
+      'Reproducing the hierarchical and iterative mean-variance portfolio methods from Wuebben (2026) — CRISP, HRP-mu, and the Cotton-Schur baseline — with a walk-forward backtest across a 15-asset cross-asset basket, 2010–2026.',
+    githubUrl: 'https://github.com/brodheadw/crisp-portfolio',
+    caseStudyUrl: '/crisp',
+    tags: ['Python', 'Quant', 'Portfolio Theory', 'Backtest'],
+  },
   {
     id: 'ggml-viz',
     title: 'ggml-viz',

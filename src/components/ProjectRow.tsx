@@ -8,14 +8,16 @@ interface Props {
 }
 
 export default function ProjectRow({ project, index }: Props) {
-  const href = project.liveUrl || project.githubUrl
+  // An on-site case study stays internal (no new tab); otherwise link out.
+  const internal = Boolean(project.caseStudyUrl)
+  const href = project.caseStudyUrl || project.liveUrl || project.githubUrl
+  const external = internal ? {} : { target: '_blank', rel: 'noopener noreferrer' }
 
   return (
     <li className="emerge group border-t border-border last:border-b">
       <Link
         href={href}
-        target="_blank"
-        rel="noopener noreferrer"
+        {...external}
         className="block py-7 md:py-10"
       >
         <div className="flex items-baseline gap-5 md:gap-10">
