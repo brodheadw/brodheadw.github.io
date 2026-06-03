@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import EquityChart, { EquitySeries } from '@/components/EquityChart'
+import LivePaper from '@/components/LivePaper'
 import results from '@/data/crisp-results.json'
 
 export const metadata = {
@@ -100,6 +101,24 @@ export default function CrispPage() {
           classical baselines in a walk-forward backtest.
         </p>
       </header>
+
+      <section className="emerge space-y-6">
+        <div className="flex items-baseline gap-6">
+          <h2 className="font-display font-semibold uppercase tracking-tight text-3xl md:text-5xl">
+            Live
+          </h2>
+          <div className="seam flex-1 translate-y-[-0.4em]" />
+          <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-accent">
+            ● paper
+          </span>
+        </div>
+        <p className="max-w-2xl text-fg/80 leading-relaxed">
+          A self-simulated paper portfolio running {HIGHLIGHT} forward on
+          delayed public prices — a daily job marks it to market and rebalances
+          on the backtest&rsquo;s cadence. Not a brokerage account.
+        </p>
+        <LivePaper />
+      </section>
 
       <section className="emerge space-y-6">
         <div className="flex items-baseline gap-6">
