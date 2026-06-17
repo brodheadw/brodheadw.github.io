@@ -4,9 +4,9 @@ import LivePaper from '@/components/LivePaper'
 import results from '@/data/crisp-results.json'
 
 export const metadata = {
-  title: 'CRISP — Portfolio Construction',
+  title: 'CRISP: Portfolio Construction',
   description:
-    'Reproducing the hierarchical and iterative mean-variance portfolio methods from Wuebben (2026), with a walk-forward backtest 2010–2026.',
+    'Reproducing the hierarchical and iterative mean-variance portfolio methods from Wuebben (2026), with a walk-forward backtest from 2010 to 2026.',
 }
 
 const HIGHLIGHT = 'CRISP (g=0.5)'
@@ -95,9 +95,9 @@ export default function CrispPage() {
             className="underline decoration-1 underline-offset-4 hover:text-accent transition-colors"
           >
             Wuebben (2026)
-          </a>{' '}
-          — building on de Prado&rsquo;s Hierarchical Risk Parity and
-          Cotton&rsquo;s Schur-complement allocation — benchmarked against the
+          </a>,{' '}
+          building on de Prado&rsquo;s Hierarchical Risk Parity and
+          Cotton&rsquo;s Schur-complement allocation, benchmarked against the
           classical baselines in a walk-forward backtest.
         </p>
       </header>
@@ -114,7 +114,7 @@ export default function CrispPage() {
         </div>
         <p className="max-w-2xl text-fg/80 leading-relaxed">
           A self-simulated paper portfolio running {HIGHLIGHT} forward on
-          delayed public prices — a daily job marks it to market and rebalances
+          delayed public prices. A daily job marks it to market and rebalances
           on the backtest&rsquo;s cadence. Not a brokerage account.
         </p>
         <LivePaper />

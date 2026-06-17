@@ -26,10 +26,10 @@ export const metadata = {
   metadataBase: new URL('https://brodheadw.github.io'),
   title: { default: 'Will Brodhead', template: '%s · Will Brodhead' },
   description:
-    'Systems and quant engineer. Rust, C++, Python.',
+    'Measured. Relentless. Rust, C++, Python.',
   openGraph: {
     title: 'Will Brodhead',
-    description: 'Systems and quant engineer. Rust, C++, Python.',
+    description: 'Measured. Relentless. Rust, C++, Python.',
     url: 'https://brodheadw.github.io',
     siteName: 'Will Brodhead',
     type: 'website',

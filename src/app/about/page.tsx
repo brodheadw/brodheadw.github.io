@@ -23,7 +23,7 @@ export default function AboutPage() {
           . UConn &lsquo;24.
         </p>
         <p>
-          I write Rust, C++, and Python — mostly high-throughput data
+          I write Rust, C++, and Python. Mostly high-throughput data
           pipelines and low-latency systems, with the occasional detour into
           machine learning when the problem warrants it.
         </p>

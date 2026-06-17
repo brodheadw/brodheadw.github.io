@@ -10,16 +10,16 @@ export default function HomePage() {
           <span className="block">Brodhead</span>
         </h1>
 
-        <div className="mt-10 md:mt-14 flex items-center gap-4 emerge">
-          <div className="h-px w-12 md:w-24 bg-accent" />
-          <p className="font-display font-normal uppercase tracking-[0.22em] text-sm md:text-base">
-            Systems &amp; Quant
+        <div className="mt-10 md:mt-14 flex items-center gap-3 md:gap-4 emerge">
+          <div className="h-px w-6 md:w-24 bg-accent" />
+          <p className="font-display font-normal uppercase tracking-[0.12em] md:tracking-[0.22em] text-sm md:text-base whitespace-nowrap">
+            Measured. Relentless.
           </p>
-          <div className="h-px w-12 md:w-24 bg-accent" />
+          <div className="h-px w-6 md:w-24 bg-accent" />
         </div>
 
         <p className="mt-12 md:mt-14 max-w-2xl text-lg md:text-xl text-fg/85 leading-relaxed emerge">
-          I write Rust, C++, and Python — high-throughput data
+          I write Rust, C++, and Python. High-throughput data
           pipelines, low-latency systems, and the occasional machine-learning
           rabbit hole.
         </p>

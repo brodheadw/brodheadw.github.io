@@ -174,7 +174,7 @@ export default function LivePaper() {
 
       {data.equity.series.length <= 1 ? (
         <p className="font-mono text-xs text-fg-muted">
-          Just opened — the curve fills in as the daily job runs.
+          Just opened. The curve fills in as the daily job runs.
         </p>
       ) : (
         <MiniChart dates={data.equity.dates} series={data.equity.series} />
@@ -182,7 +182,7 @@ export default function LivePaper() {
 
       <div>
         <p className="font-mono text-[10px] tracking-[0.2em] uppercase text-fg-muted mb-3">
-          Current target weights — top {top.length}
+          Current target weights, top {top.length}
         </p>
         <ul className="space-y-1.5">
           {top.map((h) => {
@@ -216,7 +216,7 @@ export default function LivePaper() {
       </div>
 
       <p className="font-mono text-[10px] text-fg-muted/70 leading-relaxed">
-        Self-simulated on delayed public prices — not a brokerage account, not
+        Self-simulated on delayed public prices. Not a brokerage account, not
         investment advice. Rebalances every {data.cadence_days} trading days.
       </p>
     </div>
