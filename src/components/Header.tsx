@@ -10,7 +10,7 @@ export default function Header() {
         Brodhead
       </Link>
       <nav className="flex flex-wrap items-center gap-x-5 gap-y-1 md:gap-8 text-sm text-fg-muted">
-        <Link href="/" className="hover:text-fg transition-colors">
+        <Link href="/#work" className="hover:text-fg transition-colors">
           Work
         </Link>
         <Link href="/about" className="hover:text-fg transition-colors">
