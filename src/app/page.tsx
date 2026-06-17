@@ -5,7 +5,7 @@ export default function HomePage() {
   return (
     <div className="space-y-32 md:space-y-44">
       <section className="min-h-screen flex flex-col items-center justify-center text-center pt-8 pb-12">
-        <h1 className="emerge-hero font-display font-bold uppercase tracking-tight leading-[0.85] text-6xl sm:text-7xl md:text-[10rem] lg:text-[13rem]">
+        <h1 className="emerge-hero font-display font-bold uppercase tracking-tight leading-[0.85] text-[2.75rem] sm:text-7xl md:text-[10rem] lg:text-[13rem]">
           <span className="block">William</span>
           <span className="block">Brodhead</span>
         </h1>

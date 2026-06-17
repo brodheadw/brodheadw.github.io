@@ -2,14 +2,14 @@ import Link from 'next/link'
 
 export default function Header() {
   return (
-    <header className="emerge relative z-40 flex items-center justify-between border-b border-border py-6 bg-bg">
+    <header className="emerge relative z-40 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-b border-border py-6 bg-bg">
       <Link
         href="/"
         className="font-display uppercase tracking-tight text-lg md:text-xl hover:text-accent transition-colors"
       >
         Brodhead
       </Link>
-      <nav className="flex items-center gap-6 md:gap-8 text-sm text-fg-muted">
+      <nav className="flex flex-wrap items-center gap-x-5 gap-y-1 md:gap-8 text-sm text-fg-muted">
         <Link href="/" className="hover:text-fg transition-colors">
           Work
         </Link>
