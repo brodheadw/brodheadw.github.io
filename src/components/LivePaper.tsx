@@ -29,6 +29,7 @@ const PAD = { top: 16, right: 16, bottom: 28, left: 48 }
 
 function MiniChart({ dates, series }: { dates: string[]; series: number[] }) {
   const clipId = useId()
+  const [hover, setHover] = useState<number | null>(null)
   const n = series.length
   const lo = Math.min(...series, 1)
   const hi = Math.max(...series, 1)
@@ -49,6 +50,13 @@ function MiniChart({ dates, series }: { dates: string[]; series: number[] }) {
       className="w-full h-auto"
       role="img"
       aria-label="Live paper-portfolio equity curve"
+      onMouseMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect()
+        const xv = ((e.clientX - r.left) / r.width) * W
+        const i = Math.round(((xv - PAD.left) / plotW) * (n - 1))
+        setHover(Math.max(0, Math.min(n - 1, i)))
+      }}
+      onMouseLeave={() => setHover(null)}
     >
       <defs>
         <clipPath id={clipId}>
@@ -102,6 +110,54 @@ function MiniChart({ dates, series }: { dates: string[]; series: number[] }) {
           </text>
         ) : null,
       )}
+
+      {/* hover crosshair + readout */}
+      {hover !== null && n > 1 && (() => {
+        const hx = x(hover)
+        const right = hx > W / 2
+        const tx = Math.min(Math.max(hx + (right ? -8 : 8), PAD.left), W - PAD.right)
+        const anchor = right ? 'end' : 'start'
+        return (
+          <g pointerEvents="none">
+            <line
+              x1={hx}
+              x2={hx}
+              y1={PAD.top}
+              y2={PAD.top + plotH}
+              stroke="var(--color-fg-muted)"
+              strokeWidth={1}
+              strokeDasharray="3 3"
+              opacity={0.6}
+            />
+            <circle
+              cx={hx}
+              cy={y(series[hover])}
+              r={4}
+              fill="var(--color-accent)"
+              stroke="var(--color-bg)"
+              strokeWidth={1.5}
+            />
+            <text
+              x={tx}
+              y={PAD.top + 13}
+              textAnchor={anchor}
+              className="fill-[var(--color-fg)] font-mono"
+              fontSize={13}
+            >
+              {series[hover].toFixed(4)}×
+            </text>
+            <text
+              x={tx}
+              y={PAD.top + 27}
+              textAnchor={anchor}
+              className="fill-[var(--color-fg-muted)] font-mono"
+              fontSize={10}
+            >
+              {dates[hover]}
+            </text>
+          </g>
+        )
+      })()}
     </svg>
   )
 }
