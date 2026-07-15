@@ -25,11 +25,10 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata = {
   metadataBase: new URL('https://brodheadw.github.io'),
   title: { default: 'Will Brodhead', template: '%s · Will Brodhead' },
-  description:
-    'Measured. Relentless. Rust, C++, Python.',
+  description: 'Measured. Relentless.',
   openGraph: {
     title: 'Will Brodhead',
-    description: 'Measured. Relentless. Rust, C++, Python.',
+    description: 'Measured. Relentless.',
     url: 'https://brodheadw.github.io',
     siteName: 'Will Brodhead',
     type: 'website',
