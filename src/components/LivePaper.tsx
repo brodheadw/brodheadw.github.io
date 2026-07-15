@@ -27,6 +27,14 @@ const W = 920
 const H = 300
 const PAD = { top: 16, right: 16, bottom: 28, left: 48 }
 
+/** Parse "YYYY-MM-DD" or "YYYY-MM-DD HH:MM" as UTC millis (Safari-safe). */
+function toMillis(s: string): number {
+  const [d, hm] = s.split(' ')
+  const [Y, M, D] = d.split('-').map(Number)
+  const [h, m] = (hm ?? '0:0').split(':').map(Number)
+  return Date.UTC(Y, M - 1, D, h, m)
+}
+
 function MiniChart({ dates, series }: { dates: string[]; series: number[] }) {
   const clipId = useId()
   const [hover, setHover] = useState<number | null>(null)
@@ -36,7 +44,14 @@ function MiniChart({ dates, series }: { dates: string[]; series: number[] }) {
   const span = hi - lo || 1
   const plotW = W - PAD.left - PAD.right
   const plotH = H - PAD.top - PAD.bottom
-  const x = (i: number) => PAD.left + (n === 1 ? plotW / 2 : (i / (n - 1)) * plotW)
+  // X is proportional to time, not index — the series mixes daily history
+  // with hourly points for the recent week, so index spacing would stretch
+  // the last few days across most of the chart.
+  const times = dates.map(toMillis)
+  const t0 = times[0]
+  const tspan = (times[n - 1] ?? t0) - t0 || 1
+  const x = (i: number) =>
+    PAD.left + (n === 1 ? plotW / 2 : ((times[i] - t0) / tspan) * plotW)
   const y = (v: number) => PAD.top + plotH - ((v - lo) / span) * plotH
   const path = series
     .map((v, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(v).toFixed(1)}`)
@@ -53,8 +68,12 @@ function MiniChart({ dates, series }: { dates: string[]; series: number[] }) {
       onMouseMove={(e) => {
         const r = e.currentTarget.getBoundingClientRect()
         const xv = ((e.clientX - r.left) / r.width) * W
-        const i = Math.round(((xv - PAD.left) / plotW) * (n - 1))
-        setHover(Math.max(0, Math.min(n - 1, i)))
+        // Nearest point by pixel distance (x positions are non-uniform).
+        let best = 0
+        for (let i = 1; i < n; i++) {
+          if (Math.abs(x(i) - xv) < Math.abs(x(best) - xv)) best = i
+        }
+        setHover(best)
       }}
       onMouseLeave={() => setHover(null)}
     >

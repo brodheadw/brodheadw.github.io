@@ -21,6 +21,15 @@ export const projects: Project[] = [
     tags: ['Python', 'Quant', 'Portfolio Theory', 'Backtest'],
   },
   {
+    id: 'tokensperday',
+    title: 'Tokens Per Day',
+    description:
+      'The AI inference demand index. Tracks how many LLM tokens the world processes daily: a defensible reported floor built from non-overlapping public disclosures, with quarterly history and implied estimates on top.',
+    githubUrl: 'https://github.com/brodhead-unlimited/tokensperday',
+    liveUrl: 'https://tokensperday.com',
+    tags: ['Data', 'AI', 'Index'],
+  },
+  {
     id: 'ggml-viz',
     title: 'ggml-viz',
     description:
@@ -38,21 +47,5 @@ export const projects: Project[] = [
     githubUrl: 'https://github.com/brodheadw/gitlaxy',
     liveUrl: 'https://brodheadw.github.io/gitlaxy/',
     tags: ['TypeScript', 'Three.js', 'React', '3D'],
-  },
-  {
-    id: 'pomegranate',
-    title: 'Pomegranate',
-    description:
-      'Image classification of pomegranate growth stages. CNN, SSD, Faster R-CNN, and YOLOv5 trained on the Mendeley Pomegranate dataset. 99.57% accuracy with a traditional CNN.',
-    githubUrl: 'https://github.com/brodheadw/pomegranate',
-    tags: ['Python', 'PyTorch', 'Computer Vision', 'CNN'],
-  },
-  {
-    id: 'vim2',
-    title: 'Vim2',
-    description:
-      'A Vim-inspired terminal text editor implemented in C++ from scratch, with undo/redo and text-wrapping.',
-    githubUrl: 'https://github.com/brodheadw/Vim2',
-    tags: ['C++', 'Systems', 'Text Editor'],
   },
 ]

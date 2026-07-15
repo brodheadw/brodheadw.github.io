@@ -44,15 +44,15 @@ html { scroll-behavior: smooth; scroll-padding-top: 2rem; }
    every other page, and when returning to the homepage via client-side nav,
    these classes are inert and the content renders fully visible immediately. */
 .intro .emerge {
-  animation: emerge 4s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: 2.5s;
+  animation: emerge 1.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.8s;
 }
 
 /* Exponential ease-in: holds near zero opacity for most of the duration,
    then accelerates into view in the final stretch. Stays in darkness,
    then rushes into the light. */
 .intro .emerge-hero {
-  animation: emerge 6s cubic-bezier(0.5, 0, 0.75, 0) both;
+  animation: emerge 1.8s cubic-bezier(0.5, 0, 0.75, 0) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
