@@ -1,35 +1,23 @@
-# Cosmic Atlas — exploratory association framework
+# Cosmic Atlas
 
-This package extends the offline 3D sky viewer with a **reproducible statistical back end**. It does not contain real DESI, IceCube, or Fermi catalog data. No dark-matter or neutrino source detection is claimed.
+Interactive 3D and all-sky viewer for nearby galaxies, IceCube neutrinos and Fermi gamma-ray sources, plus an independent re-run of the 2026 Boötes III dark-matter neutrino excess.
 
-## Files
-- `cosmic_atlas_3d_v3.html`: interactive 3D atlas with catalog CSV imports and analysis-report import.
-- `analyze.py`: a reproducible, RA-scrambled exploratory background study with per-event angular uncertainty and a scan-adjusted permutation probability over user-supplied targets.
-- `sample_*.csv`: deliberately **synthetic example events** for testing, not observational data.
-- `test_analyze.py`: basic statistical / coordinate tests.
+- `index.html` — the atlas: 3D view, all-sky map with overlays (Planck CMB, Fermi gamma rays, optical Milky Way, Planck dust, IceCube 10-year excess).
+- `bootes.html` — the Boötes III reproduction (TS map, mass scan, background trials, comparison with the paper).
+- `data/` — everything the pages load, produced on the Mac Studio.
 
-## Run
+## Mac Studio pipeline (`mac-studio/`)
 
-```bash
-python -m pip install numpy
-python analyze.py --neutrinos sample_neutrinos_SYNTHETIC.csv --targets sample_targets.csv --fermi sample_fermi_SYNTHETIC.csv --scrambles 2000 --seed 2026 --out analysis_report.json
-python -m unittest -v test_analyze.py
-```
+| Script | Does |
+|---|---|
+| `fetch_catalogs.py` | Pulls UNGC + 2MRS galaxies, IceCat-1 alerts and Fermi 4FGL-DR4 from VizieR TAP into `~/cosmic-atlas-catalogs`. |
+| `publish_catalogs.py` | Validates those CSVs, copies them to `data/` and writes `manifest.json` (`--push` commits and pushes). |
+| `build_overlays.py` | Renders the all-sky overlay images (CDS hips2fits + an IceCube excess map) into equirectangular JPEGs. |
+| `bootes_repro.py` | Unbinned point-source likelihood on IceCube's 10-year public tracks (`icecube_10year_ps`), DM line spectrum mass scan, RA-scrambled trials. |
+| `export_web.py` | Bundles fit, TS map, events and trials into `data/bootes_analysis.json`. |
 
-Open the HTML viewer. Import catalogs through its sidebar, then import `analysis_report.json` into the analysis panel. The JSON includes `schema: cosmic-atlas-analysis-v1`.
+The analysis scripts need `numpy`, `scipy` and `pillow`. The IceCube release is at <https://icecube.wisc.edu/data-releases/20210126_PS-IC40-IC86_VII.zip>.
 
-## Expected CSV fields
-- Neutrinos: `ra_deg,dec_deg,angular_error_deg`, optional `name,energy_gev`.
-- Targets: `name,ra_deg,dec_deg`.
-- Fermi: `name,ra_deg,dec_deg`.
-- Galaxy viewer: `name,ra_deg,dec_deg,distance_mpc` or `z`.
+## Caveats
 
-Convert public FITS files to CSV using astronomy libraries such as `astropy` before loading. The IceCube angular error proxy must be inspected for the specific release — do not blindly equate a field like `AngErr` with a calibrated 1-sigma Gaussian error. Real IceCube track event releases sometimes supply `log10(E/GeV)` rather than energy in GeV: map carefully and retain documentation.
-
-## Methods and caveats
-
-Each target score sums `exp(-0.5*(angular_separation/event_uncertainty)^2)` over events. This is **not** a calibrated astrophysical likelihood; it simply rewards events close to a target relative to reported uncertainty. Scrambles draw random right ascensions for events while preserving declination and uncertainty; this preserves an approximate declination-dependent event acceptance. The empirical local tail probability is `(1 + null_ge_observed)/(B+1)`; scan-adjusted probabilities compare standardized scores with the maximum across the *supplied* target list for each scramble. This corrects for the provided target scan, **not** unknown previous searches, a posteriori target choices, changes to event selection, time windows, or search radii. Sufficient scrambles and a scientifically appropriate detector exposure model are required for inferential use.
-
-The CSV crossmatch and rendered layers are exploratory. **Sky proximity cannot establish a source distance, a physical association, or dark matter.** A publishable IceCube point-source study requires official instrument-response functions, season-level effective area and livetime, energy-dependent signal/background PDFs, time dependence where relevant, documented event selections, detector systematics, and calibrated trials factors.
-
-Official sources: https://icecube.wisc.edu/science/data-releases/ ; https://data.desi.lbl.gov/public/dr1/ ; https://fermi.gsfc.nasa.gov/ssc/data/access/lat/14yr_catalog/
+Neutrino and gamma-ray positions are directions, not distances. The DM spectrum in `bootes_repro.py` is a pure νν̄ line; the paper (arXiv:2606.01853) adds the HDMSpectra electroweak continuum, so best-fit masses differ. A ~3σ excess is a hint, not a detection.
