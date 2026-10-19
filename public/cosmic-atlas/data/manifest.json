@@ -1,5 +1,21 @@
 {
   "version": 1,
-  "updated_at": null,
-  "catalogs": []
+  "updated_at": "2026-10-19T16:50:11.338550+00:00",
+  "catalogs": [
+    {
+      "kind": "gal",
+      "path": "galaxies.csv",
+      "rows": 41199
+    },
+    {
+      "kind": "nu",
+      "path": "neutrinos.csv",
+      "rows": 275
+    },
+    {
+      "kind": "fermi",
+      "path": "fermi.csv",
+      "rows": 7195
+    }
+  ]
 }
