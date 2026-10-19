@@ -12,6 +12,15 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: 'cosmic-atlas',
+    title: 'Cosmic Atlas',
+    description:
+      'Interactive 3D galaxy atlas with DESI, IceCube and Fermi CSV layers, neutrino direction crossmatching and exploratory background-significance analysis.',
+    githubUrl: 'https://github.com/brodheadw/brodheadw.github.io/tree/main/public/cosmic-atlas',
+    liveUrl: 'https://brodheadw.github.io/cosmic-atlas/',
+    tags: ['Astronomy', '3D', 'Neutrinos', 'Data Visualization'],
+  },
+  {
     id: 'crisp-portfolio',
     title: 'CRISP',
     description:
