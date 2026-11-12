@@ -1,0 +1,205 @@
+[
+ {
+  "name": "Milky Way (observer)",
+  "ra": 0,
+  "dec": 0,
+  "kpc": 0,
+  "type": "observer"
+ },
+ {
+  "name": "Boötes III",
+  "ra": 209.3,
+  "dec": 26.8,
+  "kpc": 46,
+  "type": "target"
+ },
+ {
+  "name": "Large Magellanic Cloud",
+  "ra": 80.89,
+  "dec": -69.76,
+  "kpc": 50,
+  "type": "major"
+ },
+ {
+  "name": "Small Magellanic Cloud",
+  "ra": 13.19,
+  "dec": -72.83,
+  "kpc": 62,
+  "type": "dwarf"
+ },
+ {
+  "name": "Sagittarius dSph",
+  "ra": 283.83,
+  "dec": -30.55,
+  "kpc": 26,
+  "type": "dwarf"
+ },
+ {
+  "name": "Draco dSph",
+  "ra": 260.05,
+  "dec": 57.92,
+  "kpc": 76,
+  "type": "dwarf"
+ },
+ {
+  "name": "Ursa Minor dSph",
+  "ra": 227.29,
+  "dec": 67.22,
+  "kpc": 76,
+  "type": "dwarf"
+ },
+ {
+  "name": "Sculptor dSph",
+  "ra": 15.04,
+  "dec": -33.71,
+  "kpc": 86,
+  "type": "dwarf"
+ },
+ {
+  "name": "Fornax dSph",
+  "ra": 39.99,
+  "dec": -34.45,
+  "kpc": 147,
+  "type": "dwarf"
+ },
+ {
+  "name": "Carina dSph",
+  "ra": 100.4,
+  "dec": -50.97,
+  "kpc": 105,
+  "type": "dwarf"
+ },
+ {
+  "name": "Sextans dSph",
+  "ra": 153.26,
+  "dec": -1.61,
+  "kpc": 86,
+  "type": "dwarf"
+ },
+ {
+  "name": "Leo I",
+  "ra": 152.12,
+  "dec": 12.31,
+  "kpc": 254,
+  "type": "dwarf"
+ },
+ {
+  "name": "Leo II",
+  "ra": 168.37,
+  "dec": 22.15,
+  "kpc": 233,
+  "type": "dwarf"
+ },
+ {
+  "name": "Phoenix dSph",
+  "ra": 27.78,
+  "dec": -44.44,
+  "kpc": 415,
+  "type": "dwarf"
+ },
+ {
+  "name": "NGC 6822",
+  "ra": 296.24,
+  "dec": -14.8,
+  "kpc": 500,
+  "type": "dwarf"
+ },
+ {
+  "name": "IC 1613",
+  "ra": 16.2,
+  "dec": 2.13,
+  "kpc": 730,
+  "type": "dwarf"
+ },
+ {
+  "name": "Andromeda (M31)",
+  "ra": 10.6847,
+  "dec": 41.269,
+  "kpc": 778,
+  "type": "major"
+ },
+ {
+  "name": "Triangulum (M33)",
+  "ra": 23.462,
+  "dec": 30.659,
+  "kpc": 840,
+  "type": "major"
+ },
+ {
+  "name": "M32",
+  "ra": 10.675,
+  "dec": 40.865,
+  "kpc": 805,
+  "type": "dwarf"
+ },
+ {
+  "name": "M110",
+  "ra": 10.092,
+  "dec": 41.685,
+  "kpc": 830,
+  "type": "dwarf"
+ },
+ {
+  "name": "WLM",
+  "ra": 0.492,
+  "dec": -15.46,
+  "kpc": 985,
+  "type": "dwarf"
+ },
+ {
+  "name": "Leo A",
+  "ra": 149.86,
+  "dec": 30.75,
+  "kpc": 800,
+  "type": "dwarf"
+ },
+ {
+  "name": "Tucana dSph",
+  "ra": 340.46,
+  "dec": -64.42,
+  "kpc": 880,
+  "type": "dwarf"
+ },
+ {
+  "name": "Aquarius Dwarf",
+  "ra": 311.72,
+  "dec": -12.85,
+  "kpc": 1070,
+  "type": "dwarf"
+ },
+ {
+  "name": "NGC 3109",
+  "ra": 150.78,
+  "dec": -26.16,
+  "kpc": 1300,
+  "type": "major"
+ },
+ {
+  "name": "Antlia Dwarf",
+  "ra": 150.07,
+  "dec": -27.33,
+  "kpc": 1320,
+  "type": "dwarf"
+ },
+ {
+  "name": "IC 10",
+  "ra": 5.073,
+  "dec": 59.3,
+  "kpc": 660,
+  "type": "dwarf"
+ },
+ {
+  "name": "Pegasus dIrr",
+  "ra": 352.15,
+  "dec": 14.74,
+  "kpc": 920,
+  "type": "dwarf"
+ },
+ {
+  "name": "Cetus dSph",
+  "ra": 6.55,
+  "dec": -11.04,
+  "kpc": 755,
+  "type": "dwarf"
+ }
+]

@@ -1,0 +1,210 @@
+[
+ {
+  "key": "lensing",
+  "file": "lensing.jpg",
+  "group": "Dark matter & structure",
+  "label": "Dark matter: Planck CMB lensing",
+  "note": "Planck lensing convergence: how much mass bends the CMB light on its way to us, summed along the line of sight. Most of that mass is dark matter. Orange = more mass than average, blue = less. Wiener-filtered and smoothed 1.5°, so only the large-scale pattern is real; grey is masked (Milky Way and point sources).",
+  "source": "built on the Mac Studio"
+ },
+ {
+  "key": "lss",
+  "file": "lss.jpg",
+  "group": "Dark matter & structure",
+  "label": "Galaxy density, nearby universe (2MRS)",
+  "note": "Where the ~41,000 galaxies of the 2MASS Redshift Survey sit, smoothed over 3°. Galaxies trace the dark-matter cosmic web out to ~400 Mpc. The empty band is the Milky Way blocking the view.",
+  "source": "built on the Mac Studio"
+ },
+ {
+  "key": "ebv",
+  "file": "ebv.jpg",
+  "group": "Dark matter & structure",
+  "label": "Dust reddening E(B−V) (SFD)",
+  "note": "Schlegel-Finkbeiner-Davis dust reddening: how much our own galaxy dims and reddens everything behind it. Bright = look through with care.",
+  "source": "ov-gso/P/EBV/SFD98"
+ },
+ {
+  "key": "cmb",
+  "file": "cmb.jpg",
+  "group": "Cosmic microwave background",
+  "label": "CMB temperature (Planck)",
+  "note": "Planck CMB temperature: the leftover glow of the Big Bang, 380,000 years after it. Red is slightly warmer, blue slightly colder (about ±0.0003 K).",
+  "source": "CDS/P/PLANCK/R3/CMB"
+ },
+ {
+  "key": "planck_lfi",
+  "file": "planck_lfi.jpg",
+  "group": "Cosmic microwave background",
+  "label": "Planck 30-70 GHz colour",
+  "note": "Planck low-frequency instrument, 30/44/70 GHz in colour: CMB fluctuations plus galactic synchrotron and free-free emission.",
+  "source": "CDS/P/PLANCK/R2/LFI/color"
+ },
+ {
+  "key": "planck_100",
+  "file": "planck_100.jpg",
+  "group": "Cosmic microwave background",
+  "label": "Planck 100 GHz",
+  "note": "Planck 100 GHz, near the CMB peak: the CMB pattern everywhere except the galactic plane.",
+  "source": "ESAVO/P/PLANCK/HFI-100-smooth"
+ },
+ {
+  "key": "gamma",
+  "file": "gamma.jpg",
+  "group": "Gamma rays",
+  "label": "Gamma-ray sky (Fermi-LAT colour)",
+  "note": "Fermi-LAT gamma rays. The bright band is our own galaxy; the dots are blazars and pulsars.",
+  "source": "CDS/P/Fermi/color"
+ },
+ {
+  "key": "gamma_hi",
+  "file": "gamma_hi.jpg",
+  "group": "Gamma rays",
+  "label": "Gamma rays 3-300 GeV (Fermi)",
+  "note": "Fermi-LAT 3-300 GeV, the highest-energy band: the galactic plane, the Fermi bubbles above and below the galactic centre, and blazars.",
+  "source": "ov-gso/P/Fermi/Band5"
+ },
+ {
+  "key": "gamma_lo",
+  "file": "gamma_lo.jpg",
+  "group": "Gamma rays",
+  "label": "Gamma rays 100-300 MeV (Fermi)",
+  "note": "Fermi-LAT 100-300 MeV: dominated by cosmic rays hitting interstellar gas.",
+  "source": "ov-gso/P/Fermi/Band2"
+ },
+ {
+  "key": "comptel",
+  "file": "comptel.jpg",
+  "group": "Gamma rays",
+  "label": "MeV gamma rays (COMPTEL)",
+  "note": "COMPTEL 0.8-30 MeV: the gap between X-rays and Fermi, dominated by the inner galaxy.",
+  "source": "ov-gso/P/COMPTEL"
+ },
+ {
+  "key": "icecube",
+  "file": "icecube.jpg",
+  "group": "Neutrinos",
+  "label": "IceCube 10-year excess",
+  "note": "IceCube 10-year tracks above ~3 TeV: places with more events than average for their declination, dark at 1σ to bright at 4σ. With no trials correction most bright spots are chance; that is the point of the reproduction.",
+  "source": "built on the Mac Studio"
+ },
+ {
+  "key": "xray_soft",
+  "file": "xray_soft.jpg",
+  "group": "X-rays",
+  "label": "X-ray sky (ROSAT)",
+  "note": "ROSAT all-sky survey, 0.1-2.4 keV: hot gas in our galaxy, supernova remnants, galaxy clusters and active galaxies.",
+  "source": "ov-gso/P/RASS"
+ },
+ {
+  "key": "xray_maxi",
+  "file": "xray_maxi.jpg",
+  "group": "X-rays",
+  "label": "X-ray sky 2-20 keV (MAXI)",
+  "note": "MAXI on the Space Station, 2-20 keV: X-ray binaries along the galactic plane and the brightest active galaxies.",
+  "source": "JAXA/P/MAXI/GSC/Image"
+ },
+ {
+  "key": "optical",
+  "file": "optical.jpg",
+  "group": "Visible light & stars",
+  "label": "Milky Way, visible light",
+  "note": "The Milky Way in visible light (Mellinger panorama). Dark lanes are dust blocking starlight.",
+  "source": "CDS/P/Mellinger/color"
+ },
+ {
+  "key": "gaia",
+  "file": "gaia.jpg",
+  "group": "Visible light & stars",
+  "label": "Gaia DR3 colour",
+  "note": "Gaia's 1.8 billion stars rendered by brightness and colour.",
+  "source": "ESAVO/P/GAIA/DR3-RGB"
+ },
+ {
+  "key": "dust",
+  "file": "dust.jpg",
+  "group": "Infrared & dust",
+  "label": "Galactic dust (Planck 857 GHz)",
+  "note": "Planck 857 GHz: cold dust in our galaxy glowing in far-infrared.",
+  "source": "ESAVO/P/PLANCK/HFI-857"
+ },
+ {
+  "key": "planck_hfi",
+  "file": "planck_hfi.jpg",
+  "group": "Infrared & dust",
+  "label": "Planck 353-857 GHz colour",
+  "note": "Planck high-frequency instrument in colour: cold dust filaments threading the galaxy.",
+  "source": "CDS/P/PLANCK/R2/HFI/color"
+ },
+ {
+  "key": "dust_pol",
+  "file": "dust_pol.jpg",
+  "group": "Infrared & dust",
+  "label": "Polarised dust (Planck)",
+  "note": "Polarised dust emission: dust grains line up with the galactic magnetic field.",
+  "source": "ESAVO/P/Planck-2015-Pol-Dust"
+ },
+ {
+  "key": "iris",
+  "file": "iris.jpg",
+  "group": "Infrared & dust",
+  "label": "Far infrared (IRAS)",
+  "note": "IRAS 12-100 μm, reprocessed (IRIS): warm dust, star-forming regions and the zodiacal glow of our solar system.",
+  "source": "CDS/P/IRIS/color"
+ },
+ {
+  "key": "akari",
+  "file": "akari.jpg",
+  "group": "Infrared & dust",
+  "label": "Far infrared (AKARI)",
+  "note": "AKARI 65-140 μm in colour: dust heated by young stars.",
+  "source": "ESAVO/P/AKARI/color"
+ },
+ {
+  "key": "hi",
+  "file": "hi.jpg",
+  "group": "Gas & radio",
+  "label": "Neutral hydrogen (HI4PI)",
+  "note": "HI4PI 21-cm survey: the column of neutral hydrogen gas. The Magellanic Stream trails below the plane.",
+  "source": "CDS/P/HI4PI/NHI"
+ },
+ {
+  "key": "hi_velocity",
+  "file": "hi_velocity.jpg",
+  "group": "Gas & radio",
+  "label": "Hydrogen by velocity (LAB)",
+  "note": "Leiden/Argentine/Bonn HI survey coloured by Doppler shift: gas moving towards (blue) and away (red).",
+  "source": "CAMRAS/P/LABHI/RGB"
+ },
+ {
+  "key": "halpha",
+  "file": "halpha.jpg",
+  "group": "Gas & radio",
+  "label": "Ionised hydrogen (H-alpha)",
+  "note": "H-alpha composite: gas ionised by hot young stars and supernova shocks.",
+  "source": "CDS/P/Finkbeiner"
+ },
+ {
+  "key": "wham",
+  "file": "wham.jpg",
+  "group": "Gas & radio",
+  "label": "Ionised hydrogen (WHAM)",
+  "note": "Wisconsin H-Alpha Mapper: the faint warm ionised gas that fills the galaxy, at 1° resolution.",
+  "source": "ov-gso/P/WHAM"
+ },
+ {
+  "key": "radio",
+  "file": "radio.jpg",
+  "group": "Gas & radio",
+  "label": "Radio 408 MHz (Haslam)",
+  "note": "Haslam 408 MHz: synchrotron from cosmic-ray electrons spiralling in the galactic magnetic field. The arc is the North Polar Spur.",
+  "source": "ESAVO/P/Haslam408"
+ },
+ {
+  "key": "synchrotron_pol",
+  "file": "synchrotron_pol.jpg",
+  "group": "Gas & radio",
+  "label": "Polarised synchrotron (Planck)",
+  "note": "Polarised synchrotron from Planck: traces the direction of the galactic magnetic field.",
+  "source": "ESAVO/P/Planck-2015-Pol-Synchrotron"
+ }
+]
