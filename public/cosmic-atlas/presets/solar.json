@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "workspace": "solar",
+  "view": "3d",
+  "ascii": false,
+  "guides": false,
+  "bodyScale": "visible",
+  "camera": {
+    "target": [
+      0,
+      0,
+      0
+    ],
+    "distance": 5e-11,
+    "yaw": 0.56,
+    "pitch": 0.26,
+    "mode": "orbit",
+    "log": false
+  },
+  "layers": {
+    "curated": {
+      "visible": false,
+      "opacity": 1,
+      "filters": {
+        "mpcMax": 3
+      }
+    },
+    "galaxies": {
+      "visible": false,
+      "opacity": 0.8,
+      "filters": {
+        "mpcMax": 3
+      }
+    },
+    "neutrinos": {
+      "visible": false,
+      "opacity": 0.85,
+      "filters": {}
+    },
+    "fermi": {
+      "visible": false,
+      "opacity": 0.8,
+      "filters": {}
+    },
+    "sky.icecube": {
+      "visible": false,
+      "opacity": 0.5,
+      "filters": {}
+    },
+    "solar": {
+      "visible": true,
+      "opacity": 1,
+      "filters": {}
+    },
+    "sky.optical": {
+      "visible": true,
+      "opacity": 0.55,
+      "filters": {}
+    }
+  },
+  "selection": {
+    "layer": "solar",
+    "id": "earth"
+  },
+  "focusLayer": null,
+  "clock": {
+    "utc": null,
+    "rate": 1,
+    "paused": false
+  },
+  "observer": {
+    "lat": 40,
+    "lon": -74,
+    "height": 0
+  },
+  "experiments": [],
+  "panels": {}
+}
