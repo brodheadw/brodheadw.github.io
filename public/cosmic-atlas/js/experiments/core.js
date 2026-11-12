@@ -8,11 +8,11 @@ export const EXPERIMENT_CAVEATS = [
   'Monte Carlo p-values use the plus-one correction; significance cannot exceed the finite scramble resolution.',
 ]
 function finite(value, name) { if (!Number.isFinite(value)) throw Error(`${name} must be finite`); return value }
-function rows(input, name) {
+export function experimentRows(input, name) {
   if (Array.isArray(input)) return input.map((row, id) => ({ ...row, id: row.id ?? id }))
   if (!input?.columns?.ra || !input.columns.dec || !Number.isInteger(input.length)) throw Error(`${name} must be rows or a columnar table`)
   const indices = input.indices || Array.from({ length: input.length }, (_, index) => index)
-  return Array.from(indices, id => ({ id, ra: input.columns.ra[id], dec: input.columns.dec[id], err: input.columns.err?.[id], name: input.strings?.name?.[id] || `${name} ${id + 1}` }))
+  return Array.from(indices, id => ({ id, ra: input.columns.ra[id], dec: input.columns.dec[id], err: input.columns.err?.[id], energy: input.columns.energy?.[id], name: input.strings?.name?.[id] || `${name} ${id + 1}` }))
 }
 export function seededRandom(seed = 1) {
   let value = Number(seed) >>> 0
@@ -23,8 +23,8 @@ export function ringProbability(targetDec, eventDec, radius) {
   if (radius >= 180) return 1
   const a = targetDec * DEG, b = eventDec * DEG, divisor = Math.cos(a) * Math.cos(b)
   if (Math.abs(divisor) < 1e-14) return separation(0, targetDec, 0, eventDec) <= radius ? 1 : 0
-  const threshold = (Math.cos(radius * DEG) - Math.sin(a) * Math.sin(b)) / divisor
-  return threshold <= -1 ? 1 : threshold >= 1 ? 0 : Math.acos(threshold) / Math.PI
+  const fraction = (Math.sin(radius * DEG / 2) ** 2 - Math.sin((a - b) / 2) ** 2) / divisor
+  return fraction <= 0 ? 0 : fraction >= 1 ? 1 : 2 * Math.asin(Math.sqrt(fraction)) / Math.PI
 }
 /** Acklam inverse-normal approximation; endpoints deliberately handled by the caller. */
 function inverseNormal(p) {
@@ -56,7 +56,7 @@ function poissonTail(observed, expected) {
   return Math.max(0, Math.min(1, 1 - cdf))
 }
 export function runExperimentCore(input, onProgress = () => {}) {
-  const targets = rows(input.targets, 'targets'), events = rows(input.events, 'events')
+  const targets = experimentRows(input.targets, 'targets'), events = experimentRows(input.events, 'events')
   if (!targets.length || !events.length) throw Error('Choose at least one target and one event')
   if (targets.length > 1000 || events.length > 1_000_000) throw Error('Experiment exceeds the supported input size')
   for (const row of [...targets, ...events]) {
