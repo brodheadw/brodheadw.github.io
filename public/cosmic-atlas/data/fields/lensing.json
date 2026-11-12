@@ -1,0 +1,42 @@
+{
+  "schema": 1,
+  "format": "cosmic-atlas-scalar-grid-v1",
+  "width": 360,
+  "height": 180,
+  "file": "data/fields/lensing.bin",
+  "maskFile": "data/fields/lensing.mask.bin",
+  "dtype": "float32",
+  "byteOrder": "little",
+  "units": "dimensionless convergence",
+  "sha256": "d221dff6f60dac3a2873369799901c86d99caa8569ff255be2bae96be2fc5aac",
+  "maskSha256": "deaad776067d4bde0eef3afa27a8231db66027ce5c76947374d47d45e7f135d7",
+  "version": "d3fa6e28c29beda2",
+  "updated_at": "2014-11-11T14:42:51+00:00",
+  "frame": "ICRS",
+  "grid": {
+    "ra": "360 - (x + 0.5) / width * 360",
+    "dec": "90 - (y + 0.5) / height * 180"
+  },
+  "processing": "Planck 2015 R2 MV lensing κ alm, C_L/(C_L+N_L) Wiener filter, L<8 removed, Gaussian FWHM 1.5 deg; nside=256 then sampled at 1 deg pixel centres. Mask threshold >0.5. Projected convergence, not a 3D dark-matter reconstruction.",
+  "source": {
+    "citation": {
+      "title": "Planck 2015 lensing release, MV convergence reconstruction",
+      "url": "https://pla.esac.esa.int/#cosmology"
+    },
+    "files": [
+      {
+        "file": "dat_klm.fits",
+        "sha256": "46a48ebc3ef3d359be6a1d2acb783532fd81561e6d8d922b29b7077b82fa874c"
+      },
+      {
+        "file": "nlkk.dat",
+        "sha256": "1faa4899e9bae4d6d8e07e3f00aa2bf662e74fde6fafc47b20e130a6fd290f75"
+      },
+      {
+        "file": "mask.fits.gz",
+        "sha256": "0b423846ae58cab5089e2ec7c922e776790fdfcab6b7c2306b1b7ab98689c9e5"
+      }
+    ]
+  },
+  "license": "TODO: redistribution license not verified; consult the original data provider."
+}

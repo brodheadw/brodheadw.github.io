@@ -1,0 +1,837 @@
+{
+  "schema": 1,
+  "updated_at": "2026-11-12T17:36:36.213191+00:00",
+  "layers": [
+    {
+      "id": "curated",
+      "title": "Local Group & Boötes III",
+      "kind": "points3d",
+      "category": "Catalogs",
+      "module": "catalog",
+      "files": {
+        "binary": "data/curated.bin",
+        "header": "data/curated.header.json",
+        "json": "data/curated.json"
+      },
+      "schema": "cosmic-atlas-columnar-v1",
+      "citation": {
+        "title": "Hand-maintained Local Group landmarks",
+        "url": "https://simbad.cds.unistra.fr/simbad/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:10:15+00:00",
+      "version": "ea5657fb01da4390",
+      "style": {
+        "color": "#e9adff",
+        "size": 4
+      },
+      "filters": [
+        {
+          "field": "mpc",
+          "type": "range",
+          "unit": "Mpc"
+        },
+        {
+          "field": "name",
+          "type": "text"
+        }
+      ],
+      "note": "Approximate hand-maintained distances; method and uncertainty not supplied. Boötes III is a disrupting stellar system / dwarf-galaxy candidate with debated classification.",
+      "rows": 29
+    },
+    {
+      "id": "galaxies",
+      "title": "UNGC + 2MRS galaxies",
+      "kind": "points3d",
+      "category": "Catalogs",
+      "module": "catalog",
+      "files": {
+        "binary": "data/galaxies.bin",
+        "header": "data/galaxies.header.json",
+        "csv": "data/galaxies.csv"
+      },
+      "schema": "cosmic-atlas-columnar-v1",
+      "citation": {
+        "title": "Karachentsev et al. (2013), UNGC; Huchra et al. (2012), 2MRS; VizieR J/AJ/145/101 and J/ApJS/199/26",
+        "url": "https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJS/199/26"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-10-19T16:50:09.733847+00:00",
+      "version": "1f92e25e6f253447",
+      "style": {
+        "color": "#65baff",
+        "size": 2
+      },
+      "filters": [
+        {
+          "field": "mpc",
+          "type": "range",
+          "unit": "Mpc"
+        },
+        {
+          "field": "name",
+          "type": "text"
+        }
+      ],
+      "note": "UNGC measured distances and 2MRS redshift-derived comoving distances. Flat ΛCDM H0=70 km/s/Mpc, Ωm=0.3. Per-object uncertainties/methods were not included in the normalized upstream CSV; TODO: enrich from the source catalog without inventing values.",
+      "rows": 41199
+    },
+    {
+      "id": "neutrinos",
+      "title": "IceCube alerts (IceCat-1)",
+      "kind": "directions",
+      "category": "Catalogs",
+      "module": "directions",
+      "files": {
+        "binary": "data/neutrinos.bin",
+        "header": "data/neutrinos.header.json",
+        "csv": "data/neutrinos.csv",
+        "acceptance": "data/icecube-acceptance.json",
+        "targets": "data/targets.json",
+        "reproduction": "data/bootes_analysis.json"
+      },
+      "schema": "cosmic-atlas-columnar-v1",
+      "citation": {
+        "title": "Abbasi et al. (2023), IceCat-1; VizieR J/ApJS/269/25",
+        "url": "https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJS/269/25"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-10-19T16:50:10.251578+00:00",
+      "version": "8f1ba50123f3fb08",
+      "style": {
+        "color": "#6ef2bd",
+        "size": 4
+      },
+      "filters": [
+        {
+          "field": "energy",
+          "type": "range",
+          "unit": "GeV"
+        },
+        {
+          "field": "err",
+          "type": "range",
+          "unit": "deg"
+        },
+        {
+          "field": "name",
+          "type": "text"
+        }
+      ],
+      "note": "Directions only: no source distance. The displayed error radius is the mean of available asymmetric 90% coordinate bounds, not a calibrated circular containment region. Energy is a reconstructed proxy.",
+      "rows": 275
+    },
+    {
+      "id": "fermi",
+      "title": "Fermi-LAT 4FGL-DR4 sources",
+      "kind": "directions",
+      "category": "Catalogs",
+      "module": "directions",
+      "files": {
+        "binary": "data/fermi.bin",
+        "header": "data/fermi.header.json",
+        "csv": "data/fermi.csv"
+      },
+      "schema": "cosmic-atlas-columnar-v1",
+      "citation": {
+        "title": "Fermi-LAT Fourth Source Catalog, Data Release 4; VizieR IX/72",
+        "url": "https://cdsarc.cds.unistra.fr/viz-bin/cat/IX/72"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-10-19T16:50:11.238722+00:00",
+      "version": "b37c10b7a242d56e",
+      "style": {
+        "color": "#ff788d",
+        "size": 2
+      },
+      "filters": [
+        {
+          "field": "cls",
+          "type": "category"
+        },
+        {
+          "field": "name",
+          "type": "text"
+        }
+      ],
+      "note": "Directions only: catalog positions do not imply a measured distance. Source class and counterpart association are catalog classifications.",
+      "rows": 7195
+    },
+    {
+      "id": "sky.lensing",
+      "title": "Dark matter: Planck CMB lensing",
+      "kind": "skymap",
+      "category": "Dark matter & structure",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/lensing.jpg",
+        "field": "data/fields/lensing.json"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "Planck 2015 R2 CMB lensing convergence",
+        "url": "https://pla.esac.esa.int/#cosmology"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:17:21+00:00",
+      "version": "c9b2b7c158f79bb4",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Planck lensing convergence: how much mass bends the CMB light on its way to us, summed along the line of sight. Most of that mass is dark matter. Orange = more mass than average, blue = less. Wiener-filtered and smoothed 1.5°, so only the large-scale pattern is real; grey is masked (Milky Way and point sources). Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.lss",
+      "title": "Galaxy density, nearby universe (2MRS)",
+      "kind": "skymap",
+      "category": "Dark matter & structure",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/lss.jpg",
+        "field": "data/fields/density.json"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "Karachentsev et al. (2013), UNGC; Huchra et al. (2012), 2MRS; VizieR J/AJ/145/101 and J/ApJS/199/26",
+        "url": "https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJS/199/26"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:17:21+00:00",
+      "version": "9f07f0c40bde4a84",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Where the ~41,000 galaxies of the 2MASS Redshift Survey sit, smoothed over 3°. Galaxies trace the dark-matter cosmic web out to ~400 Mpc. The empty band is the Milky Way blocking the view. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.ebv",
+      "title": "Dust reddening E(B−V) (SFD)",
+      "kind": "skymap",
+      "category": "Dark matter & structure",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/ebv.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ov-gso/P/EBV/SFD98",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:17:25+00:00",
+      "version": "5902341eeae86b93",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Schlegel-Finkbeiner-Davis dust reddening: how much our own galaxy dims and reddens everything behind it. Bright = look through with care. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.cmb",
+      "title": "CMB temperature (Planck)",
+      "kind": "skymap",
+      "category": "Cosmic microwave background",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/cmb.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "CDS/P/PLANCK/R3/CMB",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-10-19T19:51:11+00:00",
+      "version": "549ae4163bcc3893",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Planck CMB temperature: the leftover glow of the Big Bang, 380,000 years after it. Red is slightly warmer, blue slightly colder (about ±0.0003 K). Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.planck_lfi",
+      "title": "Planck 30-70 GHz colour",
+      "kind": "skymap",
+      "category": "Cosmic microwave background",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/planck_lfi.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "CDS/P/PLANCK/R2/LFI/color",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:31:25+00:00",
+      "version": "f7ec55a220c98452",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Planck low-frequency instrument, 30/44/70 GHz in colour: CMB fluctuations plus galactic synchrotron and free-free emission. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.planck_100",
+      "title": "Planck 100 GHz",
+      "kind": "skymap",
+      "category": "Cosmic microwave background",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/planck_100.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ESAVO/P/PLANCK/HFI-100-smooth",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:22:05+00:00",
+      "version": "50b7823e61b60e5f",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Planck 100 GHz, near the CMB peak: the CMB pattern everywhere except the galactic plane. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.gamma",
+      "title": "Gamma-ray sky (Fermi-LAT colour)",
+      "kind": "skymap",
+      "category": "Gamma rays",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/gamma.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "CDS/P/Fermi/color",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:31:30+00:00",
+      "version": "24097ad3252ab2e7",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Fermi-LAT gamma rays. The bright band is our own galaxy; the dots are blazars and pulsars. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.gamma_hi",
+      "title": "Gamma rays 3-300 GeV (Fermi)",
+      "kind": "skymap",
+      "category": "Gamma rays",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/gamma_hi.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ov-gso/P/Fermi/Band5",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:22:10+00:00",
+      "version": "b4226ed3755795ad",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Fermi-LAT 3-300 GeV, the highest-energy band: the galactic plane, the Fermi bubbles above and below the galactic centre, and blazars. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.gamma_lo",
+      "title": "Gamma rays 100-300 MeV (Fermi)",
+      "kind": "skymap",
+      "category": "Gamma rays",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/gamma_lo.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ov-gso/P/Fermi/Band2",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:22:13+00:00",
+      "version": "65aadb5e5e68b78e",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Fermi-LAT 100-300 MeV: dominated by cosmic rays hitting interstellar gas. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.comptel",
+      "title": "MeV gamma rays (COMPTEL)",
+      "kind": "skymap",
+      "category": "Gamma rays",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/comptel.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ov-gso/P/COMPTEL",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:22:14+00:00",
+      "version": "2c3581e1dfb18fe0",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "COMPTEL 0.8-30 MeV: the gap between X-rays and Fermi, dominated by the inner galaxy. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.icecube",
+      "title": "IceCube 10-year excess",
+      "kind": "skymap",
+      "category": "Neutrinos",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/icecube.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "IceCube public point-source tracks, 2008–2018",
+        "url": "https://icecube.wisc.edu/data-releases/2021/01/all-sky-point-source-icecube-data-years-2008-2018/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:23:55+00:00",
+      "version": "11e8524396121ce1",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "IceCube 10-year tracks above ~3 TeV: places with more events than average for their declination, dark at 1σ to bright at 4σ. With no trials correction most bright spots are chance; that is the point of the reproduction. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.xray_soft",
+      "title": "X-ray sky (ROSAT)",
+      "kind": "skymap",
+      "category": "X-rays",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/xray_soft.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ov-gso/P/RASS",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:23:59+00:00",
+      "version": "7a6f94944c39c664",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "ROSAT all-sky survey, 0.1-2.4 keV: hot gas in our galaxy, supernova remnants, galaxy clusters and active galaxies. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.xray_maxi",
+      "title": "X-ray sky 2-20 keV (MAXI)",
+      "kind": "skymap",
+      "category": "X-rays",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/xray_maxi.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "JAXA/P/MAXI/GSC/Image",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:31:37+00:00",
+      "version": "c1d649f4e20757be",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "MAXI on the Space Station, 2-20 keV: X-ray binaries along the galactic plane and the brightest active galaxies. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.optical",
+      "title": "Milky Way, visible light",
+      "kind": "skymap",
+      "category": "Visible light & stars",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/optical.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "CDS/P/Mellinger/color",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-10-19T19:51:28+00:00",
+      "version": "f68bf1af0cd64152",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "The Milky Way in visible light (Mellinger panorama). Dark lanes are dust blocking starlight. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.gaia",
+      "title": "Gaia DR3 colour",
+      "kind": "skymap",
+      "category": "Visible light & stars",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/gaia.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ESAVO/P/GAIA/DR3-RGB",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:31:53+00:00",
+      "version": "5fc6c0a60ff1f0f1",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Gaia's 1.8 billion stars rendered by brightness and colour. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.dust",
+      "title": "Galactic dust (Planck 857 GHz)",
+      "kind": "skymap",
+      "category": "Infrared & dust",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/dust.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ESAVO/P/PLANCK/HFI-857",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:28:54+00:00",
+      "version": "f9d6967e9a280624",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Planck 857 GHz: cold dust in our galaxy glowing in far-infrared. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.planck_hfi",
+      "title": "Planck 353-857 GHz colour",
+      "kind": "skymap",
+      "category": "Infrared & dust",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/planck_hfi.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "CDS/P/PLANCK/R2/HFI/color",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:31:55+00:00",
+      "version": "eb9186bf66d80421",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Planck high-frequency instrument in colour: cold dust filaments threading the galaxy. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.dust_pol",
+      "title": "Polarised dust (Planck)",
+      "kind": "skymap",
+      "category": "Infrared & dust",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/dust_pol.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ESAVO/P/Planck-2015-Pol-Dust",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:28:59+00:00",
+      "version": "4e99aae841bfaad0",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Polarised dust emission: dust grains line up with the galactic magnetic field. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.iris",
+      "title": "Far infrared (IRAS)",
+      "kind": "skymap",
+      "category": "Infrared & dust",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/iris.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "CDS/P/IRIS/color",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:31:57+00:00",
+      "version": "5b716f2967dbc9f0",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "IRAS 12-100 μm, reprocessed (IRIS): warm dust, star-forming regions and the zodiacal glow of our solar system. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.akari",
+      "title": "Far infrared (AKARI)",
+      "kind": "skymap",
+      "category": "Infrared & dust",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/akari.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ESAVO/P/AKARI/color",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:31:59+00:00",
+      "version": "2717296d04d877c7",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "AKARI 65-140 μm in colour: dust heated by young stars. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.hi",
+      "title": "Neutral hydrogen (HI4PI)",
+      "kind": "skymap",
+      "category": "Gas & radio",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/hi.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "CDS/P/HI4PI/NHI",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:29:10+00:00",
+      "version": "1de9e58b7634d975",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "HI4PI 21-cm survey: the column of neutral hydrogen gas. The Magellanic Stream trails below the plane. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.hi_velocity",
+      "title": "Hydrogen by velocity (LAB)",
+      "kind": "skymap",
+      "category": "Gas & radio",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/hi_velocity.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "CAMRAS/P/LABHI/RGB",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:32:04+00:00",
+      "version": "ba8380c99e93c164",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Leiden/Argentine/Bonn HI survey coloured by Doppler shift: gas moving towards (blue) and away (red). Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.halpha",
+      "title": "Ionised hydrogen (H-alpha)",
+      "kind": "skymap",
+      "category": "Gas & radio",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/halpha.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "CDS/P/Finkbeiner",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:29:13+00:00",
+      "version": "5e28266b25815a13",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "H-alpha composite: gas ionised by hot young stars and supernova shocks. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.wham",
+      "title": "Ionised hydrogen (WHAM)",
+      "kind": "skymap",
+      "category": "Gas & radio",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/wham.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ov-gso/P/WHAM",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:29:15+00:00",
+      "version": "af55c7ea260a7c4b",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Wisconsin H-Alpha Mapper: the faint warm ionised gas that fills the galaxy, at 1° resolution. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.radio",
+      "title": "Radio 408 MHz (Haslam)",
+      "kind": "skymap",
+      "category": "Gas & radio",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/radio.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ESAVO/P/Haslam408",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:30:49+00:00",
+      "version": "e32a26a83d895449",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Haslam 408 MHz: synchrotron from cosmic-ray electrons spiralling in the galactic magnetic field. The arc is the North Polar Spur. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "sky.synchrotron_pol",
+      "title": "Polarised synchrotron (Planck)",
+      "kind": "skymap",
+      "category": "Gas & radio",
+      "module": "skymap",
+      "files": {
+        "texture": "data/overlays/synchrotron_pol.jpg"
+      },
+      "schema": "equirectangular-icrs-ra-left-v1",
+      "citation": {
+        "title": "ESAVO/P/Planck-2015-Pol-Synchrotron",
+        "url": "https://aladin.cds.unistra.fr/hips/"
+      },
+      "license": "TODO: redistribution license not verified; consult the original data provider.",
+      "updated_at": "2026-11-12T16:30:53+00:00",
+      "version": "3593957ee2de32ab",
+      "style": {
+        "color": "#84d9e8",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Polarised synchrotron from Planck: traces the direction of the galactic magnetic field. Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg."
+    },
+    {
+      "id": "solar",
+      "title": "Solar System",
+      "kind": "points3d",
+      "category": "Solar System",
+      "module": "solar",
+      "files": {
+        "textures": "data/textures/sources.json",
+        "earthDay": "data/textures/earth-day.jpg",
+        "earthNight": "data/textures/earth-night.jpg"
+      },
+      "schema": "astronomy-engine-body-v1",
+      "version": "astronomy-engine@2.1.19",
+      "citation": {
+        "title": "Astronomy Engine, Don Cross",
+        "url": "https://github.com/cosinekitty/astronomy"
+      },
+      "license": "MIT (Astronomy Engine)",
+      "updated_at": "2026-11-12T17:28:03.411284+00:00",
+      "style": {
+        "color": "#ffcb6c",
+        "size": 5
+      },
+      "filters": [],
+      "note": "Computed at the shared UTC clock by the pinned Astronomy Engine ephemeris library; see Solar System panel for model limits. Earth display uses NASA Blue Marble (August 2004) and Black Marble (2016) historical composites; NASA credit/reuse terms are recorded in data/textures/sources.json."
+    },
+    {
+      "id": "satellites",
+      "title": "Publicly catalogued Earth satellites",
+      "kind": "points3d",
+      "category": "Solar System",
+      "module": "satellites",
+      "files": {
+        "status": "data/satellites/status.json"
+      },
+      "schema": "celestrak-omm-json",
+      "citation": {
+        "title": "CelesTrak public general perturbations and SATCAT",
+        "url": "https://celestrak.org/"
+      },
+      "license": "CelesTrak usage policy; reuse license not stated (TODO: verify)",
+      "updated_at": "2026-11-12T17:36:36.213191+00:00",
+      "available": false,
+      "style": {
+        "color": "#84d9e8",
+        "size": 2
+      },
+      "filters": [],
+      "note": "SGP4 predictions from public element sets, not live telemetry. Element age and catalog completeness are shown in the satellite panel."
+    }
+  ]
+}

@@ -9,11 +9,11 @@ three are built here: Planck CMB lensing (projected mass, mostly dark matter), n
 Usage: ~/cosmic-atlas-catalogs/.venv/bin/python build_overlays.py [out_dir] [--only key,key]
 Needs numpy, pillow, healpy, matplotlib. A survey that cannot be fetched keeps its previous image, if any.
 """
-import io, json, pathlib, sys, urllib.parse, urllib.request
+import datetime, io, json, os, pathlib, sys, urllib.parse, urllib.request
 import numpy as np
 from PIL import Image
 
-CAT = pathlib.Path.home() / 'cosmic-atlas-catalogs'
+CAT = pathlib.Path(os.getenv('ATLAS_SOURCE_DIR', str(pathlib.Path.home() / 'cosmic-atlas-catalogs')))
 args = [a for a in sys.argv[1:] if not a.startswith('--')]
 OUT = pathlib.Path(args[0]) if args else CAT / 'overlays'
 ONLY = next((a.split('=', 1)[1].split(',') for a in sys.argv[1:] if a.startswith('--only=')), None)
@@ -99,7 +99,9 @@ def grid(w, h):
 
 
 def save(name, rgb):
-    Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8)).resize((W, H), Image.BILINEAR).save(OUT / f'{name}.jpg', quality=85)
+    tmp = OUT / f'{name}.tmp.jpg'
+    Image.fromarray(np.clip(rgb, 0, 255).astype(np.uint8)).resize((W, H), Image.BILINEAR).save(tmp, quality=85)
+    tmp.replace(OUT / f'{name}.jpg')
 
 
 def colormap(t, stops):
@@ -113,7 +115,7 @@ MOCSERVER = 'https://alasky.cds.unistra.fr/MocServer/query'
 
 
 def get(url, timeout=45):
-    with urllib.request.urlopen(url, timeout=timeout) as r:
+    with urllib.request.urlopen(url, timeout=float(os.getenv('ATLAS_HTTP_TIMEOUT', timeout))) as r:
         return r.read()
 
 
@@ -130,6 +132,8 @@ def allsky_to_healpix(img, order=3):
     n = 12 * 4 ** order
     ncol = int(np.sqrt(n))
     w = img.shape[1] // ncol
+    if not w or w & (w - 1) or img.shape[1] != ncol * w or img.shape[0] < int(np.ceil(n / ncol)) * w:
+        raise ValueError(f'HiPS Allsky dimensions do not match order {order}: {img.shape}')
     y, x = np.mgrid[0:w, 0:w]
     z = (interleave(y) | (interleave(x) << 1)).ravel()
     m = np.zeros((n * w * w,) + img.shape[2:], float)
@@ -253,15 +257,18 @@ BUILT = {'lensing': lensing, 'lss': lss, 'icecube': icecube}
 
 if __name__ == '__main__':
     OUT.mkdir(parents=True, exist_ok=True)
-    manifest = []
+    manifest, status = [], []
     for key, group, label, hips_id, style, note in SURVEYS:
         if not ONLY or key in ONLY:
             try:
                 BUILT[key]() if hips_id is None else hips(key, hips_id, style)
                 print('ok', key)
+                status.append(dict(key=key, status='ok'))
             except Exception as e:  # one unavailable survey should not sink the rest
                 print('FAILED', key, e)
+                status.append(dict(key=key, status='failed', error=str(e), cached=(OUT / f'{key}.jpg').exists()))
         if (OUT / f'{key}.jpg').exists():
             manifest.append(dict(key=key, file=f'{key}.jpg', group=group, label=label, note=note, source=hips_id or 'built on the Mac Studio'))
     (OUT / 'overlays.json').write_text(json.dumps(manifest, indent=1, ensure_ascii=False))
+    (OUT / 'overlay-status.json').write_text(json.dumps(dict(schema=1, updated_at=datetime.datetime.now(datetime.timezone.utc).isoformat(), surveys=status), indent=2) + '\n')
     print(len(manifest), 'overlays in manifest')

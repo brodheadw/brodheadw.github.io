@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "format": "cosmic-atlas-scalar-grid-v1",
+  "width": 360,
+  "height": 180,
+  "file": "data/fields/density.bin",
+  "maskFile": "data/fields/density.mask.bin",
+  "dtype": "float32",
+  "byteOrder": "little",
+  "units": "galaxies per HEALPix nside=128 pixel",
+  "sha256": "2a118b596659c62ef2d59277c9ea5f60aab717b74cc0c94bbce5508c2a274b12",
+  "maskSha256": "e3cbcd396c973ac84c026903f44258f73d35aa6abc862b066810504ba4774df8",
+  "version": "563f8822c64e6833",
+  "updated_at": "2026-10-19T16:50:09.733847+00:00",
+  "frame": "ICRS",
+  "grid": {
+    "ra": "360 - (x + 0.5) / width * 360",
+    "dec": "90 - (y + 0.5) / height * 180"
+  },
+  "processing": "Unweighted angular counts of normalized UNGC+2MRS galaxies, nside=128 RING, Gaussian FWHM 3 deg, sampled at 1 deg pixel centres; tiny negative harmonic ringing clipped to zero. Not corrected for distance selection or Galactic-plane incompleteness. All pixels retained; use Planck mask for joint statistics.",
+  "source": {
+    "citation": {
+      "title": "Karachentsev et al. (2013), UNGC; Huchra et al. (2012), 2MRS; VizieR J/AJ/145/101 and J/ApJS/199/26",
+      "url": "https://cdsarc.cds.unistra.fr/viz-bin/cat/J/ApJS/199/26"
+    },
+    "files": [
+      {
+        "file": "galaxies.csv",
+        "sha256": "1f92e25e6f253447b80d7d4b98ab7164a529bdf7c014180ce7822596c49d6132"
+      }
+    ]
+  },
+  "license": "TODO: redistribution license not verified; consult the original data provider."
+}

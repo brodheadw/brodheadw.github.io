@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "updated_at": "2026-11-12T17:31:02.018410+00:00",
+  "surveys": [
+    {
+      "key": "cmb",
+      "status": "failed",
+      "error": "https://alasky.cds.unistra.fr/PLANCK/R3/CMB-smica-R3 jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/PLANCK/R3/CMB-smica-R3 png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/PLANCK/R3/CMB-smica-R3 jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/PLANCK/R3/CMB-smica-R3 png: <urlopen error timed out>",
+      "cached": true
+    },
+    {
+      "key": "cmb_act",
+      "status": "failed",
+      "error": "https://alasky.cds.unistra.fr/ACT/DR4DR6/color_CMB jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/ACT/DR4DR6/color_CMB png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/ACT/DR4DR6/color_CMB jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/ACT/DR4DR6/color_CMB png: <urlopen error timed out>",
+      "cached": false
+    },
+    {
+      "key": "wmap",
+      "status": "failed",
+      "error": "https://alasky.cds.unistra.fr/WMAP9yr/WMAPW9yr jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/WMAP9yr/WMAPW9yr png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/WMAP9yr/WMAPW9yr jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/WMAP9yr/WMAPW9yr png: <urlopen error timed out>",
+      "cached": false
+    },
+    {
+      "key": "egret",
+      "status": "failed",
+      "error": "https://alasky.cds.unistra.fr/EGRET/EGRET-sup100 jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/EGRET/EGRET-sup100 png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/EGRET/EGRET-sup100 jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/EGRET/EGRET-sup100 png: <urlopen error timed out>",
+      "cached": false
+    },
+    {
+      "key": "euv",
+      "status": "failed",
+      "error": "https://alasky.cds.unistra.fr/ROSATWFC-new/ROSAT-WFC-color jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/ROSATWFC-new/ROSAT-WFC-color png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/ROSATWFC-new/ROSAT-WFC-color jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/ROSATWFC-new/ROSAT-WFC-color png: <urlopen error timed out>",
+      "cached": false
+    },
+    {
+      "key": "gaia_density",
+      "status": "failed",
+      "error": "https://alasky.cds.unistra.fr/ancillary/GaiaDR3/density-map jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/ancillary/GaiaDR3/density-map png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/ancillary/GaiaDR3/density-map jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/ancillary/GaiaDR3/density-map png: <urlopen error timed out>",
+      "cached": false
+    },
+    {
+      "key": "co",
+      "status": "failed",
+      "error": "https://alasky.cds.unistra.fr/CO-maps/CDS_P_CO-Dame-2022 jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/CO-maps/CDS_P_CO-Dame-2022 png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/CO-maps/CDS_P_CO-Dame-2022 jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/CO-maps/CDS_P_CO-Dame-2022 png: <urlopen error timed out>",
+      "cached": false
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "updated_at": "2026-11-12T17:36:36.213191+00:00",
+  "status": "partial",
+  "catalogs": [
+    {
+      "id": "curated",
+      "rows": 29,
+      "version": "ea5657fb01da4390",
+      "sha256": "5e60c3e622901c9be06a017c2a1c8acdbd4102aaf584575e0cfd2225b93cf6f4"
+    },
+    {
+      "id": "galaxies",
+      "rows": 41199,
+      "version": "1f92e25e6f253447",
+      "sha256": "b611f05a5abb4516980db4230ac6c64b925e8ec86cc2816cf79fc0bbca8cce08"
+    },
+    {
+      "id": "neutrinos",
+      "rows": 275,
+      "version": "8f1ba50123f3fb08",
+      "sha256": "345779743498ae0c208b05f242b8cde05f2ee8757e72f5cf245d678a2e4b63da"
+    },
+    {
+      "id": "fermi",
+      "rows": 7195,
+      "version": "b37c10b7a242d56e",
+      "sha256": "edd076a9d59f10eda2376efcebc92b1e35b81b84c299cb33e08a35a2afef4edc"
+    }
+  ],
+  "overlays": {
+    "available": 26,
+    "missing": [
+      "cmb_act",
+      "wmap",
+      "egret",
+      "euv",
+      "gaia_density",
+      "co"
+    ],
+    "last_attempt": {
+      "schema": 1,
+      "updated_at": "2026-11-12T17:31:02.018410+00:00",
+      "surveys": [
+        {
+          "key": "cmb",
+          "status": "failed",
+          "error": "https://alasky.cds.unistra.fr/PLANCK/R3/CMB-smica-R3 jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/PLANCK/R3/CMB-smica-R3 png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/PLANCK/R3/CMB-smica-R3 jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/PLANCK/R3/CMB-smica-R3 png: <urlopen error timed out>",
+          "cached": true
+        },
+        {
+          "key": "cmb_act",
+          "status": "failed",
+          "error": "https://alasky.cds.unistra.fr/ACT/DR4DR6/color_CMB jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/ACT/DR4DR6/color_CMB png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/ACT/DR4DR6/color_CMB jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/ACT/DR4DR6/color_CMB png: <urlopen error timed out>",
+          "cached": false
+        },
+        {
+          "key": "wmap",
+          "status": "failed",
+          "error": "https://alasky.cds.unistra.fr/WMAP9yr/WMAPW9yr jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/WMAP9yr/WMAPW9yr png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/WMAP9yr/WMAPW9yr jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/WMAP9yr/WMAPW9yr png: <urlopen error timed out>",
+          "cached": false
+        },
+        {
+          "key": "egret",
+          "status": "failed",
+          "error": "https://alasky.cds.unistra.fr/EGRET/EGRET-sup100 jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/EGRET/EGRET-sup100 png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/EGRET/EGRET-sup100 jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/EGRET/EGRET-sup100 png: <urlopen error timed out>",
+          "cached": false
+        },
+        {
+          "key": "euv",
+          "status": "failed",
+          "error": "https://alasky.cds.unistra.fr/ROSATWFC-new/ROSAT-WFC-color jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/ROSATWFC-new/ROSAT-WFC-color png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/ROSATWFC-new/ROSAT-WFC-color jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/ROSATWFC-new/ROSAT-WFC-color png: <urlopen error timed out>",
+          "cached": false
+        },
+        {
+          "key": "gaia_density",
+          "status": "failed",
+          "error": "https://alasky.cds.unistra.fr/ancillary/GaiaDR3/density-map jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/ancillary/GaiaDR3/density-map png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/ancillary/GaiaDR3/density-map jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/ancillary/GaiaDR3/density-map png: <urlopen error timed out>",
+          "cached": false
+        },
+        {
+          "key": "co",
+          "status": "failed",
+          "error": "https://alasky.cds.unistra.fr/CO-maps/CDS_P_CO-Dame-2022 jpg: HTTP Error 404: Not Found; https://alasky.cds.unistra.fr/CO-maps/CDS_P_CO-Dame-2022 png: HTTP Error 404: Not Found; https://alaskybis.cds.unistra.fr/CO-maps/CDS_P_CO-Dame-2022 jpg: <urlopen error timed out>; https://alaskybis.cds.unistra.fr/CO-maps/CDS_P_CO-Dame-2022 png: <urlopen error timed out>",
+          "cached": false
+        }
+      ]
+    }
+  },
+  "acceptance": "data/icecube-acceptance.json",
+  "volume": {
+    "status": "not_available",
+    "note": "TODO: no verified public 3D reconstruction grid and redistribution license. A projected lensing or galaxy-density map must never be presented as a 3D density field. See mac-studio/PIPELINE.md."
+  }
+}

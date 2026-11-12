@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "fetched_at": "2026-11-12T17:50:44.760068+00:00",
+  "projection": "equirectangular; longitude increases right; north is up; lon=-180 to+180, lat=+90 to-90",
+  "width": 2048,
+  "height": 1024,
+  "processing": "NASA originals resized with Pillow Lanczos to 2048x1024 RGB JPEG quality85; no other image changes.",
+  "license": "NASA Earth Science imagery reuse policy: freely available for republication/reuse with credit, except separately marked copyrighted material. No separate copyright indicated on these NASA source pages.",
+  "license_url": "https://science.nasa.gov/earth/faq/",
+  "note": "Historical display composites, not live imagery, weather or calibrated photometry.",
+  "textures": [
+    {
+      "id": "earth-day",
+      "title": "Blue Marble: Next Generation, August 2004, topography and bathymetry",
+      "url": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/bmng/bmng-topography-bathymetry/august/world.topo.bathy.200408.3x5400x2700.jpg",
+      "citation": "https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-topography-bathymetry/",
+      "credit": "NASA Earth Observatory; Blue Marble: Next Generation by Reto Stöckli, NASA Goddard Space Flight Center.",
+      "data_date": "2004-08",
+      "source_dimensions": [
+        5400,
+        2700
+      ],
+      "source_sha256": "f76d7b94445e8975a755c849ddaa93ed07b7e01118fb0b7e6bc5546a68c18d5c",
+      "file": "data/textures/earth-day.jpg",
+      "sha256": "a900c6644489fc9216dd0c6f8f967a41dd4dbec058f62f9534d205c33b8a31e3",
+      "bytes": 318299
+    },
+    {
+      "id": "earth-night",
+      "title": "Black Marble 2016 color global map",
+      "url": "https://assets.science.nasa.gov/content/dam/science/esd/eo/images/imagerecords/144000/144898/BlackMarble_2016_01deg.jpg",
+      "citation": "https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/",
+      "credit": "NASA Earth Observatory images by Joshua Stevens, using Suomi NPP VIIRS data from Miguel Román, NASA GSFC.",
+      "data_date": "2016",
+      "source_dimensions": [
+        3600,
+        1800
+      ],
+      "source_sha256": "d87de751a264e4f8ff69c68de5dab9606daee87a6f15ae743c93200743bd7ec1",
+      "file": "data/textures/earth-night.jpg",
+      "sha256": "6e53c95e71a42870850731c47cb4a477941882c0699d7b41e2fbb8aa2b03ac10",
+      "bytes": 151835
+    }
+  ]
+}
