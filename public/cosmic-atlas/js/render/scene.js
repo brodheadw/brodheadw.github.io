@@ -7,6 +7,11 @@ import { createSky, createMapBackground, direction, hammer, skyCircle } from './
 import { createLabels } from './labels.js'
 import { createPicker } from './picking.js'
 import { createAsciiPass } from './postfx/ascii.js'
+import { panTarget, touchGesture, wheelAction } from './navigation.js'
+import { createSunMaterial } from './sun.js'
+import { createSolarContext } from './solar-context.js'
+import { SATURN_RINGS } from '../astro/solar.js'
+import { AU_MPC } from '../astro/units.js'
 
 export const MPC_KM = 3.0856775814913673e19
 const clamp = (n, min, max) => Math.max(min, Math.min(max, n))
@@ -168,7 +173,7 @@ export function createScene({ container, store, onSelect, onHover, onMetrics }) 
       }
     }
     if (state.view !== 'sky') for (const body of solarBodies) {
-      if (!bodyMeshes.get(body.id)?.visible) continue
+      if (!bodyVisibility.get(body.id) || (rig.distance > 2000 * AU_MPC && body.id !== 'sun' && state.selection?.id !== body.id)) continue
       if (body.id !== 'earth' && bodyMeshes.get('earth')?.visible) {
         const point = new THREE.Vector3(...body.position.map(x => x / MPC_KM)), coords = new Float64Array(3)
         relative(point.toArray(), coords); point.fromArray(coords)
@@ -177,8 +182,10 @@ export function createScene({ container, store, onSelect, onHover, onMetrics }) 
         if (t > 0 && t < 1 && camera.position.clone().addScaledVector(delta, t).distanceTo(earthMesh.position) < earthMesh.scale.x) continue
       }
       const p = projectPosition(body.position.map(x => x / MPC_KM))
-      if (p) candidates.push({ ...p, key: `solar:${body.id}`, layer: 'solar', id: body.id, name: body.name, color: body.id === 'sun' ? palette.sun : palette.ink, priority: state.selection?.id === body.id ? 180 : 70 })
+      const mesh = bodyMeshes.get(body.id), apparentRadius = mesh ? mesh.scale.x / Math.max(1e-12, mesh.position.distanceTo(camera.position)) * height / (2 * Math.tan(55 * Math.PI / 360)) : 0
+      if (p) candidates.push({ ...p, key: `solar:${body.id}`, layer: 'solar', id: body.id, name: body.name, bodyRadius: apparentRadius, marker: apparentRadius < 3 || state.bodyScale === 'visible', color: body.id === 'sun' ? palette.sun : palette.ink, priority: state.selection?.id === body.id ? 180 : body.parent === 'sun' ? 90 : 65 })
     }
+    if (state.view !== 'sky') candidates.push(...solarContext.labels())
     if (state.view !== 'sky' && satellites && layerState('satellites').visible && state.selection?.layer === 'satellites') {
       const i = state.selection.index, earth = solarBodies.find(b => b.id === 'earth'), p = satellites.gcrsPositions || satellites.positions
       if (earth && p && satellites.valid?.[i]) {
@@ -188,44 +195,67 @@ export function createScene({ container, store, onSelect, onHover, onMetrics }) 
     }
     labels.update(candidates, width, height, width < 600 ? 14 : 38)
   }
-  const bodyMeshes = new Map(), bodyGroup = new THREE.Group(), solarOrbits = new THREE.Group(), satelliteGroup = new THREE.Group()
-  universe.add(bodyGroup, solarOrbits, satelliteGroup)
+  const bodyMeshes = new Map(), bodyVisibility = new Map(), bodyTextures = new Map(), bodyGroup = new THREE.Group(), solarOrbits = new THREE.Group(), satelliteGroup = new THREE.Group(), solarContext = createSolarContext()
+  universe.add(bodyGroup, solarOrbits, satelliteGroup, solarContext.group)
   const sunlight = new THREE.PointLight(palette.ink, 2, 0, 0); universe.add(sunlight, new THREE.AmbientLight(palette.ink, .08))
-  const bodyGeometry = new THREE.SphereGeometry(1, 40, 24); bodyGeometry.rotateX(Math.PI / 2)
+  const bodyGeometry = new THREE.SphereGeometry(1, 96, 64); bodyGeometry.rotateX(Math.PI / 2)
   const day = textureLoader.load('data/textures/earth-day.jpg', () => { dirty = true }, undefined, () => {})
   day.colorSpace = THREE.SRGBColorSpace
   const lights = textureLoader.load('data/textures/earth-night.jpg', () => { dirty = true }, undefined, () => {})
   lights.colorSpace = THREE.SRGBColorSpace
-  const earthMaterial = new THREE.ShaderMaterial({ transparent: true, uniforms: { day: { value: day }, night: { value: lights }, opacity: { value: 1 }, sunDirection: { value: new THREE.Vector3(1, 0, 0) } },
+  const clearWeather = new THREE.DataTexture(new Uint8Array([0, 0, 0, 0]), 1, 1); clearWeather.needsUpdate = true
+  let weatherTexture, weatherURL, weatherWanted, weatherRequest = 0
+  const weatherLoads = new Map()
+  const earthMaterial = new THREE.ShaderMaterial({ transparent: true, uniforms: { day: { value: day }, night: { value: lights }, weather: { value: clearWeather }, weatherOpacity: { value: 0 }, opacity: { value: 1 }, sunDirection: { value: new THREE.Vector3(1, 0, 0) } },
     vertexShader: 'varying vec2 uvv;varying vec3 n;void main(){uvv=uv;n=normalize(mat3(modelMatrix)*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-    fragmentShader: 'uniform sampler2D day,night;uniform vec3 sunDirection;uniform float opacity;varying vec2 uvv;varying vec3 n;void main(){float d=dot(normalize(n),normalize(sunDirection));float f=smoothstep(-.07,.07,d);vec3 c=texture2D(day,uvv).rgb*(.06+.94*max(d,0.))+texture2D(night,uvv).rgb*(1.-f)*.9;gl_FragColor=vec4(c,opacity);\n#include <colorspace_fragment>\n}' })
+    fragmentShader: 'uniform sampler2D day,night,weather;uniform vec3 sunDirection;uniform float opacity,weatherOpacity;varying vec2 uvv;varying vec3 n;void main(){float d=dot(normalize(n),normalize(sunDirection));float f=smoothstep(-.07,.07,d);vec3 c=texture2D(day,uvv).rgb*(.06+.94*max(d,0.))+texture2D(night,uvv).rgb*(1.-f)*.9;vec4 w=texture2D(weather,uvv);c=mix(c,w.rgb,w.a*weatherOpacity);gl_FragColor=vec4(c,opacity);\n#include <colorspace_fragment>\n}' })
   let satelliteNames = [], satelliteCloud = null, satelliteIndices = null, satelliteReceived = performance.now()
   function prepareBodies() {
     const opacity = layerState('solar').opacity, visible = opacity > 0 && (layerState('solar').visible || layerState('satellites').visible || rig.distance < 2e-9)
-    bodyGroup.visible = visible; solarOrbits.visible = visible && state.view !== 'sky'
+    bodyGroup.visible = visible || (layerState('smallbodies').visible && layerState('smallbodies').opacity > 0); solarOrbits.visible = visible && state.view !== 'sky'
     earthMaterial.uniforms.opacity.value = opacity
     const scale = displayScale(), earth = solarBodies.find(x => x.id === 'earth')
+    solarContext.update({ relative, project: projectPosition, distance: rig.distance, visible: visible && state.view !== 'sky' && layerState('solar').visible, opacity, width, height })
+    bodyVisibility.clear()
     for (const body of solarBodies) {
+      const small = String(body.id).startsWith('small:'), bodyLayer = small ? layerState('smallbodies') : layerState('solar'), bodyOpacity = small ? bodyLayer.opacity : opacity
+      const bodyVisible = small ? bodyLayer.visible && bodyOpacity > 0 : visible
       let mesh = bodyMeshes.get(body.id)
       if (!mesh) {
-        mesh = new THREE.Mesh(bodyGeometry, body.id === 'earth' ? earthMaterial : new (body.id === 'sun' ? THREE.MeshBasicMaterial : THREE.MeshLambertMaterial)({ transparent: true, color: body.color || (body.id === 'sun' ? palette.sun : palette.moon) }))
+        mesh = new THREE.Mesh(bodyGeometry, body.id === 'earth' ? earthMaterial : body.id === 'sun' ? createSunMaterial() : new THREE.MeshLambertMaterial({ transparent: true, color: body.color || palette.moon }))
+        mesh.userData.bodyId = body.id
         const id = allocId('solar', body.id)
         mesh.userData.pickMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color((id & 255) / 255, (id >> 8 & 255) / 255, (id >> 16 & 255) / 255) })
         bodyGroup.add(mesh); bodyMeshes.set(body.id, mesh)
+        if (body.id === 'saturn') for (const band of SATURN_RINGS.bands) {
+          const ring = new THREE.Mesh(new THREE.RingGeometry(band.innerKm / body.radiusKm, band.outerKm / body.radiusKm, 128), new THREE.MeshLambertMaterial({ color: '#bfb18e', transparent: true, opacity: band.opacity, depthWrite: false, side: THREE.DoubleSide }))
+          ring.userData.baseOpacity = band.opacity; ring.userData.saturnRing = true; mesh.add(ring)
+        }
       }
       const p = new Float64Array(3); relative(body.position.map(x => x / MPC_KM), p); mesh.position.fromArray(p)
-      const trueRadius = body.radiusKm / MPC_KM / scale
-      const displayRadius = state.bodyScale === 'true' ? trueRadius : Math.max(trueRadius, body.id === 'sun' ? .012 : .006)
-      mesh.scale.setScalar(displayRadius)
-      mesh.material.opacity = opacity; mesh.material.depthWrite = opacity === 1
-      mesh.visible = visible && Math.hypot(...p) < 1e5 && Math.hypot(...body.position) / MPC_KM < Math.max(rig.distance * 1e5, 1e-7)
+      mesh.scale.setScalar((body.radiusKm || 0) / MPC_KM / scale)
+      mesh.material.opacity = bodyOpacity; mesh.material.depthWrite = bodyOpacity === 1
+      if (mesh.material.uniforms?.opacity) mesh.material.uniforms.opacity.value = bodyOpacity
+      const withinView = bodyVisible && Math.hypot(...p) < 1e5 && Math.hypot(...body.position) / MPC_KM < Math.max(rig.distance * 1e5, 1e-7)
+      bodyVisibility.set(body.id, withinView); mesh.visible = withinView && body.radiusKm > 0
+      if (withinView && body.texture?.file && !bodyTextures.has(body.id)) {
+        bodyTextures.set(body.id, null)
+        textureLoader.loadAsync(body.texture.file).then(texture => { texture.colorSpace = THREE.SRGBColorSpace; texture.wrapS = THREE.RepeatWrapping; bodyTextures.set(body.id, texture); mesh.material.map = texture; mesh.material.color.set('#ffffff'); mesh.material.needsUpdate = true; dirty = true }).catch(() => { /* Keep the documented mean-color fallback if a local map is unavailable. */ })
+      }
+      for (const ring of mesh.children) if (ring.userData.saturnRing) ring.material.opacity = bodyOpacity * ring.userData.baseOpacity
       if (body.id === 'earth') {
         const frame = frameAt(new Date(body.utc || Date.now())), a = frame.temeToGcrs
         const orientation = new THREE.Matrix4().set(a[0][0],a[0][1],a[0][2],0,a[1][0],a[1][1],a[1][2],0,a[2][0],a[2][1],a[2][2],0,0,0,0,1).multiply(new THREE.Matrix4().makeRotationZ(frame.gmst))
         mesh.quaternion.setFromRotationMatrix(orientation)
         earthMaterial.uniforms.sunDirection.value.fromArray(body.position).multiplyScalar(-1).normalize()
+      } else if (body.rotation) {
+        const north = new THREE.Vector3(...body.rotation.north).normalize(), ra = body.rotation.ra * Math.PI / 180, spin = body.rotation.spin * Math.PI / 180
+        const node = new THREE.Vector3(-Math.sin(ra), Math.cos(ra), 0), tangent = new THREE.Vector3().crossVectors(north, node)
+        const prime = node.multiplyScalar(Math.cos(spin)).addScaledVector(tangent, Math.sin(spin)), east = new THREE.Vector3().crossVectors(north, prime)
+        mesh.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(prime, east, north))
       }
     }
+    for (const [id, mesh] of bodyMeshes) if (!bodyVisibility.has(id)) mesh.visible = false
     const sunPosition = new Float64Array(3); relative([0, 0, 0], sunPosition); sunlight.position.fromArray(sunPosition)
     if (satelliteCloud && satellites && earth) {
       satelliteGroup.visible = layerState('satellites').visible
@@ -251,6 +281,21 @@ export function createScene({ container, store, onSelect, onHover, onMetrics }) 
     }
   }
   function setSolarBodies(bodies) { solarBodies = bodies; solarDirty = true }
+  async function setEarthWeather({ texture, visible = true, opacity = 1 } = {}) {
+    const request = ++weatherRequest, alpha = Number.isFinite(opacity) ? clamp(opacity, 0, 1) : 1
+    weatherWanted = visible ? texture : null
+    if (!visible || !texture) { earthMaterial.uniforms.weatherOpacity.value = 0; dirty = true; return }
+    if (!/^(?:data\/|https:\/\/)/.test(texture)) throw Error('Invalid weather texture URL')
+    if (weatherURL === texture && weatherTexture) { earthMaterial.uniforms.weatherOpacity.value = alpha; dirty = true; return }
+    let pending = weatherLoads.get(texture)
+    if (!pending) { pending = textureLoader.loadAsync(texture); weatherLoads.set(texture, pending) }
+    let next
+    try { next = await pending } catch (error) { if (weatherLoads.get(texture) === pending) weatherLoads.delete(texture); throw error }
+    if (request !== weatherRequest) { if (weatherWanted !== texture) { next.dispose(); weatherLoads.delete(texture) }; return }
+    next.colorSpace = THREE.SRGBColorSpace; next.wrapS = THREE.RepeatWrapping
+    weatherTexture?.dispose(); weatherTexture = next; weatherURL = texture; weatherLoads.delete(texture); earthMaterial.uniforms.weather.value = next
+    earthMaterial.uniforms.weatherOpacity.value = alpha; dirty = true
+  }
   function setSatellites(payload, metadata = []) {
     satellites = payload; satelliteNames = metadata.map(s => s.name); satelliteReceived = performance.now()
     if (!payload) {
@@ -347,8 +392,13 @@ export function createScene({ container, store, onSelect, onHover, onMetrics }) 
     const rect = canvas.getBoundingClientRect(), passes = state.view === 'sky' ? [{ scene: map, camera: mapCamera }] : [{ scene: sky, camera: skyCamera }, { scene: universe, camera }]
     return pickIds.get(picker.pick(e.clientX - rect.left, e.clientY - rect.top, width, height, passes)) || null
   }
-  let dragMoved = false, lastPointer = null, hoverTime = 0
-  canvas.addEventListener('pointerdown', e => { canvas.focus({ preventScroll: true }); canvas.setPointerCapture(e.pointerId); pointers.set(e.pointerId, [e.clientX, e.clientY]); dragMoved = false; lastPointer = [e.clientX, e.clientY] })
+  let dragMoved = false, hoverTime = 0
+  function pan(dx, dy) {
+    if (state.view === 'sky') { mapPan[0] -= dx / width * (mapCamera.right - mapCamera.left); mapPan[1] += dy / height * (mapCamera.top - mapCamera.bottom); resize() }
+    else store.set({ camera: { target: panTarget(goal, dx, dy, height), mode: 'orbit' } }, { history: false })
+  }
+  canvas.addEventListener('contextmenu', e => e.preventDefault())
+  canvas.addEventListener('pointerdown', e => { canvas.focus({ preventScroll: true }); canvas.setPointerCapture(e.pointerId); pointers.set(e.pointerId, [e.clientX, e.clientY]); dragMoved = pointers.size > 1 || e.button !== 0 })
   canvas.addEventListener('pointermove', e => {
     if (document.pointerLockElement === canvas) {
       store.set({ camera: { yaw: goal.yaw - e.movementX * .004, pitch: clamp(goal.pitch + e.movementY * .004, -1.55, 1.55) } }, { history: false }); return
@@ -357,17 +407,19 @@ export function createScene({ container, store, onSelect, onHover, onMetrics }) 
       const old = pointers.get(e.pointerId), dx = e.clientX - old[0], dy = e.clientY - old[1]
       if (Math.hypot(dx, dy) > 1) dragMoved = true
       if (pointers.size > 1) {
-        const other = [...pointers.entries()].find(([id]) => id !== e.pointerId)?.[1]
-        if (other) { const before = Math.hypot(old[0] - other[0], old[1] - other[1]), after = Math.hypot(e.clientX - other[0], e.clientY - other[1]); if (after > 1 && before > 1) zoom(Math.log(before / after), e) }
-      } else if (state.view === 'sky') { mapPan[0] -= dx / width * (mapCamera.right - mapCamera.left); mapPan[1] += dy / height * (mapCamera.top - mapCamera.bottom); resize() }
+        const contacts = [...pointers.entries()].slice(0, 2), before = contacts.map(([, point]) => point), after = contacts.map(([id, point]) => id === e.pointerId ? [e.clientX, e.clientY] : point)
+        const gesture = touchGesture(before, after)
+        pan(gesture.dx, gesture.dy); if (Math.abs(gesture.zoom) > 1e-8) zoom(gesture.zoom, { clientX: gesture.center[0], clientY: gesture.center[1] })
+      } else if (state.view === 'sky' || e.shiftKey || e.buttons & 6) pan(dx, dy)
       else store.set({ camera: { yaw: goal.yaw - dx * .005, pitch: clamp(goal.pitch + dy * .005, -1.55, 1.55) } }, { history: false })
-      pointers.set(e.pointerId, [e.clientX, e.clientY]); lastPointer = [e.clientX, e.clientY]
+      pointers.set(e.pointerId, [e.clientX, e.clientY])
     } else if (performance.now() - hoverTime > 120) {
       hoverTime = performance.now(); hovered = pick(e); onHover?.(hovered, e); dirty = true
     }
   })
-  canvas.addEventListener('pointerup', e => { if (!dragMoved && pointers.size === 1 && document.pointerLockElement !== canvas) { const p = pick(e); if (p) onSelect(p.layer, p.id) }; pointers.delete(e.pointerId); lastPointer = null })
-  canvas.addEventListener('pointercancel', e => { pointers.delete(e.pointerId); lastPointer = null })
+  canvas.addEventListener('pointerup', e => { if (!dragMoved && e.button === 0 && pointers.size === 1 && document.pointerLockElement !== canvas) { const p = pick(e); if (p) onSelect(p.layer, p.id) }; pointers.delete(e.pointerId) })
+  canvas.addEventListener('pointercancel', e => { pointers.delete(e.pointerId); dragMoved = true })
+  canvas.addEventListener('lostpointercapture', e => pointers.delete(e.pointerId))
   function zoom(delta, event) {
     if (state.view === 'sky') { mapZoom = clamp(mapZoom * Math.exp(-delta), 1, 40); if (mapZoom === 1) mapPan = [0, 0]; resize(); return }
     let minimum = 100 / MPC_KM
@@ -381,20 +433,19 @@ export function createScene({ container, store, onSelect, onHover, onMetrics }) 
     }
     store.set({ camera: { distance: next, target, mode: 'orbit' } }, { history: false })
   }
-  canvas.addEventListener('wheel', e => { e.preventDefault(); zoom(clamp(e.deltaY * .0015, -.8, .8), e) }, { passive: false })
-  canvas.addEventListener('keydown', e => { if (['w', 'a', 's', 'd', 'q', 'e', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', '+', '-', '='].includes(e.key.toLowerCase())) { e.preventDefault(); keys.add(e.key.toLowerCase()) } })
+  canvas.addEventListener('wheel', e => { e.preventDefault(); if (state.view !== 'sky' && wheelAction(e) === 'pan') pan(e.deltaX || (e.shiftKey ? e.deltaY : 0), e.shiftKey && !e.deltaX ? 0 : e.deltaY); else zoom(clamp(e.deltaY * (e.ctrlKey ? .008 : e.deltaMode === 1 ? .04 : .0015), -.8, .8), e) }, { passive: false })
+  canvas.addEventListener('keydown', e => { if (['w', 'a', 's', 'd', 'q', 'e', 'arrowleft', 'arrowright', 'arrowup', 'arrowdown', 'shift', '+', '-', '='].includes(e.key.toLowerCase())) { e.preventDefault(); keys.add(e.key.toLowerCase()) } })
   canvas.addEventListener('keyup', e => keys.delete(e.key.toLowerCase())); canvas.addEventListener('blur', () => keys.clear())
   function moveKeys(dt) {
     if (!keys.size || state.view === 'sky') return
-    const target = [...goal.target], right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion), forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion)
+    const target = [...goal.target], right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion), forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion), up = new THREE.Vector3(0, 1, 0).applyQuaternion(camera.quaternion)
     const move = new THREE.Vector3(), speed = goal.distance * dt * (keys.has('shift') ? 1 : .4)
     if (keys.has('w') || keys.has('arrowup')) move.add(forward)
     if (keys.has('s') || keys.has('arrowdown')) move.sub(forward)
     if (keys.has('a') || keys.has('arrowleft')) move.sub(right)
     if (keys.has('d') || keys.has('arrowright')) move.add(right)
-    if (keys.has('q')) move.z -= 1; if (keys.has('e')) move.z += 1
-    move.multiplyScalar(speed); for (let k = 0; k < 3; k++) target[k] += move.getComponent(k)
-    store.set({ camera: { target, mode: 'fly' } }, { history: false })
+    if (keys.has('q')) move.sub(up); if (keys.has('e')) move.add(up)
+    if (move.lengthSq()) { move.multiplyScalar(speed); for (let k = 0; k < 3; k++) target[k] += move.getComponent(k); store.set({ camera: { target, mode: 'fly' } }, { history: false }) }
     if (keys.has('+') || keys.has('=')) zoom(-dt)
     if (keys.has('-')) zoom(dt)
   }
@@ -432,11 +483,11 @@ export function createScene({ container, store, onSelect, onHover, onMetrics }) 
   }
   resize(); frameId = requestAnimationFrame(render)
   return {
-    canvas, renderer, addTable, setIndices, setTexture, setSolarBodies, setSatellites, setSatelliteIndices, setOrbitPaths,
+    canvas, renderer, addTable, setIndices, setTexture, setSolarBodies, setEarthWeather, setSatellites, setSatelliteIndices, setOrbitPaths,
     focus(position, distance) { store.set({ camera: { target: Array.from(position), distance: clamp(distance, 100 / MPC_KM, 1000), mode: 'orbit' } }) },
     lookAtDirection(ra, dec) { const d = direction(ra, dec); store.set({ camera: { yaw: Math.atan2(-d[1], -d[0]), pitch: -Math.asin(d[2]) } }) },
     freeLook() { canvas.requestPointerLock?.() },
     getRig: () => ({ ...rig, target: [...rig.target] }),
-    dispose() { running = false; cancelAnimationFrame(frameId); unsubscribe(); observer.disconnect(); for (const h of handles.values()) h.dispose(); for (const t of textures.values()) t?.dispose(); bodyGeometry.dispose(); earthMaterial.dispose(); day.dispose(); lights.dispose(); blank.dispose(); ascii.dispose(); picker.dispose(); labels.dispose(); renderer.dispose(); canvas.remove() },
+    dispose() { running = false; weatherRequest++; cancelAnimationFrame(frameId); unsubscribe(); observer.disconnect(); for (const h of handles.values()) h.dispose(); for (const t of [...textures.values(), ...bodyTextures.values()]) t?.dispose(); for (const mesh of bodyMeshes.values()) { mesh.material.dispose(); mesh.userData.pickMaterial.dispose(); for (const ring of mesh.children) { ring.geometry.dispose(); ring.material.dispose() } }; solarContext.dispose(); bodyGeometry.dispose(); weatherTexture?.dispose(); clearWeather.dispose(); day.dispose(); lights.dispose(); blank.dispose(); ascii.dispose(); picker.dispose(); labels.dispose(); renderer.dispose(); canvas.remove() },
   }
 }

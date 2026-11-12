@@ -1,0 +1,78 @@
+{
+  "schema": 1,
+  "textures": [
+    {
+      "id": "mercury",
+      "name": "MESSENGER / Mariner 10 monochrome mosaic (2009)",
+      "source_url": "https://assets.science.nasa.gov/dynamicimage/assets/science/psd/photojournal/pia/pia12/pia12397/PIA12397.jpg",
+      "citation": "https://science.nasa.gov/photojournal/full-global-mercury-mosaic/",
+      "credit": "NASA/Johns Hopkins University Applied Physics Laboratory/Carnegie Institution of Washington/U. S. Geological Survey/Arizona State University",
+      "note": "Historical photometric mosaic covers 97.7% of Mercury; source gaps and mosaic seams retained. Not a natural-color image. Longitude registration is illustrative.",
+      "processing": "Exact source JPEG, no pixel edits.",
+      "file": "data/textures/mercury.jpg",
+      "dimensions": [
+        1280,
+        640
+      ],
+      "sha256": "ed75e7216b53f4cb3fbf555454ac7eba1bfa6ff7639c8e7eae90e4b168006a98",
+      "source_sha256": "ed75e7216b53f4cb3fbf555454ac7eba1bfa6ff7639c8e7eae90e4b168006a98",
+      "license": "Credited NASA/JPL scientific imagery; media-use policies apply; third-party credits retained.",
+      "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+    },
+    {
+      "id": "mars",
+      "name": "Mars Viking texture map",
+      "source_url": "https://space.jpl.nasa.gov/tmaps/pix/mar0kuu2.jpg",
+      "citation": "https://space.jpl.nasa.gov/tmaps/mars.html",
+      "credit": "Caltech/JPL/USGS",
+      "note": "Historical Viking mosaic, processed at USGS. JPL cautions that simulator maps are illustrative and must not be used for scientific image analysis.",
+      "processing": "Exact source JPEG, no pixel edits.",
+      "file": "data/textures/mars.jpg",
+      "dimensions": [
+        1440,
+        720
+      ],
+      "sha256": "0f9a3faf586ac857623660504e63dd3e2b8358203d8d0c32c27c5fe1585548c6",
+      "source_sha256": "0f9a3faf586ac857623660504e63dd3e2b8358203d8d0c32c27c5fe1585548c6",
+      "license": "Credited NASA/JPL scientific imagery; media-use policies apply; third-party credits retained.",
+      "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+    },
+    {
+      "id": "jupiter",
+      "name": "Jupiter Hubble global map (2019)",
+      "source_url": "https://assets.science.nasa.gov/dynamicimage/assets/science/missions/hubble/releases/2019/08/STScI-01EVSV9A3VN7VYXN5H6Z1GDG93.tif?w=2000",
+      "citation": "https://science.nasa.gov/asset/hubble/jupiter-global-map-2019/",
+      "credit": "NASA, ESA, A. Simon (Goddard Space Flight Center), and M. H. Wong (University of California, Berkeley)",
+      "note": "Historical 2019 cloud mosaic. Unobserved regions above 80 degrees latitude remain black. Cloud features and longitude registration are illustrative, not a prediction of current weather.",
+      "processing": "TIFF to RGB JPEG quality90; source dimensions and no-data regions retained.",
+      "file": "data/textures/jupiter.jpg",
+      "dimensions": [
+        2000,
+        1000
+      ],
+      "sha256": "f72af2779812cd3568a4a4133eae980f5721f69c811bdf15ec2da38be1e56138",
+      "source_sha256": "012a3f5dbbd95cfab486262aac17f540fb5ba387558676b12c604c614403f9ab",
+      "license": "Credited NASA/JPL scientific imagery; media-use policies apply; third-party credits retained.",
+      "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+    },
+    {
+      "id": "moon",
+      "name": "NASA SVS CGI Moon Kit 2025 color map",
+      "source_url": "https://svs.gsfc.nasa.gov/vis/a000000/a004700/a004720/lroc_color_2k.jpg",
+      "citation": "https://svs.gsfc.nasa.gov/4720/",
+      "credit": "NASA's Scientific Visualization Studio / Ernie Wright; LROC data, Arizona State University",
+      "note": "NASA visualization map from LRO: exposure and white balance adjusted; polar color gaps filled from lower-resolution laser albedo and small dropouts inpainted by the producer. Optimized for illustration, not scientific image analysis. Center longitude0 degrees.",
+      "processing": "Exact NASA source JPEG; no further pixel edits.",
+      "file": "data/textures/moon.jpg",
+      "dimensions": [
+        2048,
+        1024
+      ],
+      "sha256": "f7130a1822681fa7512d7dcfd40db8c10b9ba4f06777910348698260ed7a2170",
+      "source_sha256": "f7130a1822681fa7512d7dcfd40db8c10b9ba4f06777910348698260ed7a2170",
+      "license": "NASA media-use guidelines; retain credit.",
+      "license_url": "https://www.nasa.gov/nasa-brand-center/images-and-media/"
+    }
+  ],
+  "purpose": "Historical appearance maps only; ephemeris coordinates and physical radii are separate from illustrative surface appearance."
+}
