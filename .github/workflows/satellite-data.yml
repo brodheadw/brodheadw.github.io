@@ -1,0 +1,68 @@
+name: Refresh public satellite snapshot
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      resume_after_error:
+        description: 'Resume only after investigating the recorded CelesTrak error (minimum 2 h cooldown)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cosmic-atlas-satellite-data
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Prepare dedicated data branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          author_name=$(git log -1 --format='%an')
+          author_email=$(git log -1 --format='%ae')
+          git init snapshot
+          git -C snapshot config user.name "$author_name"
+          git -C snapshot config user.email "$author_email"
+          git -C snapshot remote add origin "https://github.com/${GITHUB_REPOSITORY}.git"
+          auth=$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w 0)
+          git -C snapshot config http.https://github.com/.extraheader "AUTHORIZATION: basic $auth"
+          if git -C snapshot ls-remote --exit-code origin refs/heads/satellite-data >/dev/null; then
+            git -C snapshot fetch --depth=1 origin satellite-data
+            git -C snapshot checkout -B satellite-data FETCH_HEAD
+          else
+            git -C snapshot checkout --orphan satellite-data
+            mkdir -p snapshot/data/satellites
+            cp public/cosmic-atlas/data/satellites/status.json snapshot/data/satellites/status.json
+          fi
+      - name: Fetch and validate once
+        id: fetch
+        continue-on-error: true
+        env:
+          RESUME: ${{ inputs.resume_after_error }}
+        run: |
+          options=()
+          if [ "$RESUME" = true ]; then options+=(--resume-after-error); fi
+          python public/cosmic-atlas/mac-studio/fetch_satellites.py --output snapshot/data/satellites "${options[@]}"
+      - name: Publish data and status without a Next.js deployment
+        run: |
+          git -C snapshot add data/satellites
+          if ! git -C snapshot diff --cached --quiet; then
+            git -C snapshot commit -m "Refresh public satellite snapshot"
+            git -C snapshot push origin HEAD:satellite-data
+          fi
+      - name: Report a suspended or rejected snapshot
+        if: steps.fetch.outcome == 'failure'
+        run: |
+          cat snapshot/data/satellites/status.json
+          exit 1
