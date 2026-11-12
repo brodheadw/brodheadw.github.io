@@ -14,6 +14,20 @@ Network refreshes are explicit:
   the error in `data/overlays/overlay-status.json`. `ATLAS_HTTP_TIMEOUT` sets each request timeout.
 - `--satellites`: request the separate policy-aware CelesTrak snapshot refresh. The default
   pipeline does not make public data-provider requests. See the satellite fetcher's policy notes.
+- `--smallbodies`: refresh the eight selected NASA/JPL Horizons bodies on a bounded six-hour
+  heliocentric ICRF grid, with independent off-grid validation. Uses cached data when complete.
+  The browser refuses extrapolation beyond 2026-01-01 through 2028-01-01.
+- `--weather`: fetch the previous completed UTC day's Terra/MODIS daytime cloud-fraction
+  visualization from NASA GIBS. Requires Pillow (13.0.0 in the scheduled workflow). The
+  official palette/legend and transparent no-data pixels are preserved; this is not a
+  photographic cloud-opacity map or a forecast. A failed fetch retains the previous dated
+  product. Files, processing, source hashes and age are recorded in `data/weather/status.json`.
+
+The six-hour `.github/workflows/satellite-data.yml` publishes satellite and weather files
+to the separate `satellite-data` branch without a Next.js rebuild. Weather runs independently
+while GP requests are suspended. Both outcomes are recorded, with source failures reported
+after any successful independent product is published. Browsers check only the trusted
+repository data branch and fall back to bundled data.
 
 `build_web_catalogs.py` uses only Python's standard library for catalogs/registry. `--fields`
 also requires the already installed numpy and healpy. It rejects changed CSV column names or

@@ -264,9 +264,22 @@ def registry(atlas, catalogs, acceptance_path):
                            note=row['note'] + ' Display resampling of order-3 HiPS Allsky where applicable, approximately 7 arcmin native samples; for orientation, not photometry. ICRS equirectangular, RA increases left, centre RA=180 deg.'))
     ephemeris = atlas / 'js/vendor/astronomy.js'
     earth_textures = dict(textures='data/textures/sources.json', earthDay='data/textures/earth-day.jpg', earthNight='data/textures/earth-night.jpg') if (data / 'textures/sources.json').exists() else {}
+    if (data / 'textures/planet-sources.json').exists():
+        earth_textures['planetSources'] = 'data/textures/planet-sources.json'
     layers.append(dict(id='solar', title='Solar System', kind='points3d', category='Solar System', module='solar', files=earth_textures, schema='astronomy-engine-body-v1', version='astronomy-engine@2.1.19',
                        citation=dict(title='Astronomy Engine, Don Cross', url='https://github.com/cosinekitty/astronomy'), license='MIT (Astronomy Engine)', updated_at=updated(ephemeris) if ephemeris.exists() else updated(atlas / 'mac-studio/build_web_catalogs.py'),
                        style=dict(color='#ffcb6c', size=5), filters=[], note='Computed at the shared UTC clock by the pinned Astronomy Engine ephemeris library; see Solar System panel for model limits. Earth display uses NASA Blue Marble (August 2004) and Black Marble (2016) historical composites; NASA credit/reuse terms are recorded in data/textures/sources.json.'))
+    smallbody_file = data / 'smallbodies/ephemerides.json'
+    if smallbody_file.exists():
+        layers.append(dict(id='smallbodies', title='Comets and asteroids (JPL sample)', kind='solar', category='Solar System', module='smallbodies', files=dict(json='data/smallbodies/ephemerides.json', status='data/smallbodies/status.json'), schema='jpl-sampled-vectors-v1',
+                           citation=dict(title='NASA/JPL Horizons and Small-Body Database', url='https://ssd.jpl.nasa.gov/horizons/'), license='NASA/JPL data; source credit required', updated_at=updated(smallbody_file), available=True,
+                           style=dict(color='#baf5d0', size=4), filters=[], note='Eight representative small bodies; sampled heliocentric ICRF vectors, cubic Hermite interpolation, 2026-01-01 through 2028-01-01. No extrapolation; not a complete small-body catalogue.'))
+    weather_file = data / 'weather/status.json'
+    if weather_file.exists():
+        weather = json.loads(weather_file.read_text())
+        layers.append(dict(id='weather.clouds', title='Dated observed cloud fraction', kind='annotations', category='Solar System', module='earthweather', files=dict(json='data/weather/status.json'), schema='earthweather-snapshot-v1',
+                           citation=dict(title='NASA MODIS / Global Imagery Browse Services', url='https://earthdata.nasa.gov/gibs'), license='NASA imagery reuse guidelines; NASA credit', updated_at=updated(weather_file), available=bool(weather.get('available')),
+                           style=dict(color='#ffffff', size=1), filters=[], note='Meteorological observation product with its own data day and staleness; not weather at an arbitrary simulation date.'))
     satellite_folder = data / 'satellites'
     if (satellite_folder / 'gp.json').exists() or (satellite_folder / 'status.json').exists():
         available = (satellite_folder / 'gp.json').exists()
