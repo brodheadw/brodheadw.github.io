@@ -4,16 +4,16 @@
   "view": "3d",
   "ascii": false,
   "guides": false,
-  "bodyScale": "visible",
+  "bodyScale": "true",
   "camera": {
     "target": [
       0,
       0,
       0
     ],
-    "distance": 5e-11,
-    "yaw": 0.56,
-    "pitch": 0.26,
+    "distance": 3.393695767766752e-10,
+    "yaw": 0.11359786632705504,
+    "pitch": 1.1503030272726926,
     "mode": "orbit",
     "log": false
   },
@@ -52,16 +52,18 @@
       "opacity": 1,
       "filters": {}
     },
+    "smallbodies": {
+      "visible": true,
+      "opacity": 1,
+      "filters": {}
+    },
     "sky.optical": {
       "visible": true,
-      "opacity": 0.55,
+      "opacity": 0.035,
       "filters": {}
     }
   },
-  "selection": {
-    "layer": "solar",
-    "id": "earth"
-  },
+  "selection": null,
   "focusLayer": null,
   "clock": {
     "utc": null,

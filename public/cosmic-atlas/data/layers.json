@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "updated_at": "2026-11-12T17:36:36.213191+00:00",
+  "updated_at": "2026-11-12T19:51:36.734661+00:00",
   "layers": [
     {
       "id": "curated",
@@ -792,7 +792,8 @@
       "files": {
         "textures": "data/textures/sources.json",
         "earthDay": "data/textures/earth-day.jpg",
-        "earthNight": "data/textures/earth-night.jpg"
+        "earthNight": "data/textures/earth-night.jpg",
+        "planetSources": "data/textures/planet-sources.json"
       },
       "schema": "astronomy-engine-body-v1",
       "version": "astronomy-engine@2.1.19",
@@ -810,6 +811,55 @@
       "note": "Computed at the shared UTC clock by the pinned Astronomy Engine ephemeris library; see Solar System panel for model limits. Earth display uses NASA Blue Marble (August 2004) and Black Marble (2016) historical composites; NASA credit/reuse terms are recorded in data/textures/sources.json."
     },
     {
+      "id": "smallbodies",
+      "title": "Comets and asteroids (JPL sample)",
+      "kind": "solar",
+      "category": "Solar System",
+      "module": "smallbodies",
+      "files": {
+        "json": "data/smallbodies/ephemerides.json",
+        "status": "data/smallbodies/status.json"
+      },
+      "schema": "jpl-sampled-vectors-v1",
+      "citation": {
+        "title": "NASA/JPL Horizons and Small-Body Database",
+        "url": "https://ssd.jpl.nasa.gov/horizons/"
+      },
+      "license": "NASA/JPL data; source credit required",
+      "updated_at": "2026-11-12T19:38:42.714912+00:00",
+      "available": true,
+      "style": {
+        "color": "#baf5d0",
+        "size": 4
+      },
+      "filters": [],
+      "note": "Eight representative small bodies; sampled heliocentric ICRF vectors, cubic Hermite interpolation, 2026-01-01 through 2028-01-01. No extrapolation; not a complete small-body catalogue."
+    },
+    {
+      "id": "weather.clouds",
+      "title": "Dated observed cloud fraction",
+      "kind": "annotations",
+      "category": "Solar System",
+      "module": "earthweather",
+      "files": {
+        "json": "data/weather/status.json"
+      },
+      "schema": "earthweather-snapshot-v1",
+      "citation": {
+        "title": "NASA MODIS / Global Imagery Browse Services",
+        "url": "https://earthdata.nasa.gov/gibs"
+      },
+      "license": "NASA imagery reuse guidelines; NASA credit",
+      "updated_at": "2026-11-12T19:51:36.734661+00:00",
+      "available": true,
+      "style": {
+        "color": "#ffffff",
+        "size": 1
+      },
+      "filters": [],
+      "note": "Meteorological observation product with its own data day and staleness; not weather at an arbitrary simulation date."
+    },
+    {
       "id": "satellites",
       "title": "Publicly catalogued Earth satellites",
       "kind": "points3d",
@@ -824,7 +874,7 @@
         "url": "https://celestrak.org/"
       },
       "license": "CelesTrak usage policy; reuse license not stated (TODO: verify)",
-      "updated_at": "2026-11-12T17:36:36.213191+00:00",
+      "updated_at": "2026-11-12T19:29:10.446061+00:00",
       "available": false,
       "style": {
         "color": "#84d9e8",

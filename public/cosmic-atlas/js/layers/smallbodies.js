@@ -1,0 +1,1 @@
+export default { kind: 'solar', panels: ['solar-catalog', 'time', 'orbit-study'], load: app => app.loadSmallBodyData(), render: () => {}, legend: () => ({ shape: '◇', label: 'JPL small bodies · finite vector coverage' }) }

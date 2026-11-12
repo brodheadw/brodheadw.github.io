@@ -5,11 +5,14 @@ import { WORKSPACES, workspacePreset } from './workspaces/index.js'
 import { loadRegistry, rowAt, filterTable } from './data/loaders.js'
 import { resolveSatelliteSource } from './data/satellite-source.js'
 import { createSatelliteSelectionResolver } from './data/satellite-selection.js'
+import { satelliteSourceKey, satelliteSourceMatches } from './data/satellite-source-state.js'
 import { loadLayerPlugin } from './layers/index.js'
 import { installPalette, palette } from './palette.js'
 import { scaleRuler } from './render/geometry.js'
 import { createScene, MPC_KM } from './render/scene.js'
 import { bodiesAt, solarOrbit } from './astro/solar.js'
+import { loadSmallBodies, smallBodiesAt, smallBodyOrbit, smallBodyCoverage } from './astro/smallbody.js'
+import { MAX_OMM_BYTES } from './data/omm-import.js'
 import { createSatelliteClient } from './astro/satellites.js'
 import { formatDistance } from './astro/units.js'
 import { mountShell } from './shell/index.js'
@@ -22,6 +25,8 @@ let initial
 try { initial = await readURLState() || await fetchPreset('default') } catch (error) { toast(error.message); initial = workspacePreset('bootes') }
 const store = createStore(initial), bus = new EventTarget(), tables = new Map(), status = new Map(), plugins = new Map(), filterKeys = new Map(), masks = new Map(), loading = new Map()
 let registry = [], renderer, ready = false, latestBodies = [], satellites = [], satelliteState = null, satelliteStatus = null, metrics = null
+let satelliteSnapshot = null, loadedSatelliteResult = null, activeSatelliteResult = null, satelliteRequest = 0, publishedLoad, observedSatelliteSource = satelliteSourceKey(store.getState().satelliteSource)
+let smallBodyPromise, smallBodyStatus = { available: false }, weatherStatus = null, weatherPromise, weatherKey = '', weatherRequest = 0, weatherCandidate = null, weatherRender = null
 let resolveSatelliteSelection = createSatelliteSelectionResolver()
 let clockAnchor = performance.now(), clockValue = store.getState().clock, clockEpoch = clockValue.utc ? Date.parse(clockValue.utc) : Date.now()
 const client = createSatelliteClient()
@@ -40,11 +45,12 @@ function select(layer, id, { fly = true } = {}) {
   store.set({ selection: resolveSatelliteSelection({ layer, id }), focusLayer: layer })
   const row = selectionRow()
   if (!row || !renderer || !fly) return
+  if (layer === 'solar' || layer === 'satellites') store.set({ view: '3d' }, { history: false })
   if (layer === 'solar') {
-    const distance = Math.max(row.radiusKm * 6, row.id === 'sun' ? 149597870.7 * 3 : row.radiusKm * 6) / MPC_KM
+    const distance = Math.max(Number.isFinite(row.radiusKm) && row.radiusKm > 0 ? row.radiusKm * 6 : 149597870.7 * .05, 1000) / MPC_KM
     renderer.focus(row.position.map(x => x / MPC_KM), distance)
     store.set({ camera: { mode: 'follow' } }, { history: false })
-    const points = solarOrbit(row.name, currentDate(), 160)
+    const points = row.id.startsWith('small:') ? smallBodyOrbit(row.id, currentDate(), { days: 365, samples: 160 }) : solarOrbit(row.name, currentDate(), 160)
     renderer.setOrbitPaths(points.length ? [{ positions: points.flat(), color: palette.accent }] : [])
   } else if (layer === 'satellites') {
     const p = satelliteState?.gcrsPositions, earth = latestBodies.find(x => x.id === 'earth')
@@ -52,10 +58,56 @@ function select(layer, id, { fly = true } = {}) {
   } else if (Number.isFinite(row.mpc)) renderer.focus([Math.cos(row.dec * Math.PI / 180) * Math.cos(row.ra * Math.PI / 180), Math.cos(row.dec * Math.PI / 180) * Math.sin(row.ra * Math.PI / 180), Math.sin(row.dec * Math.PI / 180)].map(x => x * row.mpc), Math.max(.00002, row.mpc * .18))
   else renderer.lookAtDirection(row.ra, row.dec)
 }
+async function loadSmallBodyData() {
+  if (smallBodyStatus.available) return smallBodyStatus
+  return smallBodyPromise ||= (async () => {
+    smallBodyStatus = { available: false, loading: true }; emit()
+    try { const coverage = await loadSmallBodies(); smallBodyStatus = { ...coverage, available: true, loading: false }; tick(); return smallBodyStatus }
+    catch (error) { smallBodyStatus = { available: false, loading: false, error: error.message }; throw error }
+    finally { smallBodyPromise = null; emit() }
+  })()
+}
+async function applyWeather(data = weatherCandidate || weatherStatus) {
+  const layer = store.getState().layers['weather.clouds'], visible = !!layer?.visible && !!data?.available
+  const version = data?.sha256 || data?.texture_sha256 || data?.fetched_at
+  const texture = data?.texture ? `${data.texture}${data.texture.includes('?') ? '&' : '?'}atlas_version=${encodeURIComponent(version || data.observation_date || '')}` : undefined
+  const key = JSON.stringify([texture, visible, layer?.opacity])
+  if (key === weatherKey || !renderer) return true
+  if (weatherRender?.key === key) return weatherRender.promise
+  const request = ++weatherRequest
+  const promise = (async () => {
+    try {
+      await renderer.setEarthWeather({ texture, visible, opacity: layer?.opacity ?? .5 })
+      if (request !== weatherRequest) return weatherRender?.texture === texture ? weatherRender.promise : !!weatherKey && JSON.parse(weatherKey)[0] === texture
+      weatherKey = key; return true
+    } catch (error) {
+      if (request === weatherRequest) { weatherKey = ''; await renderer.setEarthWeather({ visible: false }); weatherStatus = { ...weatherStatus, displayError: error.message }; emit() }
+      return false
+    } finally { if (weatherRender?.request === request) weatherRender = null }
+  })()
+  weatherRender = { key, texture, request, promise }; return promise
+}
+async function loadWeatherData() {
+  return weatherPromise ||= (async () => {
+    try {
+      let data = await loadJSON('data/weather/status.json')
+      const remoteRoot = 'https://raw.githubusercontent.com/brodheadw/brodheadw.github.io/satellite-data/data/weather/'
+      if (data.remote_status_url === remoteRoot + 'status.json') {
+        try { const remote = await fetch(data.remote_status_url, { cache: 'no-store' }); if (remote.ok) { const latest = await remote.json(); if (latest.available && (!data.available || Date.parse(latest.observation_end) > Date.parse(data.observation_end))) data = { ...latest, texture: remoteRoot + 'clouds.png', legend: remoteRoot + 'legend.png' } } } catch { /* The dated bundled product remains available. */ }
+      }
+      if (!data.available) throw Error(data.error || 'No verified weather observation is available.')
+      weatherCandidate = data
+      if (!await applyWeather(data)) throw Error(weatherStatus?.displayError || 'Weather display changed during refresh; the previous dated observation is retained.')
+      weatherStatus = data; emit()
+      return data
+    } catch (error) { weatherStatus = { ...weatherStatus, error: error.message }; throw error }
+    finally { weatherPromise = null; weatherCandidate = null; emit() }
+  })()
+}
 function workspace(id) {
   const next = workspacePreset(id)
   // User experiments and saved panel positions travel with the user between workspaces.
-  next.experiments = store.getState().experiments; next.panels = store.getState().panels; next.observer = store.getState().observer; next.clock = snapshotState().clock
+  next.experiments = store.getState().experiments; next.panels = store.getState().panels; next.observer = store.getState().observer; next.clock = snapshotState().clock; if (store.getState().satelliteSource) next.satelliteSource = store.getState().satelliteSource
   if (id === 'earth') { const earth = latestBodies.find(x => x.id === 'earth'); if (earth) next.camera.target = earth.position.map(x => x / MPC_KM); next.camera.mode = 'follow' }
   store.replace(next); emit()
   if (id === 'solar' && renderer) {
@@ -82,23 +134,82 @@ async function loadLayer(id, reload = false) {
       if (table?.columns) { tables.set(id, table); filterKeys.delete(id) }
       if (renderer) await plugin.render?.(app, table, layer)
       status.set(id, { ready: true, rows: table?.length || table?.objects?.length, format: table?.meta?.loadedFormat }); await applyFilters(id)
-    } catch (error) { status.set(id, { error: error.message }); if (layer.kind === 'satellites') satelliteStatus = error.message }
+    } catch (error) { if (error.name !== 'AbortError') { status.set(id, { error: error.message }); if (layer.kind === 'satellites') satelliteStatus = error.message } }
     finally { loading.delete(id); emit() }
   })()
   loading.set(id, promise); return promise
 }
 async function loadSatellites() {
-  try {
-    const { url: source } = await resolveSatelliteSource()
-    const result = await client.load(source)
-    satellites = result.objects; resolveSatelliteSelection = createSatelliteSelectionResolver(satellites)
-    // Old position buffers use the previous snapshot's indices.
-    satelliteState = null; renderer?.setSatellites(null)
-    syncSatelliteSelection(); client.update(currentDate(), store.getState().observer)
-    satelliteStatus = `Public snapshot: ${satellites.length.toLocaleString()} objects`; $('countMetric').textContent = ([...tables.values()].reduce((n, table) => n + table.length, 0) + satellites.length).toLocaleString(); return result
-  } catch (error) {
-    try { satelliteStatus = satelliteStatus || error.message } catch { satelliteStatus = 'No satellite snapshot has been published. The atlas never downloads the full catalog from CelesTrak in your browser.' }
-    throw Error(satelliteStatus)
+  const requested = store.getState().satelliteSource
+  if (requested?.kind === 'local') {
+    if (satelliteSourceMatches(requested, loadedSatelliteResult?.snapshot)) { if (activeSatelliteResult !== loadedSatelliteResult) useSatelliteResult(loadedSatelliteResult); return loadedSatelliteResult }
+    throw Error(`Re-import ${requested.name || 'the local OMM file'} to restore this setup's orbital data, or choose Use published snapshot.`)
+  }
+  if (publishedLoad?.generation === satelliteRequest) return publishedLoad.promise
+  const generation = ++satelliteRequest
+  client.request('cancelSource').catch(() => {})
+  const promise = (async () => {
+    try {
+      const { url: source } = await resolveSatelliteSource()
+      assertSatelliteRequest(generation)
+      const result = await client.request('load', { url: source, prepareOnly: true })
+      assertSatelliteRequest(generation)
+      // Commit is queued before updates/details; later attempts cannot replace this source out of order.
+      const committed = client.request('commitSource', { generation: result.generation })
+      useSatelliteResult(result)
+      await committed; return result
+    } catch (error) { assertSatelliteRequest(generation); satelliteStatus = error.message; emit(); throw error }
+    finally { if (publishedLoad?.generation === generation) publishedLoad = null }
+  })()
+  publishedLoad = { generation, promise }; return promise
+}
+function assertSatelliteRequest(generation) { if (generation !== satelliteRequest) throw new DOMException('Superseded satellite source request', 'AbortError') }
+function useSatelliteResult(result) {
+  loadedSatelliteResult = activeSatelliteResult = result
+  satellites = result.objects; satelliteSnapshot = result.snapshot; resolveSatelliteSelection = createSatelliteSelectionResolver(satellites)
+  satelliteStatus = result.snapshot.imported ? `Local OMM file: ${result.snapshot.imported.filename} · ${satellites.length.toLocaleString()} objects · source and completeness unverified` : `Public snapshot: ${satellites.length.toLocaleString()} objects`
+  status.set('satellites', { ready: true, rows: satellites.length, format: result.snapshot.imported ? 'local OMM' : undefined })
+  // Position buffers and filter indices refer to the previous snapshot's row order.
+  satelliteState = null; renderer?.setSatellites(null); syncSatelliteSelection(); client.update(currentDate(), store.getState().observer)
+  $('countMetric').textContent = ([...tables.values()].reduce((n, table) => n + table.length, 0) + satellites.length).toLocaleString()
+}
+function deactivateSatellites(message) {
+  activeSatelliteResult = null; satellites = []; satelliteSnapshot = null; satelliteState = null; resolveSatelliteSelection = createSatelliteSelectionResolver()
+  renderer?.setSatellites(null); renderer?.setOrbitPaths([]); satelliteStatus = message; status.set('satellites', { error: message })
+  if (store.getState().selection?.layer === 'satellites' && store.getState().camera.mode === 'follow') store.set({ camera: { mode: 'orbit' } }, { history: false })
+}
+function syncSatelliteSource(next) {
+  const key = satelliteSourceKey(next.satelliteSource)
+  if (key === observedSatelliteSource) return
+  observedSatelliteSource = key; satelliteRequest++; client.request('cancelSource').catch(() => {})
+  if (satelliteSourceMatches(next.satelliteSource, loadedSatelliteResult?.snapshot)) { useSatelliteResult(loadedSatelliteResult); return }
+  deactivateSatellites(next.satelliteSource?.kind === 'local' ? `This setup requires ${next.satelliteSource.name || 'a local OMM file'} with its recorded SHA-256. Re-import that file; a different loaded set is retained inactive.` : 'Loading the requested published satellite source…')
+  if (next.satelliteSource?.kind !== 'local' && next.layers.satellites?.visible) loadSatellites().then(() => emit()).catch(error => { if (error.name !== 'AbortError') { status.set('satellites', { error: error.message }); emit() } })
+}
+async function importSatelliteFile(file) {
+  if (!file || file.size > MAX_OMM_BYTES) throw Error('Choose an OMM JSON file of at most 64 MB.')
+  const generation = ++satelliteRequest; client.request('cancelSource').catch(() => {})
+  const bytes = await file.arrayBuffer(), digest = await crypto.subtle.digest('SHA-256', bytes), sha256 = Array.from(new Uint8Array(digest), x => x.toString(16).padStart(2, '0')).join('')
+  assertSatelliteRequest(generation)
+  const result = await client.request('import', { text: new TextDecoder().decode(bytes), name: file.name, sha256, importedAt: new Date().toISOString(), prepareOnly: true })
+  assertSatelliteRequest(generation)
+  const committed = client.request('commitSource', { generation: result.generation }), source = { kind: 'local', name: file.name, sha256, count: result.objects.length }
+  observedSatelliteSource = satelliteSourceKey(source)
+  store.set({ satelliteSource: source, layers: { satellites: { visible: true, opacity: 1, filters: {} } } }); useSatelliteResult(result); emit()
+  await committed
+  return result
+}
+async function usePublishedSatellites() {
+  const previous = store.getState().satelliteSource, previousActive = activeSatelliteResult
+  observedSatelliteSource = 'published'; store.set({ satelliteSource: { kind: 'published' } })
+  deactivateSatellites('Loading the requested published satellite source…')
+  const promise = loadSatellites(), generation = satelliteRequest
+  try { const result = await promise; emit(); return result }
+  catch (error) {
+    assertSatelliteRequest(generation)
+    observedSatelliteSource = satelliteSourceKey(previous); store.set({ satelliteSource: previous || { kind: 'published' } })
+    if (previousActive) { useSatelliteResult(previousActive); satelliteStatus += ` · published replacement unavailable: ${error.message}`; emit() }
+    throw error
   }
 }
 function syncSatelliteSelection(next = store.getState()) {
@@ -114,10 +225,11 @@ async function syncCatalogs() {
   $('countMetric').textContent = ([...tables.values()].reduce((n, table) => n + table.length, 0) + satellites.length).toLocaleString()
   emit()
 }
-const app = { store, tables, status, masks, plugins, toast, loadJSON, currentDate, snapshotState, selectionRow, select, workspace, loadLayer, loadSatellites, syncCatalogs, client,
+const app = { store, tables, status, masks, plugins, toast, loadJSON, currentDate, snapshotState, selectionRow, select, workspace, loadLayer, loadSatellites, loadSmallBodyData, loadWeatherData, importSatelliteFile, usePublishedSatellites, syncCatalogs, client,
   subscribe(fn) { bus.addEventListener('change', fn); return () => bus.removeEventListener('change', fn) },
   get registry() { return registry }, get renderer() { return renderer }, get ready() { return ready }, get metrics() { return metrics }, get bodies() { return latestBodies },
   get satellites() { return satellites }, get satelliteState() { return satelliteState }, get satelliteStatus() { return satelliteStatus },
+  get satelliteSnapshot() { return satelliteSnapshot }, get weatherStatus() { return weatherStatus }, get smallBodyStatus() { return smallBodyStatus },
   selectedDetails() { const s = store.getState().selection, row = s?.layer === 'satellites' ? selectionRow() : null; return row ? client.request('details', { id: row.id, date: currentDate().toISOString(), observer: store.getState().observer }) : Promise.resolve(null) },
 }
 window.__atlas = app
@@ -134,19 +246,23 @@ try {
 mountShell(app)
 let previousWorkspace = store.getState().workspace, urlTimer
 store.subscribe(next => {
+  syncSatelliteSource(next); next = store.getState()
   if (syncSatelliteSelection(next)) return
   if (next.clock !== clockValue && JSON.stringify(next.clock) !== JSON.stringify(clockValue)) { clockValue = next.clock; clockEpoch = clockValue.utc ? Date.parse(clockValue.utc) : Date.now(); clockAnchor = performance.now() }
   for (const [id, state] of Object.entries(next.layers)) { if (state.visible && !status.get(id)?.ready && !status.get(id)?.error) loadLayer(id); if (tables.has(id)) applyFilters(id) }
+  applyWeather()
   if (next.workspace !== previousWorkspace) { previousWorkspace = next.workspace; emit() }
   clearTimeout(urlTimer); urlTimer = setTimeout(() => { writeURLState(snapshotState()).catch(() => {}) }, 900)
   emit()
 })
 addEventListener('hashchange', async () => { try { const s = await readURLState(); if (s) store.replace(s) } catch (error) { toast(error.message) } })
-client.subscribe(payload => { if (payload.type !== 'positions') return; satelliteState = payload; renderer?.setSatellites(payload, satellites); emit() })
+client.subscribe(payload => { if (payload.type !== 'positions' || !activeSatelliteResult || payload.sourceGeneration !== activeSatelliteResult.generation) return; satelliteState = payload; renderer?.setSatellites(payload, satellites); emit() })
 function tick() {
   const date = currentDate()
   try {
-    latestBodies = bodiesAt(date).map(body => ({ ...body, utc: date.toISOString() })); renderer?.setSolarBodies(latestBodies)
+    latestBodies = bodiesAt(date).map(body => ({ ...body, utc: date.toISOString() }))
+    if (store.getState().layers.smallbodies?.visible && smallBodyCoverage().loaded) { const earth = latestBodies.find(body => body.id === 'earth'); latestBodies.push(...smallBodiesAt(date, { earthPosition: earth.position, earthVelocity: earth.velocity }).map(body => ({ ...body, utc: date.toISOString() }))) }
+    renderer?.setSolarBodies(latestBodies)
     const state = store.getState(), selected = state.selection
     if (state.camera.mode === 'follow' && selected) {
       let target
@@ -157,7 +273,7 @@ function tick() {
     if (satellites.length && state.layers.satellites?.visible) client.update(date, state.observer)
     $('utcReadout').textContent = date.toISOString().replace('T', ' ').slice(0, 19) + ' UTC'
     $('clockMode').textContent = state.clock.paused ? 'PAUSED' : `${state.clock.rate}× UTC`
-    $('frameMetric').textContent = state.camera.distance < 1e-13 ? 'GEOCENTRIC / GCRS' : state.camera.distance < 1e-8 ? 'HELIOCENTRIC / EQJ' : 'ICRS / J2000'
+    $('frameMetric').textContent = state.view === 'sky' ? 'ICRS / J2000' : selected?.layer === 'satellites' ? 'EARTH / GCRS' : selected?.layer === 'solar' || ['solar', 'earth'].includes(state.workspace) ? 'HELIOCENTRIC / EQJ' : 'ICRS / J2000'
     emit()
   } catch (error) { toast(error.message) }
 }

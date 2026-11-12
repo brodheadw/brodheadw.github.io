@@ -4,17 +4,17 @@
   "view": "3d",
   "ascii": false,
   "guides": false,
-  "bodyScale": "visible",
+  "bodyScale": "true",
   "camera": {
     "target": [
       0,
       0,
       0
     ],
-    "distance": 1e-15,
+    "distance": 7.777870294666476e-16,
     "yaw": 0.56,
     "pitch": 0.26,
-    "mode": "orbit",
+    "mode": "follow",
     "log": false
   },
   "layers": {
@@ -59,7 +59,12 @@
     },
     "sky.optical": {
       "visible": true,
-      "opacity": 0.55,
+      "opacity": 0.035,
+      "filters": {}
+    },
+    "weather.clouds": {
+      "visible": false,
+      "opacity": 0.65,
       "filters": {}
     }
   },

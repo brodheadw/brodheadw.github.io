@@ -1,13 +1,15 @@
 import { DEFAULT_STATE, mergeState, normalizeState } from '../store.js'
+import { eclipticView } from '../astro/solar.js'
+import { auToMpc } from '../astro/units.js'
 export const WORKSPACES = [
   { id: 'explore', title: 'Explore', description: 'Travel from nearby companions to the galaxy web.', panels: ['layers', 'search', 'inspector', 'presets', 'sources'] },
-  { id: 'neutrinos', title: 'Neutrinos', description: 'Alert directions, track excess and chance coincidences.', panels: ['filters', 'targets', 'experiment', 'inspector', 'layers', 'presets', 'sources'] },
+  { id: 'neutrinos', title: 'Neutrinos', description: 'Alert directions, track excess and chance coincidences.', panels: ['filters', 'targets', 'experiment', 'laboratory', 'inspector', 'layers', 'presets', 'sources'] },
   { id: 'dark-matter', title: 'Dark matter', description: 'Compare projected CMB lensing convergence with the galaxy distribution.', panels: ['darkmatter', 'layers', 'inspector', 'presets', 'sources'] },
-  { id: 'gamma', title: 'Gamma rays', description: 'Fermi source classes and the diffuse gamma-ray sky.', panels: ['filters', 'inspector', 'experiment', 'layers', 'presets', 'sources'] },
-  { id: 'bootes', title: 'Boötes III study', description: 'A disrupting stellar system / dwarf-galaxy candidate; angular coincidences are not detections.', panels: ['inspector', 'targets', 'layers', 'experiment', 'reproduction', 'presets', 'sources', 'status'] },
-  { id: 'solar', title: 'Solar System', description: 'A shared UTC clock drives heliocentric bodies.', panels: ['time', 'inspector', 'measure', 'layers', 'presets', 'sources'] },
-  { id: 'earth', title: 'Earth & satellites', description: 'Public element-set predictions, with their age and uncertainty.', panels: ['satellites', 'time', 'inspector', 'passes', 'measure', 'statistics', 'layers', 'presets', 'sources', 'status'] },
-  { id: 'custom', title: 'Custom', description: 'Your own layers, filters, camera and saved experiments.', panels: ['layers', 'search', 'filters', 'inspector', 'experiment', 'presets', 'sources', 'status'] },
+  { id: 'gamma', title: 'Gamma rays', description: 'Fermi source classes and the diffuse gamma-ray sky.', panels: ['filters', 'inspector', 'experiment', 'laboratory', 'layers', 'presets', 'sources'] },
+  { id: 'bootes', title: 'Boötes III study', description: 'A disrupting stellar system / dwarf-galaxy candidate; angular coincidences are not detections.', panels: ['inspector', 'targets', 'layers', 'experiment', 'laboratory', 'reproduction', 'presets', 'sources', 'status'] },
+  { id: 'solar', title: 'Solar System', description: 'Physical sizes and J2000 orbits; diamond locators identify bodies too small to resolve.', panels: ['time', 'solar-catalog', 'inspector', 'orbit-study', 'measure', 'layers', 'presets', 'sources'] },
+  { id: 'earth', title: 'Earth & satellites', description: 'A physically scaled Earth, dated weather observations and public orbit predictions.', panels: ['satellite-data', 'satellites', 'time', 'inspector', 'passes', 'orbit-study', 'measure', 'earth-weather', 'statistics', 'layers', 'presets', 'sources', 'status'] },
+  { id: 'custom', title: 'Custom', description: 'Your own layers, filters, camera and saved experiments.', panels: ['layers', 'search', 'filters', 'inspector', 'experiment', 'laboratory', 'presets', 'sources', 'status'] },
 ]
 const visibility = (...ids) => Object.fromEntries(ids.map(id => [id, { visible: true, opacity: id.startsWith('sky.') ? 0.55 : 1, filters: {} }]))
 const patches = {
@@ -16,8 +18,8 @@ const patches = {
   'dark-matter': { view: 'sky', selection: null, layers: visibility('galaxies', 'sky.lensing', 'sky.lss'), focusLayer: 'sky.lensing' },
   gamma: { view: 'sky', selection: null, layers: visibility('fermi', 'sky.gamma'), focusLayer: 'fermi' },
   bootes: {},
-  solar: { selection: { layer: 'solar', id: 'earth' }, camera: { target: [0, 0, 0], distance: 5e-11 }, layers: visibility('solar', 'sky.optical') },
-  earth: { selection: { layer: 'solar', id: 'earth' }, camera: { target: [0, 0, 0], distance: 1e-15 }, layers: visibility('solar', 'satellites', 'sky.optical'), focusLayer: 'satellites' },
+  solar: { bodyScale:'true', selection: null, camera: { target: [0, 0, 0], distance: auToMpc(70), ...eclipticView() }, layers: {...visibility('solar', 'smallbodies', 'sky.optical'),'sky.optical':{visible:true,opacity:.035,filters:{}}} },
+  earth: { bodyScale:'true', selection: { layer: 'solar', id: 'earth' }, camera: { target: [0, 0, 0], distance: 24000/3.0856775814913673e19, mode:'follow' }, layers: {...visibility('solar', 'satellites', 'sky.optical'),'sky.optical':{visible:true,opacity:.035,filters:{}},'weather.clouds':{visible:false,opacity:.65,filters:{}}}, focusLayer: 'satellites' },
   custom: {},
 }
 export function workspacePreset(id) {

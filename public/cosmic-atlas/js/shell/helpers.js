@@ -1,7 +1,7 @@
 import { escapeHTML } from '../util.js'
 export const esc = escapeHTML
 export const $ = (el, query) => el.querySelector(query)
-export const num = (x, digits = 2) => Number.isFinite(Number(x)) ? Number(x).toLocaleString(undefined, { maximumFractionDigits: digits }) : 'Unavailable'
+export const num = (x, digits = 2) => x !== null && x !== undefined && x !== '' && Number.isFinite(Number(x)) ? Number(x).toLocaleString(undefined, { maximumFractionDigits: digits }) : 'Unavailable'
 export const utc = x => x ? new Date(x).toISOString().replace('T', ' ').slice(0, 19) + ' UTC' : 'Unavailable'
 export function downloadFile(name, text, type = 'application/json') { const url = URL.createObjectURL(new Blob([text], { type })), link = document.createElement('a'); link.href = url; link.download = name; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000) }
 export const rows = values => `<table class="units">${values.map(([key, value]) => `<tr><th>${esc(key)}</th><td>${value}</td></tr>`).join('')}</table>`

@@ -19,7 +19,7 @@ test('historical ISS fixture exercises the worker, inspector, ground track, Dopp
   await page.selectOption('#workspace','earth');
   await page.waitForFunction(()=>window.__atlas.satellites.length===1&&window.__atlas.satelliteState?.valid[0]);
   await page.getByRole('searchbox',{name:'Search satellites'}).fill('25544');
-  await page.locator('[data-satellite]').filter({hasText:'ISS (ZARYA)'}).click();
+  await page.locator('button[data-satellite]').filter({hasText:'ISS (ZARYA)'}).click();
   const inspector=page.locator('#panels [data-panel="inspector"]');
   await inspector.evaluate(panel=>{panel.open=true;});
   await expect(inspector.locator('.inspector-title')).toHaveText('ISS (ZARYA)');

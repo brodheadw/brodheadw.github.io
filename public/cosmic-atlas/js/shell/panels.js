@@ -4,7 +4,7 @@ import { rowAt } from '../data/loaders.js'
 import { distanceUnits, separation } from '../util.js'
 import { icrsToGalactic, icrsToSupergalactic } from '../astro/coords.js'
 import { AU_KM, MPC_KM, formatDistance } from '../astro/units.js'
-import { bodyRiseSet, EPHEMERIS } from '../astro/solar.js'
+import { bodyRiseSet, EPHEMERIS, eclipticView, OORT_CLOUD } from '../astro/solar.js'
 import { runExperiment, experimentCSV } from '../experiments/index.js'
 import { ringProbability } from '../experiments/core.js'
 import { listPresets, savePreset, loadPreset, renamePreset, deletePreset, exportPreset, importPreset } from '../presets.js'
@@ -13,6 +13,11 @@ import darkmatter from '../panels/darkmatter.js'
 import targetRanking from '../panels/target-ranking.js'
 import { segmentBlockedBySphere } from '../render/geometry.js'
 import { renderSatelliteInspector } from '../panels/satellite-inspector.js'
+import laboratory from '../panels/laboratory.js'
+import orbitStudy from '../panels/orbit-study.js'
+import earthWeather from '../panels/earth-weather.js'
+import solarCatalog from '../panels/solar-catalog.js'
+import satelliteData from '../panels/satellite-data.js'
 
 const byId = (app, id) => app.registry.find(l => l.id === id)
 const selectedLayer = app => byId(app, app.store.getState().focusLayer) || byId(app, app.store.getState().workspace === 'gamma' ? 'fermi' : 'neutrinos')
@@ -74,28 +79,30 @@ const search = { title: 'Find an object', mount(el, app) {
 } }
 
 const inspector = { title: 'Object inspector', mount(el, app) {
-  let key = '', alive = true, pendingSatellite = false, satelliteCleanup = null
+  let key = '', alive = true, pendingSatellite = false, satelliteCleanup = null, satelliteSource = ''
   function render() {
     const state = app.store.getState(), row = app.selectionRow(), id = state.selection?.layer
-    const signature = `${JSON.stringify(state.selection)}:${id === 'solar' || id === 'satellites' ? Math.floor(app.currentDate().getTime() / 1000) : app.tables.size}`
+    const source = JSON.stringify(app.satelliteSnapshot)
+    const signature = `${JSON.stringify(state.selection)}:${id === 'solar' || id === 'satellites' ? Math.floor(app.currentDate().getTime() / 1000) : app.tables.size}:${id === 'satellites' ? source + JSON.stringify(state.observer) : ''}`
     if (signature === key) return; key = signature
+    if (source !== satelliteSource) { satelliteCleanup?.(); satelliteCleanup = null; satelliteSource = source; if (id === 'satellites') el.innerHTML = '<p class="empty">Loading state for the current orbital data source…</p>' }
     if (!row) {
       if (satelliteCleanup) { satelliteCleanup(); satelliteCleanup = null }
-      el.innerHTML = id === 'satellites' && String(state.selection.id).startsWith('sat:') ? `<p class="empty">Selected NORAD ${esc(String(state.selection.id).slice(4))} is absent from this snapshot. Choose another object or load a snapshot containing it.</p>` : '<p class="empty">Select a label, sky event or search result to inspect its coordinates and provenance.</p>'; return
+      el.innerHTML = id === 'satellites' && String(state.selection.id).startsWith('sat:') ? `<p class="empty">Selected NORAD ${esc(String(state.selection.id).slice(4))} is absent from this snapshot. Choose another object or load a snapshot containing it.</p>` : id === 'solar' && String(state.selection.id).startsWith('small:') ? '<p class="empty">This small body is outside its loaded vector coverage or its layer is off. Check Tracked Solar System and the UTC clock; positions are not extrapolated.</p>' : '<p class="empty">Select a label, sky event or search result to inspect its coordinates and provenance.</p>'; return
     }
     const layer = byId(app, id)
     if (id === 'satellites') {
       if (pendingSatellite) return
       pendingSatellite = true
-      app.selectedDetails().then(detail => { if (!alive || JSON.stringify(app.store.getState().selection) !== JSON.stringify(state.selection)) return; satelliteCleanup = renderSatelliteInspector(el, app, row, detail) }).catch(error => fail(el, error)).finally(() => { pendingSatellite = false })
+      app.selectedDetails().then(detail => { if (!alive || key !== signature || JSON.stringify(app.satelliteSnapshot) !== source || JSON.stringify(app.store.getState().selection) !== JSON.stringify(state.selection)) return; satelliteCleanup = renderSatelliteInspector(el, app, row, detail) }).catch(error => { if (alive && key === signature) fail(el, error) }).finally(() => { pendingSatellite = false; if (alive && key !== signature) { key = ''; render() } })
       return
     }
     if (satelliteCleanup) { satelliteCleanup(); satelliteCleanup = null }
     if (id === 'solar') {
-      const speed = Math.hypot(...row.velocity), rise = row.id !== 'earth' && !['io', 'europa', 'ganymede', 'callisto'].includes(row.id) ? bodyRiseSet(row.name, app.currentDate(), state.observer) : null
-      el.innerHTML = `<div class="info"><span class="badge">SOLAR SYSTEM · GEOMETRIC EQJ</span><h3 class="inspector-title">${esc(row.name)}</h3>${rows([
-        ['Heliocentric', `${num(row.heliocentricDistanceKm, 0)} km / ${num(row.heliocentricDistanceKm / AU_KM, 5)} AU`], ['From Earth', `${num(row.geocentricDistanceKm, 0)} km / ${num(row.geocentricDistanceKm / AU_KM, 5)} AU`], ['Light travel', `${num(row.lightMinutes, 3)} min`], ['Speed', `${num(speed, 4)} km/s`], ['Velocity xyz', `${row.velocity.map(v => num(v, 4)).join(', ')} km/s`], ['Geometric RA / Dec', row.geocentricDistanceKm ? `${num(row.ra, 4)}° / ${num(row.dec, 4)}°` : 'Earth observer reference; undefined'], ['Mean radius', `${num(row.radiusKm, 1)} km`], ['Period', `${num(row.periodDays)} d`], ...Object.entries(row.elements || {}).filter(([k]) => ['semiMajorAxisKm','eccentricity','inclination','raan','argumentOfPerigee','meanAnomaly','trueAnomaly'].includes(k)).map(([k,v]) => [{semiMajorAxisKm:'Semi-major axis (km)',eccentricity:'Eccentricity',inclination:'Inclination (°)',raan:'Ascending node (°)',argumentOfPerigee:'Periapsis argument (°)',meanAnomaly:'Mean anomaly (°)',trueAnomaly:'True anomaly (°)'}[k], num(v, 5)]), ['Rise / set', row.id === 'earth' ? 'Not applicable for the observing Earth' : `${rise?.rise ? utc(rise.rise) : 'No rise in next 2d'}<br>${rise?.set ? utc(rise.set) : 'No set in next 2d'}`],
-      ])}<p class="notice">${esc(row.coordinateNote)} Ephemeris: ${EPHEMERIS.name} ${EPHEMERIS.version}, ${EPHEMERIS.accuracy}. Osculating elements use each body's stated parent frame.</p></div><div class="actions"><button data-follow>Follow ${esc(row.name)}</button><button data-scale>${state.bodyScale === 'true' ? 'Visible' : 'True'} body sizes</button></div>`
+      const speed = Math.hypot(...row.velocity), supportsRise = !row.id.startsWith('small:') && !['earth', 'io', 'europa', 'ganymede', 'callisto'].includes(row.id), rise = supportsRise ? bodyRiseSet(row.name, app.currentDate(), state.observer) : null
+      el.innerHTML = `<div class="info"><span class="badge">SOLAR SYSTEM · GEOMETRIC VECTORS</span><h3 class="inspector-title">${esc(row.name)}</h3>${rows([
+        ['Heliocentric', `${num(row.heliocentricDistanceKm, 0)} km / ${num(row.heliocentricDistanceKm / AU_KM, 5)} AU`], ['From Earth', `${num(row.geocentricDistanceKm, 0)} km / ${num(row.geocentricDistanceKm / AU_KM, 5)} AU`], ['Light travel', `${num(row.lightMinutes, 3)} min`], ['Speed', `${num(speed, 4)} km/s`], ['Velocity xyz', `${row.velocity.map(v => num(v, 4)).join(', ')} km/s`], ['Geometric RA / Dec', row.geocentricDistanceKm ? `${num(row.ra, 4)}° / ${num(row.dec, 4)}°` : 'Earth observer reference; undefined'], ['Mean radius', `${num(row.radiusKm, 1)} km`], ['Period', `${num(row.periodDays)} d`], ...Object.entries(row.elements || {}).filter(([k]) => ['semiMajorAxisKm','eccentricity','inclination','raan','argumentOfPerigee','meanAnomaly','trueAnomaly'].includes(k)).map(([k,v]) => [{semiMajorAxisKm:'Semi-major axis (km)',eccentricity:'Eccentricity',inclination:'Inclination (°)',raan:'Ascending node (°)',argumentOfPerigee:'Periapsis argument (°)',meanAnomaly:'Mean anomaly (°)',trueAnomaly:'True anomaly (°)'}[k], num(v, 5)]), ['Rise / set', row.id === 'earth' ? 'Not applicable for the observing Earth' : !supportsRise ? 'Unavailable for this body in the rise/set model' : `${rise?.rise ? utc(rise.rise) : 'No rise in next 2d'}<br>${rise?.set ? utc(rise.set) : 'No set in next 2d'}`],
+      ])}<p class="notice">${esc(row.coordinateNote)} Ephemeris: ${esc(row.ephemeris || EPHEMERIS.name)}${row.id.startsWith('small:') ? `. ${esc(row.accuracy)} Coverage ${utc(row.coverage.start)} to ${utc(row.coverage.end)}.` : ` ${EPHEMERIS.version}, ${EPHEMERIS.accuracy}.`} Osculating elements use each body's stated parent frame.</p><p class="notice">${esc(row.appearanceNote || 'Physical radius; locator markers are separate from body geometry.')}</p>${row.source ? `<p><a href="${safeLink(row.source)}" target="_blank" rel="noopener">Ephemeris source ↗</a></p>` : ''}</div><div class="actions"><button data-follow>Follow ${esc(row.name)}</button><button data-scale>${state.bodyScale === 'true' ? 'Enhance' : 'Reduce'} locator markers</button></div>`
       $(el, '[data-follow]').onclick = () => app.select('solar', row.id)
       $(el, '[data-scale]').onclick = () => { key = ''; app.store.set({ bodyScale: state.bodyScale === 'true' ? 'visible' : 'true' }) }
       return
@@ -185,8 +192,8 @@ const experiment = { title: 'Angular-coincidence experiment', mount(el, app) {
   function eventTitle(id) { return byId(app, id)?.title || id }
   let savedKey = ''
   const off = listen(app, () => {
-    const saved = app.store.getState().experiments, key = saved.map(x => x.id).join(','); if (key === savedKey) return; savedKey = key
-    const node = $(el, '[data-saved]'); node.innerHTML = saved.length ? '<label>Saved experiments in this setup</label>' + saved.map((r, i) => `<div class="saved-row"><button data-result="${i}">${esc(r.name || r.id || 'Experiment')} · ${r.observed} / ${num(r.expected)} exp</button><button data-delete="${i}" aria-label="Remove experiment">×</button></div>`).join('') : ''
+    const saved = app.store.getState().experiments, compatible = saved.map((r, i) => ({ r, i })).filter(({ r }) => !r.method || r.method === 'angular-coincidence'), key = saved.map(x => x.id).join(','); if (key === savedKey) return; savedKey = key
+    const node = $(el, '[data-saved]'); node.innerHTML = compatible.length ? '<label>Saved angular-coincidence runs in this setup</label>' + compatible.map(({ r, i }) => `<div class="saved-row"><button data-result="${i}">${esc(r.name || r.id || 'Experiment')} · ${r.observed} / ${num(r.expected)} exp</button><button data-delete="${i}" aria-label="Remove experiment">×</button></div>`).join('') : ''
     node.querySelectorAll('[data-result]').forEach(b => { b.onclick = () => { result = saved[+b.dataset.result]; showResult() } }); node.querySelectorAll('[data-delete]').forEach(b => { b.onclick = () => app.store.set({ experiments: saved.filter((_, i) => i !== +b.dataset.delete) }) })
   })
   return () => { active = false; controller?.abort(); off() }
@@ -243,13 +250,14 @@ const status = { title: 'Data status & pipeline', mount(el, app) {
 } }
 
 const time = { title: 'Global UTC clock', mount(el, app) {
-  el.innerHTML = `<div class="field-row"><label>UTC date & time<input data-date type="datetime-local" step="1" min="1972-01-01T00:00:00" aria-label="Global UTC date and time"></label><label>Time rate<select data-rate>${[-1e6, -1000, -1, 1, 10, 100, 1000, 1e4, 1e6].map(x => `<option value="${x}">${x.toLocaleString()}×</option>`).join('')}</select></label></div><div class="actions"><button data-pause>Pause</button><button data-now>Now / 1×</button></div><label class="check"><input data-true type="checkbox">True body radii (may be sub-pixel)</label><p class="notice">One clock drives every body and orbit prediction. UTC→TAI→TT uses the recorded leap-second table through 2017. Earth-fixed orientation assumes UT1−UTC=0 and zero polar motion unless reference values are supplied.</p>`
+  el.innerHTML = `<div class="field-row"><label>UTC date & time<input data-date type="datetime-local" step="1" min="1972-01-01T00:00:00" aria-label="Global UTC date and time"></label><label>Time rate<select data-rate>${[-1e6, -1000, -1, 1, 10, 100, 1000, 1e4, 1e6].map(x => `<option value="${x}">${x.toLocaleString()}×</option>`).join('')}</select></label></div><div class="actions"><button data-pause>Pause</button><button data-now>Now / 1×</button></div><div class="actions solar-scales"><button data-solar-scale="5">Inner planets · 5 AU</button><button data-solar-scale="70">Whole system · 70 AU</button><button data-solar-scale="240000">Oort region</button></div><label class="check"><input data-true type="checkbox">Enhanced locator markers</label><p class="notice">Physical radii always stay to scale. Subpixel bodies use separate hollow-diamond locators. Right/middle/Shift-drag pans; two-finger drag pans and pinch zooms. Oort boundaries are schematic and uncertain: ${OORT_CLOUD.innerAU.join('–')} AU inner region, up to ${num(OORT_CLOUD.outerAU[1], 0)} AU outer extent.</p><p class="notice">One clock drives every body and orbit prediction. UTC→TAI→TT uses the recorded leap-second table through 2017. Earth-fixed orientation assumes UT1−UTC=0 and zero polar motion unless reference values are supplied.</p>`
+  el.querySelectorAll('[data-solar-scale]').forEach(button => { button.onclick = () => app.store.set({ view: '3d', selection: null, camera: { target: [0, 0, 0], distance: Number(button.dataset.solarScale) * AU_KM / MPC_KM, ...eclipticView(), mode: 'orbit', log: false }, layers: { solar: { visible: true, opacity: 1, filters: {} } } }) })
   $(el, '[data-date]').onchange = e => { const value = e.target.value; if (value && Number.isFinite(Date.parse(value + 'Z'))) app.store.set({ clock: { utc: new Date(value + 'Z').toISOString(), paused: true } }) }
   $(el, '[data-rate]').onchange = e => app.store.set({ clock: { ...app.snapshotState().clock, rate: +e.target.value, paused: false } })
   $(el, '[data-pause]').onclick = () => app.store.set({ clock: { ...app.snapshotState().clock, paused: !app.store.getState().clock.paused } })
   $(el, '[data-now]').onclick = () => app.store.set({ clock: { utc: new Date().toISOString(), rate: 1, paused: false } })
-  $(el, '[data-true]').onchange = e => app.store.set({ bodyScale: e.target.checked ? 'true' : 'visible' })
-  return listen(app, () => { const state = app.store.getState(); if (document.activeElement !== $(el, '[data-date]')) $(el, '[data-date]').value = app.currentDate().toISOString().slice(0, 19); $(el, '[data-rate]').value = state.clock.rate; $(el, '[data-pause]').textContent = state.clock.paused ? 'Resume' : 'Pause'; $(el, '[data-true]').checked = state.bodyScale === 'true' })
+  $(el, '[data-true]').onchange = e => app.store.set({ bodyScale: e.target.checked ? 'visible' : 'true' })
+  return listen(app, () => { const state = app.store.getState(); if (document.activeElement !== $(el, '[data-date]')) $(el, '[data-date]').value = app.currentDate().toISOString().slice(0, 19); $(el, '[data-rate]').value = state.clock.rate; $(el, '[data-pause]').textContent = state.clock.paused ? 'Resume' : 'Pause'; $(el, '[data-true]').checked = state.bodyScale === 'visible' })
 } }
 
 const satellitePanel = { title: 'Public satellite catalog', mount(el, app) {
@@ -341,4 +349,4 @@ const statistics = { title: 'Orbital population statistics', mount(el, app) {
   })
 } }
 
-export const panels = { layers, search, inspector, filters, targets, experiment, darkmatter, reproduction, presets, sources, status, time, satellites: satellitePanel, passes, measure, statistics }
+export const panels = { layers, search, inspector, filters, targets, experiment, laboratory, 'orbit-study': orbitStudy, 'earth-weather': earthWeather, 'solar-catalog': solarCatalog, 'satellite-data': satelliteData, darkmatter, reproduction, presets, sources, status, time, satellites: satellitePanel, passes, measure, statistics }

@@ -1,0 +1,1 @@
+export default { kind: 'annotations', panels: ['earth-weather'], load: app => app.loadWeatherData(), render: () => {}, legend: () => ({ shape: '▨', label: 'Dated observed cloud fraction · Earth surface' }) }

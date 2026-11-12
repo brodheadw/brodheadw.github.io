@@ -65,7 +65,8 @@ export function mountShell(app) {
     $('undo').disabled = !store.canUndo(); $('redo').disabled = !store.canRedo()
     $('focusTitle').textContent = row?.name || workspace.title
     $('focusKind').textContent = state.selection?.layer === 'satellites' ? 'PUBLIC ORBIT / PREDICTION' : state.selection?.layer === 'solar' ? 'SOLAR SYSTEM / EPHEMERIS' : state.selection?.layer === 'curated' ? 'INVESTIGATION / NEARBY UNIVERSE' : state.view === 'sky' ? 'OBSERVATORY / DIRECTION SPACE' : 'EXPLORE / THREE DIMENSIONS'
-    $('focusNote').textContent = row?.name === 'Boötes III' ? 'Disrupting stellar system / dwarf-galaxy candidate. Angular coincidence, not detection.' : state.selection?.layer === 'solar' ? 'Geometric positions · Astronomy Engine 2.1.19' : state.selection?.layer === 'satellites' ? 'Public GP elements · SGP4 prediction, not telemetry' : workspace.description
+    $('focusNote').textContent = row?.name === 'Boötes III' ? 'Disrupting stellar system / dwarf-galaxy candidate. Angular coincidence, not detection.' : state.selection?.layer === 'solar' ? `Geometric positions · ${row?.ephemeris || 'Astronomy Engine 2.1.19'}` : state.selection?.layer === 'satellites' ? 'GP elements · SGP4 prediction, not telemetry' : workspace.description
+    $('frameReadout').textContent = state.view === 'sky' ? 'ALL SKY · DRAG TO PAN · PINCH TO ZOOM' : 'DRAG TO ORBIT · TWO-FINGER / RIGHT-DRAG TO PAN'
     mountPanels()
   }
   app.subscribe(sync); store.subscribe(sync); sync()
