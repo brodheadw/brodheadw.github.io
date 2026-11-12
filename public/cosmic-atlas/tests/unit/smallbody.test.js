@@ -24,6 +24,8 @@ test('sampled small bodies match separate Horizons queries at three off-grid dat
 test('small-body sampling has hard coverage and keeps heliocentric and geocentric frames explicit',()=>{
   setSmallBodyData(data);
   assert.equal(smallBodyCoverage().count,8);
+  assert.equal(smallBodyCoverage().fetched_at,data.fetched_at);
+  assert.equal(smallBodyCoverage().orbitSolutions['small:ceres'].solution,data.objects.find(body=>body.id==='small:ceres').orbitSolution);
   assert.deepEqual(smallBodiesAt('2025-12-31T23:59:59Z'),[]);
   assert.deepEqual(smallBodiesAt('2028-01-01T00:00:01Z'),[]);
   assert.equal(smallBodiesAt(data.coverage_start).length,8);

@@ -30,7 +30,7 @@ export async function loadSmallBodies(url='data/smallbodies/ephemerides.json'){
 }
 
 export function smallBodyCoverage(){
-  return table?{loaded:true,start:table.coverage_start,end:table.coverage_end,count:table.objects.length,source:table.provider,caveat:table.caveat}:{loaded:false,start:null,end:null,count:0};
+  return table?{loaded:true,start:table.coverage_start,end:table.coverage_end,count:table.objects.length,source:table.provider,fetched_at:table.fetched_at,published_at:table.published_at,orbitSolutions:Object.fromEntries(table.objects.map(body=>[body.id,{spkid:body.spkid,solution:body.orbitSolution,date:body.orbitSolutionDate}])),caveat:table.caveat}:{loaded:false,start:null,end:null,count:0};
 }
 
 export function interpolateSmallBody(samples,jd){
