@@ -1,87 +1,43 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>3D Cosmic Atlas v3 · Survey Layers + Statistical Reports</title><style>
-:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#050916;color:#e9f1ff;font:14px system-ui,-apple-system,Segoe UI,sans-serif}header{padding:13px 20px;border-bottom:1px solid #27354f;display:flex;justify-content:space-between;align-items:center;gap:12px}h1{font-size:19px;margin:0;font-weight:720;letter-spacing:.1px}.sub{font-size:12px;color:#8ba2c4;margin-top:3px}.pill{font-size:11px;border:1px solid #355477;border-radius:30px;padding:5px 10px;color:#99caff}main{height:calc(100dvh - 65px);display:grid;grid-template-columns:minmax(0,1fr) 365px}#scene{position:relative;overflow:hidden;background:radial-gradient(ellipse at 51% 52%,#0d1a34 0,#040915 75%)}canvas{height:100%;width:100%;display:block;touch-action:none;cursor:grab}canvas:active{cursor:grabbing}.overlay{position:absolute;left:16px;top:16px;pointer-events:none;background:#071021b5;border:1px solid #2d425c;border-radius:11px;padding:11px 13px;font-size:12px;line-height:1.8;color:#afc4e7;max-width:min(430px,calc(100% - 32px))}.overlay strong{color:#f4f7fe}.bottom{position:absolute;bottom:14px;left:16px;color:#8197b5;font-size:11px;pointer-events:none}.side{overflow:auto;border-left:1px solid #243653;background:#0a1223;padding:17px 18px}.section{font-size:12px;letter-spacing:1.2px;text-transform:uppercase;color:#81a2ce;font-weight:750;margin:18px 0 9px}button,input,select{background:#14243c;border:1px solid #355071;color:#e8f1ff;border-radius:7px;padding:8px;font:inherit}button{cursor:pointer}button:hover{background:#203756}.actions{display:flex;flex-wrap:wrap;gap:7px}button.primary{background:#204c7d;border-color:#367bb9}label{display:block;font-size:12px;color:#bed0e9;margin:10px 0 5px}input[type=range]{width:100%;padding:0;accent-color:#59b6eb}input[type=file]{width:100%;font-size:11px}input[type=text]{width:100%}.check{display:flex;align-items:center;gap:8px;margin:9px 0;font-size:12px;color:#c8d9ee}.check input{accent-color:#54b6e6}.legend{display:flex;gap:9px;align-items:center;margin:7px 0;color:#aebfda;font-size:12px}.dot{height:9px;width:9px;border-radius:50%}.info{background:#101e32;border:1px solid #2c4765;border-radius:10px;padding:12px;margin-top:9px;line-height:1.65;min-height:101px}.info small{color:#94adc9}.notice{color:#89a5c4;font-size:11px;line-height:1.55;margin-top:10px}.badge{display:inline-block;background:#17426b;color:#a8d9ff;padding:3px 7px;border-radius:5px;font-size:11px;margin-bottom:6px}a{color:#86c9fa}#status{color:#a2d7d6;font-size:12px;margin-top:9px}kbd{border:1px solid #49617c;padding:1px 4px;border-radius:4px}@media(max-width:760px){main{grid-template-columns:1fr;height:auto}#scene{height:58dvh;min-height:330px}.side{border-left:0;border-top:1px solid #243653;max-height:none}.overlay{font-size:11px;padding:8px 10px}header{padding:10px 13px}.pill{display:none}}
-</style><style>
-.analysis-table{width:100%;border-collapse:collapse;font-size:12px}.analysis-table td,.analysis-table th{border-bottom:1px solid #2d425c;padding:7px 4px;text-align:left}.analysis-table th{color:#a6bad9}.analysis-result{padding:9px 0;border-bottom:1px solid #293950}.tinywarn{font-size:11px;line-height:1.5;color:#f5c38d;background:#302417;border:1px solid #6a4b26;padding:10px;border-radius:8px;margin-top:8px}.analysis-result b{color:#def0ff}
-</style><style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-:root{--bg:#060a11;--panel:#0b121b;--edge:#243040;--muted:#8497ab;--accent:#84d9e8}
-body{background:var(--bg);color:#e8f1f6;font:13px 'Space Grotesk',system-ui,sans-serif;letter-spacing:.01em}
-header{min-height:77px;background:#090f17;border-bottom:1px solid #253343;padding:15px 25px;gap:22px}
-header h1{font-size:21px;font-weight:700;letter-spacing:-.045em}
-header .sub{letter-spacing:.08em;text-transform:uppercase;font:10px 'DM Mono',monospace;color:#8a9eaf;margin-top:7px}
-header .pill{border:1px solid #36524f;background:#14211f;color:#9cd9bf;border-radius:2px;font:10px 'DM Mono',monospace;letter-spacing:.08em;padding:8px 11px}
-main{height:calc(100dvh - 77px);grid-template-columns:minmax(0,1fr) clamp(340px,26vw,450px)}
-#scene{background:linear-gradient(155deg,#0c1522,#05080e 57%,#0a111a)!important}
-#scene:before{content:'';position:absolute;inset:23px;border:1px solid #24314080;pointer-events:none;z-index:1}
-.overlay{left:34px;top:34px;border-radius:2px;background:#0b141edb;border:1px solid #344a59;max-width:340px;padding:16px 19px;line-height:2;font:11px 'DM Mono',monospace;color:#96afc0}
-.overlay strong{color:#e5f2f7;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
-.bottom{bottom:34px;left:35px;color:#8b9da9;font:10px 'DM Mono',monospace;letter-spacing:.025em}
-.side{padding:18px 23px 32px;border-left:1px solid #2a3846;background:#0b1119;scrollbar-color:#334454 transparent}
-.section{font:11px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.17em;color:#b0dfe6;border-top:1px solid #293747;padding-top:18px;margin:24px 0 13px}
-.side>.section:first-child{border:0;padding-top:2px}
-button,input,select{font:12px 'Space Grotesk',sans-serif;background:#141f2b;border:1px solid #384858;color:#e7f1f6;border-radius:3px;padding:10px 12px}
-button{transition:background .15s,border-color .15s}
-button:hover{background:#213444;border-color:#7fc6d1}
-button.primary{background:#173440;border-color:#427b83;color:#c4f6f8}
-button.primary:hover{background:#24505d}
-label,.check{color:#b1c3cd;font-size:12px}
-input[type=range],.check input{accent-color:#78cdd9}
-.info{background:#101b26;border:1px solid #283e4d;border-radius:3px;line-height:1.75}
-.notice{color:#91a3b0;font-size:11px;line-height:1.65}
-.badge{border-radius:2px}
-a{color:#92dce6}
-.legend{color:#a2b5c2}
-.tinywarn{background:#241d18;border-color:#61503d;border-radius:3px}
-#status,#syncstatus{font:11px 'DM Mono',monospace;line-height:1.7;color:#a6d5c9}
-.telemetry{display:flex;gap:21px;align-items:center;flex-wrap:wrap;margin-left:auto}
-.telemetry .metric{min-width:86px;border-left:1px solid #324453;padding-left:15px}
-.telemetry .key{display:block;font:9px 'DM Mono',monospace;letter-spacing:.13em;color:#7f9bad;margin-bottom:7px}
-.telemetry .value{font:13px 'DM Mono',monospace;color:#e2f3f6;white-space:nowrap}
-.telemetry .live{color:#a3eacb}
-.viewport-label{position:absolute;top:35px;right:35px;color:#8da6b8;border:1px solid #2d4151;background:#0b1419cc;padding:9px 13px;font:10px 'DM Mono',monospace;letter-spacing:.1em;pointer-events:none;z-index:2}
-.viewport-tools{position:absolute;bottom:35px;right:35px;z-index:3;display:flex;gap:8px}
-.viewport-tools button[aria-pressed=true]{background:#1b4a5c;border-color:#76d5d9}.viewport-tools button{background:#0d1922d9;font:10px 'DM Mono',monospace;letter-spacing:.08em}
-@media(max-width:1050px){.telemetry{gap:10px}.telemetry .metric{min-width:68px;padding-left:10px}}
-@media(max-width:760px){header{padding:14px 18px;min-height:73px}.telemetry{display:none}main{height:auto;grid-template-columns:1fr}#scene{height:60dvh;min-height:365px}.overlay{top:15px;left:15px;padding:10px;max-width:250px;font-size:10px}.viewport-label{display:none}.viewport-tools{bottom:18px;right:18px}.bottom{left:18px;bottom:75px;max-width:70%}.side{padding:18px}}
-#about{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:#03060acc;padding:16px}
-#about[hidden]{display:none}
-canvas[hidden]{display:none}
-#overlayNote{margin-top:6px}
-a.btnlink{display:inline-block;text-decoration:none;color:#c4f6f8;background:#173440;border:1px solid #42a5b5;border-radius:3px;padding:10px 12px;font-size:12px}
-a.btnlink:hover{background:#24505d}
-#about .card{max-width:620px;max-height:calc(100dvh - 32px);overflow:auto;background:#0b141c;border:1px solid #2d4151;border-radius:3px;padding:26px 28px;color:#b1c3cd;font-size:13px;line-height:1.6}
-#about h2{margin:0 0 4px;font:500 11px 'DM Mono',monospace;letter-spacing:.14em;color:#7fd6e4}
-#about h3{margin:0 0 14px;color:#e7f1f6;font-size:20px;font-weight:600}
-#about .row{display:flex;gap:12px;margin:9px 0}#about .row .dot{flex:none;margin-top:6px}
-#about b{color:#e7f1f6}#about .fine{color:#7d919e;font-size:11.5px;margin-top:14px}
-#about .actions{margin-top:18px}
-
-.panel{border-top:1px solid #293747}.panel:first-child{border-top:0}
-.panel>summary.section{list-style:none;cursor:pointer;border:0;padding:16px 0 0;margin:0 0 12px;display:flex;justify-content:space-between;align-items:center}
-.panel>summary.section::-webkit-details-marker{display:none}
-.panel>summary.section::after{content:'+';color:#6d8a9d;font-size:13px}.panel[open]>summary.section::after{content:'−'}
-.panel-body{padding-bottom:16px}
-.target-list{list-style:none;margin:10px 0 0;padding:0;max-height:330px;overflow:auto;border:1px solid #243444}
-.target-list button{width:100%;display:grid;grid-template-columns:1fr auto;gap:2px 10px;text-align:left;border:0;border-bottom:1px solid #1d2a37;border-radius:0;background:transparent;padding:8px 10px}
-.target-list button:hover{background:#15222e}.target-list button.current{background:#173440}
-.target-list button.pinned{background:#2a2414;box-shadow:inset 3px 0 0 #ffcb6c}.target-list button.pinned.current{background:#3a3018}
-.t-name{font-weight:600;color:#e7f1f6}.t-dist{color:#8ea3b3;font:11px 'DM Mono',monospace;text-align:right}
-.t-count{grid-column:1/-1;font:11px 'DM Mono',monospace;color:#a9bfcd}.t-count b{color:#6ef2bd;font-size:12px}
-.sig{margin-left:4px;color:#8ea3b3}.sig.hi{color:#ffcb6c}.sig.lo{color:#6d8a9d}.t-alert{color:#ff9fb0;margin-left:4px}
-table.units{width:100%;border-collapse:collapse;margin:6px 0;font-size:12px}table.units th{color:#8ea3b3;font-weight:400;text-align:left;padding:2px 8px 2px 0;white-space:nowrap;vertical-align:top}table.units td{color:#e7f1f6}
-.matchlist{margin-top:8px;max-height:160px;overflow:auto}
-.notice.status{font:11px 'DM Mono',monospace;color:#a6d5c9}
-select optgroup{color:#7fd6e4;font-style:normal}
-</style></head><body><div id="about" role="dialog" aria-modal="true" aria-labelledby="aboutTitle"><div class="card">
-<h2>COSMIC / ATLAS</h2><h3 id="aboutTitle">What you're looking at</h3>
-<p>A 3D map of the nearby universe built from public survey data. It asks one question: do the directions of high-energy <b>neutrinos</b> and <b>gamma rays</b> line up with nearby galaxies? Right now it focuses on <b>Boötes III</b>, a dwarf galaxy 46 kpc away that is being torn apart by the Milky Way.</p>
-<div class="row"><span class="dot" style="background:#fff"></span><div><b>Center: the Sun.</b> Everything is plotted from our point of view. The radius slider sets how far out you see.</div></div>
-<div class="row"><span class="dot" style="background:#6ebeff"></span><div><b>Blue: galaxies</b> at their real 3D positions. Nearby ones have measured distances (UNGC); farther ones use redshift (2MRS, ~40,000 galaxies).</div></div>
-<div class="row"><span class="dot" style="background:#eab6ff"></span><div><b>Purple: dwarf galaxies</b> and small stellar systems around the Milky Way and Andromeda.</div></div>
-<div class="row"><span class="dot" style="background:#ffcd6f"></span><div><b>Gold: Boötes III</b>, the current target.</div></div>
-<div class="row"><span class="dot" style="background:#6ef2bd"></span><div><b>Green dots and lines: IceCube neutrinos.</b> 275 high-energy neutrino alerts detected under the South Pole ice. We know which direction each came from, not how far, so each is drawn on the edge of the view with a line back to Earth.</div></div>
-<div class="row"><span class="dot" style="background:#7fd6e4"></span><div><b>◐ SKY MAP</b> flattens the whole sky like a world map, where neutrino directions and their error circles are easy to read. Pick an overlay to lay a whole sky underneath: dark matter (Planck CMB lensing), the microwave background, gamma rays, X-rays, visible light, infrared, hydrogen gas, radio, or IceCube's own 10-year excess map.</div></div><div class="row"><span class="dot" style="background:#ff788d"></span><div><b>Red: Fermi gamma-ray sources.</b> Over 7,000 objects seen by NASA's Fermi telescope, mostly blazars (jets from giant black holes) and pulsars. Like the neutrinos, they are directions only, drawn on the edge.</div></div>
-<div class="row"><span class="dot" style="background:#ffcb6c"></span><div><b>Targets</b> ranks nearby galaxies by how many IceCube neutrinos arrived from their direction, next to how many would land there by chance. Boötes III stays on top.</div></div><p class="fine">A neutrino or gamma ray that lines up with a galaxy is a coincidence to look into, not a detection. The cross-match panel counts angular matches; it does not compute significance.<br>Drag to rotate · scroll to zoom · click any object for details · search by name.<br>The sidebar links to our independent re-run of the 2026 Boötes III neutrino result.</p>
-<div class="actions"><button class="primary" id="aboutClose">Start exploring</button></div>
-</div></div><header><div><h1><span style="color:#7fd6e4;margin-right:11px">◈</span>COSMIC / ATLAS <span style="font:10px DM Mono,monospace;color:#6d8a9d;vertical-align:middle">MISSION CONTROL</span></h1><div class="sub">3D galaxy positions · neutrino directions · gamma-ray catalog matching</div></div><div class="telemetry"><div class="metric"><span class="key">REFERENCE FRAME</span><span class="value">J2000 / EQ</span></div><div class="metric"><span class="key">CATALOG PIPELINE</span><span class="value live" id="missionPipeline">STANDBY</span></div><div class="metric"><span class="key">SCENE OBJECTS</span><span class="value" id="missionCount">—</span></div><div class="metric"><span class="key">OBSERVATORY</span><span class="value">3D / LIVE</span></div></div></header><main><div id="scene"><canvas id="cv"></canvas><canvas id="sky" hidden></canvas><div class="viewport-label">VIEWPORT 01 <span style="color:#76d5d9">●</span> SKY RECONSTRUCTION</div><div class="viewport-tools"><button id="missionSky" title="Switch between the 3D map and a flat all-sky map">◐ SKY MAP</button><button id="missionFreeLook" title="Capture mouse for unlimited 360-degree rotation. Press Escape to release.">◎ FREE LOOK</button><button id="missionAscii" aria-pressed="false" title="Redraw the view as ASCII characters">▦ ASCII</button><button id="missionFullscreen" title="Toggle fullscreen">⛶ FULLSCREEN</button><button id="missionGuide" title="Toggle coordinate guides">⊕ GUIDES</button><button id="missionAbout" title="What am I looking at?">ⓘ ABOUT</button></div><div class="overlay"><span id="viewHelp"><strong>Heliocentric 3D coordinate space</strong><br>Drag to rotate · FREE LOOK for unlimited rotation (Esc to exit) · scroll to zoom toward the cursor</span><br><span id="readout">Scale: 1.5 Mpc radius</span> · <span id="counter">0 objects</span></div><div class="bottom">Coordinates: equatorial J2000; radial distances approximate · galaxy sizes not to scale</div></div><aside class="side" id="panels"></aside></main>
-<script type="module" src="js/main.js"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cosmic Atlas · Mission Control</title>
+<meta name="description" content="Explore the nearby universe, sky surveys and the Solar System. Build and save reproducible angular-coincidence experiments.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="atlas.css">
+<script type="importmap">{"imports":{"three":"./js/vendor/three.module.js"}}</script>
+</head>
+<body>
+<header class="mission-header">
+  <a class="brand" href="./" aria-label="Cosmic Atlas home"><span class="brand-icon">◈</span><span>COSMIC <i>/</i> ATLAS<small>MISSION CONTROL <b>04</b></small></span></a>
+  <div class="telemetry" aria-label="Atlas status"><div><span>REFERENCE FRAME</span><b id="frameMetric">ICRS / J2000</b></div><div><span>CATALOG PIPELINE</span><b id="pipelineMetric">LOADING</b></div><div><span>PUBLIC CATALOG</span><b id="countMetric">—</b></div></div>
+  <button id="commandOpen" class="command-open" title="Search objects, layers and workspaces (Command K)">⌕ <span>Jump to anything</span> <kbd>⌘ K</kbd></button>
+</header>
+<main>
+  <section id="scene" aria-label="Universe viewport">
+    <div class="viewport-heading"><span class="eyebrow">VIEWPORT 01 / <b id="viewportMode">SPATIAL ATLAS</b></span><span class="signal">● <span id="clockMode">UTC</span></span></div>
+    <div class="focus-card"><span class="eyebrow" id="focusKind">INVESTIGATION / 001</span><h1 id="focusTitle">Boötes III</h1><p id="focusNote">A small stellar system. A large question.</p></div>
+    <div id="sceneError" class="scene-error" role="status" hidden></div>
+    <div class="view-switch" role="group" aria-label="View"><button id="view3d" aria-pressed="true">◈ 3D UNIVERSE</button><button id="viewSky" aria-pressed="false">◐ ALL SKY</button></div>
+    <div id="hoverTip" class="hover-tip" hidden></div>
+    <div class="scale-jumps" aria-label="Scale anchors"><button data-anchor="earth">EARTH</button><button data-anchor="solar">SOLAR SYSTEM</button><button data-anchor="milkyway">MILKY WAY</button><button data-anchor="localgroup">LOCAL GROUP</button><button data-anchor="web">COSMIC WEB</button></div>
+    <div class="viewport-footer">
+      <div class="scale-block"><span class="eyebrow">VIEW SCALE</span><strong id="scaleReadout">120 kpc</strong><span class="scale-line"></span><span id="scaleDetail">391,387 ly</span></div>
+      <div class="viewport-tools" role="group" aria-label="Viewport tools"><button id="homeView" title="Return to the workspace's camera">⌂ HOME</button><button id="freeLook" title="Mouse look; WASD to fly, Q/E up/down, Escape releases the mouse">◎ FLY</button><button id="logView" aria-pressed="false" title="Logarithmic radial galaxy layout">LOG r</button><button id="guidesView" aria-pressed="false">⊕ GUIDES</button><button id="asciiView" aria-pressed="false">▦ ASCII</button><button id="fullscreenView" title="Fullscreen">⛶</button><button id="aboutOpen" title="About the atlas">?</button></div>
+      <div class="timeline"><button id="clockPause" aria-label="Pause global clock">Ⅱ</button><time id="utcReadout">— UTC</time><span id="frameReadout">SUN-CENTRED · DRAG TO ORBIT · SCROLL TO TRAVEL</span><button id="perfToggle" aria-pressed="false" title="Show measured rendering performance">◴</button><span id="perfReadout" hidden></span></div>
+    </div>
+  </section>
+  <aside id="sidebar" aria-label="Atlas controls">
+    <div class="workspace-head"><span class="eyebrow">WORKSPACE</span><span class="workspace-count">08 MODES</span><label class="sr-only" for="workspace">Workspace</label><select id="workspace"></select><p id="workspaceDescription"></p><div class="history-actions"><button id="undo" title="Undo (Command Z)">↶ Undo</button><button id="redo" title="Redo (Command Shift Z)">↷ Redo</button><span id="loadingStatus" role="status">Reading catalogs…</span></div></div>
+    <div id="panels"></div>
+    <div class="sidebar-foot"><span>PUBLIC DATA / LOCAL EXPERIMENTS</span><a href="bootes.html">Boötes III reproduction ↗</a></div>
+  </aside>
+</main>
+<div id="toasts" role="status" aria-live="polite"></div>
+<dialog id="commands" aria-labelledby="commandTitle"><div class="dialog-head"><h2 id="commandTitle">Jump to anything</h2><button data-close aria-label="Close search">×</button></div><label class="sr-only" for="commandSearch">Search the atlas</label><input id="commandSearch" type="search" placeholder="Objects, layers, workspaces, saved setups…" autocomplete="off"><div id="commandResults" class="command-results"></div><p class="notice">↑ ↓ choose · Enter jump · Escape close</p></dialog>
+<dialog id="about" aria-labelledby="aboutTitle"><div class="dialog-head"><span class="eyebrow">COSMIC / ATLAS 04</span><button data-close aria-label="Close about">×</button></div><h2 id="aboutTitle">A universe you can move through.</h2><p>Travel from Earth orbit to the cosmic web. Compare real galaxy positions with the directions of neutrinos and gamma rays, then save the setup behind your question.</p><div class="about-legend"><p><b class="galaxy-text">● Galaxies</b> have measured or redshift-derived distances.</p><p><b class="neutrino-text">◇ Neutrinos</b> and <b class="fermi-text">+ gamma rays</b> are directions on the celestial sphere. They have no assigned distance.</p><p><b class="target-text">◎ Boötes III</b> is a disrupting stellar system / dwarf-galaxy candidate whose classification is debated.</p></div><p class="notice">Angular coincidence, not detection. Every experiment reports a chance background. The atlas's cone counts are separate from the likelihood reproduction.</p><p class="notice">Drag to orbit · scroll or pinch to travel · select a label or search an object · WASD and Q/E to fly. ASCII preserves labels as real text. Satellite positions, when a snapshot is available, are public-element predictions rather than telemetry.</p><button id="aboutExplore" class="primary">Start exploring →</button></dialog>
+<script type="module" src="js/app.js"></script>
+</body></html>

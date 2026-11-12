@@ -1,12 +1,12 @@
 import { DEFAULT_STATE, mergeState, normalizeState } from '../store.js'
 export const WORKSPACES = [
   { id: 'explore', title: 'Explore', description: 'Travel from nearby companions to the galaxy web.', panels: ['layers', 'search', 'inspector', 'presets', 'sources'] },
-  { id: 'neutrinos', title: 'Neutrinos', description: 'Alert directions, track excess and chance coincidences.', panels: ['layers', 'filters', 'targets', 'experiment', 'inspector', 'presets', 'sources'] },
-  { id: 'dark-matter', title: 'Dark matter', description: 'Compare projected CMB lensing convergence with the galaxy distribution.', panels: ['layers', 'darkmatter', 'inspector', 'presets', 'sources'] },
-  { id: 'gamma', title: 'Gamma rays', description: 'Fermi source classes and the diffuse gamma-ray sky.', panels: ['layers', 'filters', 'inspector', 'experiment', 'presets', 'sources'] },
+  { id: 'neutrinos', title: 'Neutrinos', description: 'Alert directions, track excess and chance coincidences.', panels: ['filters', 'targets', 'experiment', 'inspector', 'layers', 'presets', 'sources'] },
+  { id: 'dark-matter', title: 'Dark matter', description: 'Compare projected CMB lensing convergence with the galaxy distribution.', panels: ['darkmatter', 'layers', 'inspector', 'presets', 'sources'] },
+  { id: 'gamma', title: 'Gamma rays', description: 'Fermi source classes and the diffuse gamma-ray sky.', panels: ['filters', 'inspector', 'experiment', 'layers', 'presets', 'sources'] },
   { id: 'bootes', title: 'Boötes III study', description: 'A disrupting stellar system / dwarf-galaxy candidate; angular coincidences are not detections.', panels: ['inspector', 'targets', 'layers', 'experiment', 'reproduction', 'presets', 'sources', 'status'] },
-  { id: 'solar', title: 'Solar System', description: 'A shared UTC clock drives heliocentric bodies.', panels: ['layers', 'time', 'inspector', 'measure', 'presets', 'sources'] },
-  { id: 'earth', title: 'Earth & satellites', description: 'Public element-set predictions, with their age and uncertainty.', panels: ['layers', 'time', 'satellites', 'inspector', 'passes', 'measure', 'statistics', 'presets', 'sources', 'status'] },
+  { id: 'solar', title: 'Solar System', description: 'A shared UTC clock drives heliocentric bodies.', panels: ['time', 'inspector', 'measure', 'layers', 'presets', 'sources'] },
+  { id: 'earth', title: 'Earth & satellites', description: 'Public element-set predictions, with their age and uncertainty.', panels: ['satellites', 'time', 'inspector', 'passes', 'measure', 'statistics', 'layers', 'presets', 'sources', 'status'] },
   { id: 'custom', title: 'Custom', description: 'Your own layers, filters, camera and saved experiments.', panels: ['layers', 'search', 'filters', 'inspector', 'experiment', 'presets', 'sources', 'status'] },
 ]
 const visibility = (...ids) => Object.fromEntries(ids.map(id => [id, { visible: true, opacity: id.startsWith('sky.') ? 0.55 : 1, filters: {} }]))

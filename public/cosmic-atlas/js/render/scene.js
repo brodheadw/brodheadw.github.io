@@ -196,18 +196,19 @@ export function createScene({ container, store, onSelect, onHover, onMetrics }) 
   day.colorSpace = THREE.SRGBColorSpace
   const lights = textureLoader.load('data/textures/earth-night.jpg', () => { dirty = true }, undefined, () => {})
   lights.colorSpace = THREE.SRGBColorSpace
-  const earthMaterial = new THREE.ShaderMaterial({ uniforms: { day: { value: day }, night: { value: lights }, sunDirection: { value: new THREE.Vector3(1, 0, 0) } },
+  const earthMaterial = new THREE.ShaderMaterial({ transparent: true, uniforms: { day: { value: day }, night: { value: lights }, opacity: { value: 1 }, sunDirection: { value: new THREE.Vector3(1, 0, 0) } },
     vertexShader: 'varying vec2 uvv;varying vec3 n;void main(){uvv=uv;n=normalize(mat3(modelMatrix)*normal);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
-    fragmentShader: 'uniform sampler2D day,night;uniform vec3 sunDirection;varying vec2 uvv;varying vec3 n;void main(){float d=dot(normalize(n),normalize(sunDirection));float f=smoothstep(-.07,.07,d);vec3 c=texture2D(day,uvv).rgb*(.06+.94*max(d,0.))+texture2D(night,uvv).rgb*(1.-f)*.9;gl_FragColor=vec4(c,1.);\n#include <colorspace_fragment>\n}' })
+    fragmentShader: 'uniform sampler2D day,night;uniform vec3 sunDirection;uniform float opacity;varying vec2 uvv;varying vec3 n;void main(){float d=dot(normalize(n),normalize(sunDirection));float f=smoothstep(-.07,.07,d);vec3 c=texture2D(day,uvv).rgb*(.06+.94*max(d,0.))+texture2D(night,uvv).rgb*(1.-f)*.9;gl_FragColor=vec4(c,opacity);\n#include <colorspace_fragment>\n}' })
   let satelliteNames = [], satelliteCloud = null, satelliteIndices = null, satelliteReceived = performance.now()
   function prepareBodies() {
-    const visible = layerState('solar').visible || layerState('satellites').visible || rig.distance < 2e-9
+    const opacity = layerState('solar').opacity, visible = opacity > 0 && (layerState('solar').visible || layerState('satellites').visible || rig.distance < 2e-9)
     bodyGroup.visible = visible; solarOrbits.visible = visible && state.view !== 'sky'
+    earthMaterial.uniforms.opacity.value = opacity
     const scale = displayScale(), earth = solarBodies.find(x => x.id === 'earth')
     for (const body of solarBodies) {
       let mesh = bodyMeshes.get(body.id)
       if (!mesh) {
-        mesh = new THREE.Mesh(bodyGeometry, body.id === 'earth' ? earthMaterial : new (body.id === 'sun' ? THREE.MeshBasicMaterial : THREE.MeshLambertMaterial)({ color: body.color || (body.id === 'sun' ? palette.sun : palette.moon) }))
+        mesh = new THREE.Mesh(bodyGeometry, body.id === 'earth' ? earthMaterial : new (body.id === 'sun' ? THREE.MeshBasicMaterial : THREE.MeshLambertMaterial)({ transparent: true, color: body.color || (body.id === 'sun' ? palette.sun : palette.moon) }))
         const id = allocId('solar', body.id)
         mesh.userData.pickMaterial = new THREE.MeshBasicMaterial({ color: new THREE.Color((id & 255) / 255, (id >> 8 & 255) / 255, (id >> 16 & 255) / 255) })
         bodyGroup.add(mesh); bodyMeshes.set(body.id, mesh)
@@ -216,6 +217,7 @@ export function createScene({ container, store, onSelect, onHover, onMetrics }) 
       const trueRadius = body.radiusKm / MPC_KM / scale
       const displayRadius = state.bodyScale === 'true' ? trueRadius : Math.max(trueRadius, body.id === 'sun' ? .012 : .006)
       mesh.scale.setScalar(displayRadius)
+      mesh.material.opacity = opacity; mesh.material.depthWrite = opacity === 1
       mesh.visible = visible && Math.hypot(...p) < 1e5 && Math.hypot(...body.position) / MPC_KM < Math.max(rig.distance * 1e5, 1e-7)
       if (body.id === 'earth') {
         const frame = frameAt(new Date(body.utc || Date.now())), a = frame.temeToGcrs
@@ -239,6 +241,7 @@ export function createScene({ container, store, onSelect, onHover, onMetrics }) 
       satelliteCloud.material.uniforms.opacity.value = layerState('satellites').opacity
     }
     for (const line of orbitLines) {
+      if (!line.userData.geocentric) { line.material.opacity = .5 * opacity; line.visible = opacity > 0 }
       const coords = line.userData.physical, relativePositions = line.geometry.attributes.position.array
       for (let i = 0; i < coords.length / 3; i++) {
         const p = coords.subarray(i * 3, i * 3 + 3)
