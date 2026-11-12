@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import fs from 'node:fs/promises'
-import { openAtlas, pauseClock } from './helpers.js'
+import { openAtlas, pauseClock, settleCamera } from './helpers.js'
 
 const historical = JSON.parse(await fs.readFile(new URL('../unit/fixtures/skyfield-passes.json', import.meta.url)))
 const errors = new WeakMap()
@@ -76,8 +76,11 @@ test('Solar and small-body distance studies work without satellite data and reta
   expect(exported.samples).toHaveLength(5)
   expect(exported.model.smallBodies.loaded).toBe(true)
   expect(exported.model.smallBodies.start).toContain('2026-01-01')
+  expect(exported.model.smallBodies.fetched_at).toBeTruthy()
+  expect(exported.model.smallBodies.orbitSolutions['small:ceres'].solution).toBeTruthy()
   expect(exported.assumptions.join(' ')).toContain('No small-body extrapolation')
   expect(await page.evaluate(() => window.__atlas.satellites.length)).toBe(0)
+  await settleCamera(page)
   await out.scrollIntoViewIfNeeded(); await page.screenshot({ path: testInfo.outputPath('solar-body-study.png'), fullPage: true })
 })
 
@@ -135,7 +138,7 @@ test('dated Earth cloud observations are opt-in and independent of the simulatio
   await page.evaluate(() => {
     const renderer = window.__atlas.renderer.renderer, render = renderer.render
     renderer.render = function (scene, camera) {
-      scene.traverse(mesh => { if (mesh.userData.bodyId === 'earth' && mesh.material.uniforms?.weatherOpacity) window.__weatherDisplay = { opacity: mesh.material.uniforms.weatherOpacity.value, width: mesh.material.uniforms.weather.value.image?.width || 0 } })
+      scene.traverse(mesh => { if (mesh.userData.bodyId === 'earth' && mesh.material.uniforms?.weatherOpacity) window.__weatherDisplay = { opacity: mesh.material.uniforms.weatherOpacity.value, width: mesh.material.uniforms.weather.value.image?.width || 0, dayWidth: mesh.material.uniforms.day.value.image?.width || 0, nightWidth: mesh.material.uniforms.night.value.image?.width || 0 } })
       return render.call(this, scene, camera)
     }
   })
@@ -150,6 +153,11 @@ test('dated Earth cloud observations are opt-in and independent of the simulatio
   await expect(panel).toContainText('not a forecast')
   await panel.locator('[data-opacity]').evaluate(input => { input.value = '.35'; input.dispatchEvent(new Event('input', { bubbles: true })) })
   await page.waitForFunction(() => window.__weatherDisplay?.opacity === .35)
+  await settleCamera(page)
+  await page.waitForFunction(() => {
+    const app = window.__atlas
+    return Math.abs(app.metrics.distance / app.store.getState().camera.distance - 1) < 1e-5 && window.__weatherDisplay.dayWidth > 1 && window.__weatherDisplay.nightWidth > 1
+  })
   await page.screenshot({ path: testInfo.outputPath('earth-observed-clouds.png'), fullPage: true })
   await page.evaluate(() => window.__atlas.store.set({ clock: { utc: '2027-11-12T12:00:00Z', rate: 1, paused: true } }))
   expect(await page.evaluate(() => window.__atlas.weatherStatus.observation_date)).toBe(observation)

@@ -24,13 +24,28 @@ implemented tools, measured results, and data that could not be obtained.
 - Numeric Planck lensing and galaxy-density profiles, actual masks and solid-angle-weighted
   correlation; separate labelled units and explicit exploratory limits.
 - A shared UTC clock, planetary ephemerides, the Moon and four Galilean moons, body/orbit
-  rendering, true/visible radius modes, orbital elements, distances, velocities and rise/set.
+  rendering, physical body radii with independent locator markers, orbital elements, distances, velocities and rise/set.
   Earth has georeferenced day/night composites, rotation, sunlight and night lights.
 - Satellite snapshot publisher, six-hour separate-data-branch workflow, SGP4 worker and
   typed-array rendering. Inspector, trajectories, sun/shadow ground tracks, follow, element
   ages, metadata, observer look angles/Doppler, pass predictions, filters/statistics, pair
   measurements, coarse-to-fine close-approach screening and JSON/CSV exports are implemented.
   These tools were verified with historical reference inputs; a current catalog is unavailable.
+- Two-finger, trackpad, right/middle-button and Shift-drag camera-plane pan, pinch/modified-wheel
+  zoom and ecliptic Solar overview. Inner/whole/Oort views use explicit physical scales; Mercury
+  retains a separate clickable locator. Solar/Earth backgrounds are quieter; All Sky is retained.
+- Credited historical Mercury/Mars/Jupiter/Moon maps, an illustrative white-light photosphere,
+  measured Saturn ring bounds, and uncertain schematic Oort shells rather than invented objects.
+- Eight selected comet/asteroid state series from NASA/JPL Horizons (2026-01-01 to 2028-01-01),
+  bounded Hermite interpolation, a searchable Solar catalog and independent small-body controls.
+- An opt-in dated NASA Terra/MODIS cloud-fraction overlay, official colors/legend, transparent
+  data gaps, observation age and independent periodic publishing. Its date does not follow the
+  simulation clock; it is not a forecast or photographic cloud layer.
+- A declared sky radius/energy grid with jointly calibrated global p-values, complete count
+  matrices, input fingerprints, saved comparisons and JSON/CSV exports. Deterministic body-pair
+  distance series and observer/start-time satellite studies share the setup notebook.
+- Local OMM JSON import, file hashes and explicit provenance limits. Exact files must be
+  reimported after reload; historical verification files are not a public catalog.
 - Strict, idempotent binary/registry/field/IRF publishing and a single cached pipeline entry
   point. Existing CSV rows and cached sky JPEGs were retained.
 
@@ -40,22 +55,23 @@ Commands run from `public/cosmic-atlas/` unless stated otherwise:
 
 ```text
 npm test
-50 tests passed, 0 failed
+75 tests passed, 0 failed
 
 npm run test:e2e
-34 passed (desktop 1440×1000 and mobile 390×844; 2.1 minutes)
+56 passed (desktop 1440×1000 and mobile 390×844; 3.9 minutes)
 
 ~/cosmic-atlas-catalogs/.venv/bin/python -m unittest discover -s tests -p 'test_*.py' -v
 Ran 6 tests — OK
 
 ~/cosmic-atlas-catalogs/.venv/bin/python -m unittest discover -s tests/pipeline -p 'test_*.py' -v
-Ran 4 tests — OK
+Ran 8 tests — OK
 
 mac-studio/run_all.sh
 Cached publication, binary/field generation and pipeline checks completed.
 
 npm run build   [repository root]
 Compiled successfully; lint/type checks passed; static pages generated/exported.
+Six representative new modules/JPL/weather assets match the export byte for byte.
 ```
 
 Publisher tests intentionally simulate HTTP 403 and invalid tables; their rejection messages
@@ -72,6 +88,14 @@ Earth's shader, orbit paths and labels. Satellite refresh keeps NORAD identity t
 reordering, saved-state restoration and removal; hidden satellite layers do not download GP
 snapshots during startup. The separate data workflow passes YAML/Bash syntax checks.
 
+New browser cases exercise actual right/middle/Shift, trackpad and two-contact gestures;
+physical mesh-radius ratios and independent locator/Oort notes; sky-grid and body-distance
+run/save/compare/export flows with JPL retrieval/orbit-solution identifiers; real OMM file-chooser imports and historical two-observer pass
+studies. Source restoration requires the recorded local hash, superseded downloads cannot
+replace the chosen source, and source changes cancel running studies. Weather checks cover
+opt-in state, official legend/opacity, a fixed observation date, versioned image URLs and
+failed replacement images retaining the prior date while hiding the overlay.
+
 The satellite test intercepts the snapshot with an explicitly historical ISS input at
 2019-12-09, uses the real propagation worker, finds ISS through search, checks changing
 altitude/speed, orbit/ground-track geometry, Doppler, passes and exports. A sampled state was
@@ -87,6 +111,7 @@ ISS observation or a published live snapshot.
 | ITRS against Astropy with Earth-orientation assumptions aligned | Max 0.013 m |
 | Geometric passes against Skyfield | 21 passes at three sites; max rise/culmination/set discrepancy 0.192 s |
 | Geometric vectors against JPL Horizons | Heliocentric planets and geocentric Moon; 30 states, ten bodies, dates in 2000/2026/2050; max angular error 0.272233 arcmin, below the library's approximately 1 arcmin target |
+| Selected minor bodies against independent JPL Horizons queries | 24 off-grid comparisons; max interpolation residual 0.001804716 km (1.805 m). Physical orbit uncertainty is separate; no extrapolation beyond the sampled interval. |
 | Time and coordinates | Leap boundary UTC/TAI/TT, Galactic centre and frame round trips, Hammer round trips, units and flat-ΛCDM checks pass |
 
 Reference fixtures, generation notes and tolerances are in
@@ -103,13 +128,12 @@ telemetry samples per viewport. Other agent-owned WebGL previews were closed.
 
 | Viewport | Mean frame rate | Sample range | Mean rendering work per frame |
 |---|---:|---:|---:|
-| Desktop 1440×1000 | 76.96 fps | 71.90–81.56 fps | 0.66 ms |
-| Mobile emulation 390×844 | 77.93 fps | 74.66–80.73 fps | 0.63 ms |
+| Desktop 1440×1000 | 87.28 fps | 80.89–93.41 fps | 0.48 ms |
+| Mobile emulation 390×844 | 86.12 fps | 78.16–97.79 fps | 0.50 ms |
 
 Rendering work is the application's JavaScript render-loop timer, not a GPU timer query.
-Earlier single-window smoke readings during startup/transitions were 56.76 fps desktop
-and 79.15 fps mobile; the table gives the sustained, settled measurement. These are local
-browser samples, not a device guarantee. Mobile emulation runs on the
+The table gives a sustained, settled measurement. These are local browser samples, not a
+device guarantee. Mobile emulation runs on the
 same Mac, not a phone. An M1 was unavailable. Full current-satellite-catalog propagation FPS
 was not measured because no valid full snapshot could be fetched. It is not included in
 the astronomical-row result.
@@ -125,6 +149,10 @@ the astronomical-row result.
 | Earth day map | [NASA Blue Marble: Next Generation](https://science.nasa.gov/earth/earth-observatory/blue-marble-next-generation/base-topography-bathymetry/), August 2004 topography/bathymetry composite. |
 | Earth night map | [NASA Black Marble](https://science.nasa.gov/earth/earth-observatory/earth-at-night/maps/), 2016 composite. |
 | Computed Solar System | [Astronomy Engine 2.1.19](https://github.com/cosinekitty/astronomy/tree/v2.1.19), MIT; physical parameters are cited in the module. |
+| Eight selected small bodies | [NASA/JPL Horizons](https://ssd.jpl.nasa.gov/horizons/) six-hour heliocentric ICRF state vectors for Ceres, Vesta, Eros, Bennu, Apophis, Halley, 67P and Encke. Queries, orbit solutions, coverage and independent validation retained in `data/smallbodies/`. |
+| Planet/Moon appearance | Credited NASA MESSENGER/Mariner 10, Viking, Hubble and LRO maps. Historical, illustrative appearance with source gaps; dates, processing, original/output hashes and caveats in `data/textures/planet-sources.json`. |
+| Cloud fraction | [NASA GIBS](https://nasa-gibs.github.io/gibs-api-docs/access-basics/), Terra/MODIS daytime cloud fraction. Nominal bundled day 2026-11-11; snapshot prepared 2026-11-12T19:38:42Z, official colors and legend preserved. 1280×640 display, 0.28125° samples, 95.7263% valid pixels. Tile hashes, scientific product and reuse links in `data/weather/status.json`. |
+| Oort context | [NASA Oort Cloud facts](https://science.nasa.gov/solar-system/oort-cloud/facts/); uncertain statistical extent shown as schematic 5,000/100,000 AU shells, not tracked individual bodies. |
 | Satellite data transport and status | [CelesTrak](https://celestrak.org/); current data unavailable. Official constellation groups are supported, with membership provenance when fetched; name heuristics are explicitly labelled when group data is absent. |
 
 Earth images are 2048×1024 and total 470,134 bytes. Original URLs, credits, processing and
@@ -135,7 +163,9 @@ they do not confer dataset redistribution rights.
 ## Unavailable data and remaining TODOs
 
 - **Current satellites:** the full endpoint returned HTTP 403 at 17:28:27 UTC on 2026-11-12,
-  reporting an existing public-IP excessive-download block. Further GP requests stopped.
+  reporting an existing public-IP excessive-download block. One investigated resumption after
+  the minimum cooldown, at 19:29:09.916522 UTC, also returned HTTP 403 immediately. Further GP
+  requests stopped; the other data requests were never started in that attempt.
   The fetcher and workflow remain suspended until the provider response is investigated and
   explicitly resumed after the minimum cooldown. No test fixture is presented as current.
   Visitors check the published `satellite-data` branch, rather than downloading from CelesTrak.
@@ -148,10 +178,12 @@ they do not confer dataset redistribution rights.
 - **3D density volume:** no verified redistributable reconstruction grid was added. The
   explicit unsupported-volume descriptor is retained; projected lensing is not fabricated
   into 3D density.
-- **Optional datasets:** nearby stars, minor bodies, spacecraft and named group/cluster
+- **Optional datasets:** nearby stars, a complete minor-body inventory, spacecraft and named group/cluster
   boundaries await verified sources, frames and redistribution terms. Solar ephemerides
   currently include Earth's Moon and the four Galilean moons; other major moons remain TODO.
-  A physically sourced Local Group mass barycentre is also TODO.
+  Eight selected minor bodies are included; their bounded coverage is not a complete inventory.
+  A physically sourced Local Group mass barycentre is also TODO. The Sun and unmapped planets
+  remain illustrations; sourced textures are historical, with documented gaps and processing.
 - **Licenses and distances:** some pre-existing survey/catalog redistribution licenses could
   not be verified. Registry entries carry explicit TODOs. Missing per-object distance methods
   and uncertainties are displayed as unavailable, not guessed.
@@ -167,8 +199,8 @@ they do not confer dataset redistribution rights.
 ## Deployment
 
 The independent `satellite-data` branch was published with the recorded unavailable status.
-The six-hour updater changes that branch without a Next.js deployment. It starts suspended;
-no refresh was forced past the provider block.
+The six-hour updater changes that branch without a Next.js deployment. Satellite fetching
+remains suspended; NASA weather is independent. No refresh was forced past the provider block.
 
 The main-site deployment is checked after the final tested commits are pushed. See the
 delivery message for the deployed commit and GitHub Actions result.

@@ -17,12 +17,38 @@ export async function settleCamera(page) {
   await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
 }
 export async function canvasPoint(page, margin = 0) {
-  return page.evaluate(margin => {
-    const canvas = document.querySelector('#universe'), rect = canvas.getBoundingClientRect()
-    for (const y of [.55, .45, .65, .35]) for (const x of [.55, .4, .7, .3]) {
-      const point = { x: rect.x + rect.width * x, y: rect.y + rect.height * y }
-      if ([-margin, 0, margin].every(dx => document.elementFromPoint(point.x + dx, point.y) === canvas)) return point
+  await settleCamera(page)
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const point = await page.evaluate(margin => {
+      const canvas = document.querySelector('#universe'), rect = canvas.getBoundingClientRect()
+      for (const y of [.55, .45, .65, .35]) for (const x of [.55, .4, .7, .3]) {
+        const point = { x: rect.x + rect.width * x, y: rect.y + rect.height * y }
+        if ([-margin, 0, margin].every(dx => document.elementFromPoint(point.x + dx, point.y) === canvas)) return point
+      }
+      throw Error('No unobstructed canvas gesture point')
+    }, margin)
+    await page.mouse.move(point.x, point.y)
+    await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+    const clear = await page.evaluate(({ point, margin }) => [-margin, 0, margin].every(dx => document.elementFromPoint(point.x + dx, point.y) === document.querySelector('#universe')), { point, margin })
+    if (clear) return point
+  }
+  throw Error('No stable canvas point after hover labels updated')
+}
+
+export async function nativeCanvasEvent(page, type, action, count = 1) {
+  await page.evaluate(({ type, count }) => {
+    window.__nativeCanvasEvents = []
+    const record = event => {
+      const item = { type, target: event.target.id || event.target.outerHTML.slice(0, 180), alt: event.altKey, shift: event.shiftKey, buttons: event.buttons, dx: event.deltaX, dy: event.deltaY }
+      window.__nativeCanvasEvents.push(item)
+      ;(window.__nativeInputHistory ??= []).push(item)
+      if (window.__nativeCanvasEvents.length === count) document.removeEventListener(type, record, true)
     }
-    throw Error('No unobstructed canvas gesture point')
-  }, margin)
+    document.addEventListener(type, record, true)
+  }, { type, count })
+  await action()
+  await expect.poll(() => page.evaluate(() => window.__nativeCanvasEvents.length)).toBe(count)
+  const events = await page.evaluate(() => window.__nativeCanvasEvents)
+  for (const event of events) expect(event.target, `Native ${type} must reach the canvas: ${JSON.stringify(event)}`).toBe('universe')
+  return events
 }

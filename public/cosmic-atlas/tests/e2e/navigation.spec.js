@@ -1,7 +1,11 @@
 import { test, expect } from '@playwright/test'
-import { openAtlas, pauseClock, settleCamera, canvasPoint } from './helpers.js'
+import { openAtlas, pauseClock, settleCamera, canvasPoint, nativeCanvasEvent } from './helpers.js'
 
 const camera = page => page.evaluate(() => window.__atlas.store.getState().camera)
+test.afterEach(async ({ page }, testInfo) => {
+  const events = await page.evaluate(() => window.__nativeInputHistory || []).catch(() => [])
+  if (events.length) await testInfo.attach('native-input.json', { body: JSON.stringify(events, null, 2), contentType: 'application/json' })
+})
 function assertPan(before, after, label = 'pan') {
   expect(Math.hypot(...after.target.map((v, i) => v - before.target[i])) / before.distance, label).toBeGreaterThan(.005)
   expect(after.distance).toBeCloseTo(before.distance, 24)
@@ -14,10 +18,11 @@ test('right, middle and Shift drags pan at Solar and Earth scales without rotati
   for (const workspace of ['solar', 'earth']) {
     await page.selectOption('#workspace', workspace); await settleCamera(page)
     for (const gesture of [{ button: 'right' }, { button: 'middle' }, { button: 'left', shift: true }]) {
-      const before = await camera(page), point = await canvasPoint(page)
-      await page.mouse.move(point.x, point.y)
+      await settleCamera(page)
+      const before = await camera(page), point = await canvasPoint(page, 35)
       if (gesture.shift) await page.keyboard.down('Shift')
-      await page.mouse.down({ button: gesture.button }); await page.mouse.move(point.x + 35, point.y + 20, { steps: 4 }); await page.mouse.up({ button: gesture.button })
+      await nativeCanvasEvent(page, 'pointerdown', () => page.mouse.down({ button: gesture.button }))
+      await page.mouse.move(point.x + 35, point.y + 20, { steps: 4 }); await page.mouse.up({ button: gesture.button })
       if (gesture.shift) await page.keyboard.up('Shift')
       const label = `${workspace} ${gesture.shift ? 'Shift+' : ''}${gesture.button} pan`
       await expect.poll(async () => Math.hypot(...(await camera(page)).target.map((v, i) => v - before.target[i])) / before.distance, { message: label }).toBeGreaterThan(.005)
@@ -29,18 +34,20 @@ test('right, middle and Shift drags pan at Solar and Earth scales without rotati
 test('pixel trackpad scrolling pans while Alt and discrete wheel gestures zoom', async ({ page }) => {
   await openAtlas(page); await pauseClock(page); await page.selectOption('#workspace', 'solar'); await settleCamera(page)
   const wheelScale = await page.evaluate(() => devicePixelRatio)
-  const point = await canvasPoint(page); await page.mouse.move(point.x, point.y)
+  await canvasPoint(page)
   const before = await camera(page)
-  await page.mouse.wheel(20 * wheelScale, 15 * wheelScale)
+  await nativeCanvasEvent(page, 'wheel', () => page.mouse.wheel(20 * wheelScale, 15 * wheelScale))
   await expect.poll(async () => JSON.stringify((await camera(page)).target)).not.toBe(JSON.stringify(before.target))
   assertPan(before, await camera(page))
   const panned = await camera(page)
-  const zoomPoint = await canvasPoint(page); await page.mouse.move(zoomPoint.x, zoomPoint.y)
-  await page.keyboard.down('Alt'); await page.mouse.wheel(0, 60 * wheelScale); await page.keyboard.up('Alt')
+  await canvasPoint(page)
+  await page.keyboard.down('Alt')
+  try { expect((await nativeCanvasEvent(page, 'wheel', () => page.mouse.wheel(0, 60 * wheelScale)))[0].alt).toBe(true) }
+  finally { await page.keyboard.up('Alt') }
   await expect.poll(async () => (await camera(page)).distance / panned.distance).toBeGreaterThan(1.05)
   const zoomed = await camera(page)
-  const wheelPoint = await canvasPoint(page); await page.mouse.move(wheelPoint.x, wheelPoint.y)
-  await page.mouse.wheel(0, -120 * wheelScale)
+  await canvasPoint(page)
+  await nativeCanvasEvent(page, 'wheel', () => page.mouse.wheel(0, -120 * wheelScale))
   await expect.poll(async () => (await camera(page)).distance / zoomed.distance).toBeLessThan(.9)
 })
 
@@ -48,9 +55,9 @@ test('two touch contacts separate centroid pan from pinch zoom', async ({ page, 
   await openAtlas(page); await pauseClock(page); await page.selectOption('#workspace', 'solar'); await settleCamera(page)
   const cdp = await context.newCDPSession(page)
   await cdp.send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 2 })
-  const point = await canvasPoint(page, 45), touch = (id, x, y) => ({ id, x, y, radiusX: 2, radiusY: 2 })
+  const point = await canvasPoint(page, 30), touch = (id, x, y) => ({ id, x, y, radiusX: 2, radiusY: 2 })
   const before = await camera(page)
-  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [touch(1, point.x - 30, point.y), touch(2, point.x + 30, point.y)] })
+  await nativeCanvasEvent(page, 'pointerdown', () => cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [touch(1, point.x - 30, point.y), touch(2, point.x + 30, point.y)] }), 2)
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [touch(1, point.x - 5, point.y + 10), touch(2, point.x + 55, point.y + 10)] })
   await expect.poll(async () => Math.hypot(...(await camera(page)).target.map((v, i) => v - before.target[i])) / before.distance).toBeGreaterThan(.005)
   await expect.poll(async () => (await camera(page)).distance / before.distance).toBeCloseTo(1, 6)
@@ -74,11 +81,12 @@ test('All Sky retains canvas pan and zoom with synchronized view controls', asyn
   })
   await expect.poll(anchor).not.toBeNull()
   const before = await anchor(), point = await canvasPoint(page)
-  await page.mouse.move(point.x, point.y); await page.mouse.down({ button: 'right' }); await page.mouse.move(point.x + 30, point.y + 20, { steps: 4 }); await page.mouse.up({ button: 'right' })
+  await nativeCanvasEvent(page, 'pointerdown', () => page.mouse.down({ button: 'right' })); await page.mouse.move(point.x + 30, point.y + 20, { steps: 4 }); await page.mouse.up({ button: 'right' })
   await expect.poll(async () => { const p = await anchor(); return p ? Math.hypot(p[0] - before[0], p[1] - before[1]) : 0 }).toBeGreaterThan(20)
   const panned = await anchor()
-  const zoomPoint = await canvasPoint(page); await page.mouse.move(zoomPoint.x, zoomPoint.y)
-  await page.mouse.wheel(0, -200 * await page.evaluate(() => devicePixelRatio))
+  await canvasPoint(page)
+  const wheelScale = await page.evaluate(() => devicePixelRatio)
+  await nativeCanvasEvent(page, 'wheel', () => page.mouse.wheel(0, -200 * wheelScale))
   await expect.poll(async () => { const p = await anchor(); return p ? Math.hypot(p[0] - panned[0], p[1] - panned[1]) : 0 }).toBeGreaterThan(2)
   await expect(page.locator('#viewSky')).toHaveAttribute('aria-pressed', 'true')
   await expect(page.locator('#scaleReadout')).toHaveText('ALL SKY')
