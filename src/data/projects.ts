@@ -51,9 +51,10 @@ export const projects: Project[] = [
     id: 'ggml-viz',
     title: 'ggml-viz',
     description:
-      'Real-time visualization tool for GGML-based LLM inference engines (llama.cpp, whisper.cpp) with nanosecond-precision tracing and zero-recompilation monitoring.',
-    image: '/ggmlviz.png',
+      'Tracer and desktop viewer for ggml programs like llama.cpp: preload it into the binary you already have and see every compute graph, every op and its time, and what memory was allocated.',
+    image: '/images/ggml-viz/viewer.webp',
     githubUrl: 'https://github.com/brodheadw/ggml-viz',
+    caseStudyUrl: '/ggml-viz',
     tags: ['C++', 'GGML', 'Visualization', 'ML Infra'],
   },
   {
