@@ -39,6 +39,15 @@ export const projects: Project[] = [
     tags: ['Data', 'AI', 'Index'],
   },
   {
+    id: 'careless-credit',
+    title: 'Careless Credit',
+    description:
+      'Ranks all 663 credit cards in the CFPB\'s Terms of Credit Card Plans survey by what each is worth to you in dollars per year: rewards and intro savings minus interest and fees, with balances estimated from the Survey of Consumer Finances. No affiliate links.',
+    githubUrl: 'https://github.com/brodheadw/careless-credit',
+    liveUrl: 'https://williams-mac-studio.tail0a3e03.ts.net',
+    tags: ['React', 'Python', 'Consumer Finance', 'Data'],
+  },
+  {
     id: 'ggml-viz',
     title: 'ggml-viz',
     description:
